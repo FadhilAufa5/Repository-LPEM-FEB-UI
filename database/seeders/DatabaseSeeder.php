@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
         );
 
         // Create sample users
-        if (User::count() < 5) {
-            User::factory(10)->create();
-        }
+        // if (User::count() < 5) {
+        //     User::factory(10)->create();
+        // }
     }
 }
