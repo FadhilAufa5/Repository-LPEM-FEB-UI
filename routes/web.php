@@ -23,6 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Permission Management Routes
     Route::resource('permissions', \App\Http\Controllers\PermissionController::class);
+
+    // Asset Management Routes
+    Route::resource('assets', \App\Http\Controllers\AssetController::class);
 });
 
 require __DIR__.'/settings.php';
