@@ -1,9 +1,8 @@
 import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-import { Search, Calendar, ArrowRight, ChevronLeft, ChevronRight, Sparkles, BookOpen, Users, Clock } from 'lucide-react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Search, Calendar, ChevronLeft, ChevronRight, BookOpen, Users, FileText, ChevronRight as ChevronRightIcon, Home, FolderOpen, CalendarDays, User, AlertCircle, Library } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
-import { Navbar } from '@/components/navbar';
 
 export default function Welcome({ canRegister = true }: { canRegister?: boolean }) {
     const { auth } = usePage<SharedData>().props;
@@ -33,7 +32,14 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Filters:', { title, author, abstract, year });
+        const params: Record<string, string> = {};
+        
+        if (title) params.title = title;
+        if (author) params.author = author;
+        if (abstract) params.abstract = abstract;
+        if (year) params.year = year;
+        
+        router.get('/repository', params);
     };
 
     const handleYearSelect = (selectedYear: number) => {
@@ -57,10 +63,10 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                     className={`
                         rounded py-2 text-sm font-medium transition-all duration-200
                         ${isSelected 
-                            ? 'bg-primary text-white shadow-md scale-105' 
+                            ? 'bg-yellow-600 text-white shadow-md scale-105' 
                             : isCurrent
-                            ? 'bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30'
-                            : 'hover:bg-neutral-100 text-neutral-700 dark:hover:bg-neutral-800 dark:text-neutral-300'
+                            ? 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100 dark:bg-yellow-950/30 dark:hover:bg-yellow-950/50'
+                            : 'hover:bg-gray-100 text-gray-700 dark:hover:bg-neutral-800 dark:text-neutral-300'
                         }
                     `}
                 >
@@ -72,260 +78,373 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
 
     return (
         <>
-            <Head title="Repository Search">
+            <Head title="Scientific Repository">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
             </Head>
 
-            {/* <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-neutral-950 dark:via-blue-950 dark:to-purple-950"> */}
-                {/* Background decorative elements */}
-                {/* <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                    <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-primary/20 to-purple-400/20 blur-3xl"></div>
-                    <div className="absolute top-1/2 -left-40 h-80 w-80 rounded-full bg-gradient-to-br from-blue-400/20 to-primary/20 blur-3xl"></div>
-                </div> */}
+            <div className="min-h-screen bg-gray-50 dark:bg-neutral-900">
+                {/* Clean Navbar */}
+                <nav className="border-b border-gray-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="mx-auto max-w-7xl px-6">
+                        <div className="flex h-20 items-center justify-between">
+                            {/* Logo & Title */}
+                            <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
+                                <img 
+                                    src="/logo_lpem.png" 
+                                    alt="LPEM FEB UI Logo" 
+                                    className="h-12 w-auto"
+                                />
+                                {/* <div className="hidden md:block">
+                                    <div className="text-sm font-bold text-gray-900 dark:text-white">
+                                        LPEM FEB UI
+                                    </div>
+                                    <div className="text-xs text-gray-600 dark:text-neutral-400">
+                                        Scientific Repository
+                                    </div>
+                                </div> */}
+                            </Link>
 
-                {/* Navbar */}
-                <Navbar
-                    isAuthenticated={!!auth.user}
-                    loginUrl={login().url}
-                    registerUrl={register().url}
-                    dashboardUrl={dashboard().url}
-                    canRegister={canRegister}
-                />
+                            {/* Navigation Links & Auth */}
+                            <div className="flex items-center gap-6">
+                                <Link
+                                    href="/"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
+                                >
+                                    Home
+                                </Link>
+                                <Link
+                                    href="/repository"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
+                                >
+                                    Repository
+                                </Link>
 
-                {/* Main Content */}
-                <main className="relative mx-auto max-w-4xl px-6 py-8 md:py-12">
-                    {/* Hero Section */}
-                    <div className="mb-8 text-center">
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-1.5 text-xs font-semibold text-neutral-700 backdrop-blur-sm dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
-                            <Sparkles className="size-3.5" />
-                            <span>Pencarian Repository yang Powerful</span>
+
+                                
+                                {/* {!auth.user ? (
+                                    <Link
+                                        href={login().url}
+                                        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                                    >
+                                        Login
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href={dashboard().url}
+                                        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                                    >
+                                        Dashboard
+                                    </Link>
+                                )} */}
+                            </div>
                         </div>
-                        <h1 className="mb-3 text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100 md:text-4xl">
-                            Temukan
-                            <span className="text-neutral-700 dark:text-neutral-300"> Repository</span>
-                        </h1>
-                        <p className="mx-auto max-w-2xl text-sm text-neutral-600 dark:text-neutral-300">
-                            Cari repository berdasarkan judul, penulis, dan tahun dengan mudah. Akses koleksi LPEM FEB UI Repository dalam hitungan detik.
-                        </p>
                     </div>
+                </nav>
 
-                    {/* Search Card */}
-                    <div className="group rounded-2xl border border-neutral-200/60 bg-white/80 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:shadow-neutral-200 dark:border-neutral-800/50 dark:bg-neutral-900/80">
-                        <div className="mb-4 flex items-center gap-2.5">
-                            <div className="rounded-lg bg-neutral-700 p-2 shadow-md dark:bg-neutral-600">
-                                <Search className="size-5 text-white" />
-                            </div>
-                            <div>
-                                <h3 className="text-base font-bold text-neutral-900 dark:text-neutral-100">
-                                    Pencarian Koleksi
-                                </h3>
-                                <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                                    LPEM FEB UI Repository
-                                </p>
-                            </div>
-                        </div>
-                        <form onSubmit={handleSearch} className="space-y-4">
-                            {/* Title */}
-                            <div className="space-y-1.5">
-                                <label htmlFor="title" className="flex items-center gap-1.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-                                    <BookOpen className="size-3.5 text-primary" />
-                                    Judul
-                                </label>
+                {/* Search Bar Section */}
+                <div className="border-b border-gray-200 bg-white py-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="mx-auto max-w-7xl px-6">
+                        <form onSubmit={handleSearch} className="mx-auto max-w-3xl">
+                            <div className="relative">
                                 <input
-                                    id="title"
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Masukkan judul repository..."
-                                    className="w-full rounded-lg border border-neutral-200 bg-white py-2 px-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-100 dark:placeholder-neutral-500"
+                                    placeholder="Search for articles, theses, journals..."
+                                    className="w-full rounded-full border-2 border-gray-300 py-3 pl-6 pr-12 text-sm shadow-sm transition-all focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:border-yellow-400"
                                 />
-                            </div>
-
-                            {/* Author */}
-                            <div className="space-y-1.5">
-                                <label htmlFor="author" className="flex items-center gap-1.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-                                    <Users className="size-3.5 text-primary" />
-                                    Penulis
-                                </label>
-                                <input
-                                    id="author"
-                                    type="text"
-                                    value={author}
-                                    onChange={(e) => setAuthor(e.target.value)}
-                                    placeholder="Masukkan nama penulis..."
-                                    className="w-full rounded-lg border border-neutral-200 bg-white py-2 px-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-100 dark:placeholder-neutral-500"
-                                />
-                            </div>
-
-                            {/* Abstract */}
-                            <div className="space-y-1.5">
-                                <label htmlFor="abstract" className="flex items-center gap-1.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-                                    <Search className="size-3.5 text-primary" />
-                                    Abstrak
-                                </label>
-                                <input
-                                    id="abstract"
-                                    type="text"
-                                    value={abstract}
-                                    onChange={(e) => setAbstract(e.target.value)}
-                                    placeholder="Masukkan kata kunci dari abstrak..."
-                                    className="w-full rounded-lg border border-neutral-200 bg-white py-2 px-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-100 dark:placeholder-neutral-500"
-                                />
-                            </div>
-
-                            {/* Year Picker */}
-                            <div className="relative space-y-1.5" ref={yearPickerRef}>
-                                <label htmlFor="year" className="flex items-center gap-1.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-                                    <Calendar className="size-3.5 text-primary" />
-                                    Tahun
-                                </label>
                                 <button
-                                    type="button"
-                                    onClick={() => setIsYearPickerOpen(!isYearPickerOpen)}
-                                    className="w-full rounded-lg border border-neutral-200 bg-white py-2 px-3 text-left text-sm text-neutral-900 transition-all duration-200 hover:border-primary/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-100"
+                                    type="submit"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-yellow-600 p-2 text-white transition-colors hover:bg-yellow-700"
                                 >
-                                    <span className={year ? 'text-neutral-900 dark:text-neutral-100' : 'text-neutral-400 dark:text-neutral-500'}>
-                                        {year || 'Pilih tahun...'}
-                                    </span>
+                                    <Search className="h-4 w-4" />
                                 </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-                                {/* Year Picker Dropdown */}
-                                {isYearPickerOpen && (
-                                    <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-xl dark:border-neutral-700 dark:bg-neutral-900">
-                                        {/* Year Navigation */}
-                                        <div className="flex items-center justify-between border-b border-neutral-200 bg-neutral-50 px-3 py-2 dark:border-neutral-800 dark:bg-neutral-800">
-                                            <button
-                                                type="button"
-                                                onClick={() => setDisplayYear(displayYear - 12)}
-                                                className="rounded p-1 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
-                                            >
-                                                <ChevronLeft className="size-4" />
-                                            </button>
-                                            <span className="text-xs font-bold text-neutral-900 dark:text-neutral-100">
-                                                {Math.floor(displayYear / 12) * 12} - {Math.floor(displayYear / 12) * 12 + 11}
+                {/* Breadcrumb */}
+                <div className="border-b border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="mx-auto max-w-7xl px-6 py-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-neutral-400">
+                            <Home className="h-4 w-4" />
+                            <span className="font-medium text-yellow-600 dark:text-yellow-400">Home</span>
+                            <ChevronRightIcon className="h-3 w-3" />
+                            <span>Repository</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <main className="mx-auto max-w-7xl px-6 py-8">
+                    <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+                        {/* Left Column */}
+                        <div className="space-y-6">
+                            {/* Welcome Section */}
+                            <div className="rounded-lg bg-white p-8 shadow-sm dark:bg-neutral-900">
+                                <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
+                                    Welcome to the University Scientific Repository
+                                </h1>
+                                <p className="mb-4 leading-relaxed text-gray-700 dark:text-neutral-300">
+                                    This repository is a digital archive of intellectual output from LPEM FEB UI, including research papers, theses, dissertations, journals, and other scholarly works. Our mission is to preserve and provide open access to academic research for the benefit of the global research community.
+                                </p>
+                                <p className="leading-relaxed text-gray-700 dark:text-neutral-300">
+                                    Browse our collections, search by author or subject, and discover the wealth of knowledge produced by our academic community.
+                                </p>
+                            </div>
+
+                            {/* Announcement Box */}
+                            <div className="rounded-lg border-l-4 border-yellow-600 bg-yellow-50 p-6 shadow-sm dark:bg-yellow-950/30">
+                                <div className="flex gap-3">
+                                    <AlertCircle className="h-5 w-5 flex-shrink-0 text-yellow-600 dark:text-yellow-400" />
+                                    <div>
+                                        <h3 className="mb-2 font-semibold text-yellow-900 dark:text-yellow-300">
+                                            Important Notice for Students
+                                        </h3>
+                                        <p className="text-sm leading-relaxed text-yellow-800 dark:text-yellow-300">
+                                            All students are required to submit their final thesis or dissertation to the repository before graduation. Please contact the library administration for submission guidelines and procedures.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Advanced Search Section */}
+                            <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-neutral-900">
+                                <h2 className="mb-6 text-xl font-bold text-gray-900 dark:text-white">
+                                    Advanced Search
+                                </h2>
+                                <div className="space-y-4">
+                                    {/* Title */}
+                                    <div className="space-y-2">
+                                        <label htmlFor="adv-title" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <BookOpen className="h-4 w-4 text-yellow-600" />
+                                            Title
+                                        </label>
+                                        <input
+                                            id="adv-title"
+                                            type="text"
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            placeholder="Enter document title..."
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-500"
+                                        />
+                                    </div>
+
+                                    {/* Author */}
+                                    <div className="space-y-2">
+                                        <label htmlFor="adv-author" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <Users className="h-4 w-4 text-yellow-600" />
+                                            Author
+                                        </label>
+                                        <input
+                                            id="adv-author"
+                                            type="text"
+                                            value={author}
+                                            onChange={(e) => setAuthor(e.target.value)}
+                                            placeholder="Enter author name..."
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-500"
+                                        />
+                                    </div>
+
+                                    {/* Abstract */}
+                                    <div className="space-y-2">
+                                        <label htmlFor="adv-abstract" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <FileText className="h-4 w-4 text-yellow-600" />
+                                            Abstract / Keywords
+                                        </label>
+                                        <input
+                                            id="adv-abstract"
+                                            type="text"
+                                            value={abstract}
+                                            onChange={(e) => setAbstract(e.target.value)}
+                                            placeholder="Enter keywords from abstract..."
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-500"
+                                        />
+                                    </div>
+
+                                    {/* Year Picker */}
+                                    <div className="relative space-y-2" ref={yearPickerRef}>
+                                        <label htmlFor="year" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <Calendar className="h-4 w-4 text-yellow-600" />
+                                            Publication Year
+                                        </label>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsYearPickerOpen(!isYearPickerOpen)}
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-left text-sm text-gray-900 transition-all hover:border-yellow-400 focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                        >
+                                            <span className={year ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-neutral-500'}>
+                                                {year || 'Select year...'}
                                             </span>
-                                            <button
-                                                type="button"
-                                                onClick={() => setDisplayYear(displayYear + 12)}
-                                                className="rounded p-1 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
-                                            >
-                                                <ChevronRight className="size-4" />
-                                            </button>
-                                        </div>
-                                        
-                                        {/* Year Grid */}
-                                        <div className="grid grid-cols-3 gap-1.5 p-3">
-                                            {renderYearGrid()}
-                                        </div>
+                                        </button>
 
-                                        {/* Quick Actions */}
-                                        <div className="border-t border-neutral-200 bg-neutral-50 p-2 dark:border-neutral-800 dark:bg-neutral-800">
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setYear('');
-                                                    setIsYearPickerOpen(false);
-                                                }}
-                                                className="w-full rounded py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
+                                        {/* Year Picker Dropdown */}
+                                        {isYearPickerOpen && (
+                                            <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-gray-300 bg-white shadow-xl dark:border-neutral-700 dark:bg-neutral-900">
+                                                {/* Year Navigation */}
+                                                <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-3 py-2 dark:border-neutral-800 dark:bg-neutral-800">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setDisplayYear(displayYear - 12)}
+                                                        className="rounded p-1 text-gray-600 transition-colors hover:bg-gray-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
+                                                    >
+                                                        <ChevronLeft className="h-4 w-4" />
+                                                    </button>
+                                                    <span className="text-xs font-bold text-gray-900 dark:text-neutral-100">
+                                                        {Math.floor(displayYear / 12) * 12} - {Math.floor(displayYear / 12) * 12 + 11}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setDisplayYear(displayYear + 12)}
+                                                        className="rounded p-1 text-gray-600 transition-colors hover:bg-gray-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
+                                                    >
+                                                        <ChevronRight className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                                
+                                                {/* Year Grid */}
+                                                <div className="grid grid-cols-3 gap-1.5 p-3">
+                                                    {renderYearGrid()}
+                                                </div>
+
+                                                {/* Quick Actions */}
+                                                <div className="border-t border-gray-200 bg-gray-50 p-2 dark:border-neutral-800 dark:bg-neutral-800">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setYear('');
+                                                            setIsYearPickerOpen(false);
+                                                        }}
+                                                        className="w-full rounded py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
+                                                    >
+                                                        Clear Year
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Search Button */}
+                                    <button
+                                        onClick={handleSearch}
+                                        type="button"
+                                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-6 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+                                    >
+                                        <Search className="h-4 w-4" />
+                                        <span>Search Repository</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Sidebar */}
+                        <aside className="space-y-6">
+                            {/* Browse Menu */}
+                            <div className="rounded-lg bg-white p-5 shadow-sm dark:bg-neutral-900">
+                                <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
+                                    Browse
+                                </h3>
+                                <nav className="space-y-2">
+                                    <Link
+                                        href="/repository"
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
+                                    >
+                                        <Library className="h-4 w-4" />
+                                        <span>All Repository</span>
+                                    </Link>
+                                    <Link
+                                        href="/repository"
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
+                                    >
+                                        <FolderOpen className="h-4 w-4" />
+                                        <span>Collections</span>
+                                    </Link>
+                                    <Link
+                                        href="/repository"
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
+                                    >
+                                        <CalendarDays className="h-4 w-4" />
+                                        <span>By Issue Date</span>
+                                    </Link>
+                                    <Link
+                                        href="/repository"
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
+                                    >
+                                        <Users className="h-4 w-4" />
+                                        <span>Authors</span>
+                                    </Link>
+                                    <Link
+                                        href="/repository"
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
+                                    >
+                                        <BookOpen className="h-4 w-4" />
+                                        <span>Titles</span>
+                                    </Link>
+                                    <Link
+                                        href="/repository"
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
+                                    >
+                                        <FileText className="h-4 w-4" />
+                                        <span>Subjects</span>
+                                    </Link>
+                                </nav>
+                            </div>
+
+                            {/* My Account Box */}
+                            <div className="rounded-lg bg-white p-5 shadow-sm dark:bg-neutral-900">
+                                <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
+                                    My Account
+                                </h3>
+                                {!auth.user ? (
+                                    <div className="space-y-3">
+                                        <Link
+                                            href={login().url}
+                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-yellow-700"
+                                        >
+                                            <User className="h-4 w-4" />
+                                            <span>Login</span>
+                                        </Link>
+                                        {canRegister && (
+                                            <Link
+                                                href={register().url}
+                                                className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-yellow-600 px-4 py-2 text-sm font-semibold text-yellow-600 transition-all hover:bg-yellow-50 dark:hover:bg-yellow-950/30"
                                             >
-                                                Reset Tahun
-                                            </button>
-                                        </div>
+                                                Register
+                                            </Link>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        <p className="text-sm text-gray-600 dark:text-neutral-400">
+                                            Welcome, <span className="font-semibold text-gray-900 dark:text-white">{auth.user.name}</span>
+                                        </p>
+                                        <Link
+                                            href={dashboard().url}
+                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-yellow-700"
+                                        >
+                                            Go to Dashboard
+                                        </Link>
                                     </div>
                                 )}
                             </div>
-
-                            {/* Search Button */}
-                            <button
-                                type="submit"
-                                className="group relative mt-6 flex w-full items-center justify-center gap-2 overflow-hidden rounded-lg bg-neutral-900 px-6 py-2.5 font-bold text-white shadow-md transition-all duration-300 hover:scale-[1.02] hover:bg-neutral-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-700 dark:hover:bg-neutral-600"
-                            >
-                                <Search className="relative size-4" />
-                                <span className="relative text-sm">Cari Repository</span>
-                                <ArrowRight className="relative size-4 transition-transform group-hover:translate-x-1" />
-                            </button>
-                        </form>
-
-                        {/* Info */}
-                        <div className="mt-5 rounded-lg border border-neutral-200 bg-neutral-50/50 p-3 dark:border-neutral-800 dark:bg-neutral-800/50">
-                            <div className="flex items-start gap-2">
-                                <div className="rounded bg-primary/10 p-1.5 dark:bg-primary/20">
-                                    <Clock className="size-3.5 text-primary" />
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
-                                        {(() => {
-                                            const activeFilters = [
-                                                title && `Judul: "${title}"`,
-                                                author && `Penulis: "${author}"`,
-                                                abstract && `Abstrak: "${abstract}"`,
-                                                year && `Tahun: ${year}`
-                                            ].filter(Boolean);
-                                            
-                                            return activeFilters.length > 0 
-                                                ? `Filter aktif: ${activeFilters.join(', ')}`
-                                                : 'Gunakan filter di atas untuk mencari koleksi repository';
-                                        })()}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Quick Stats */}
-                    <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                        <div className="group relative overflow-hidden rounded-xl border border-neutral-200/60 bg-gradient-to-br from-white to-neutral-50 p-5 text-center shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 dark:border-neutral-800/50 dark:from-neutral-900 dark:to-neutral-950">
-                            <div className="absolute -right-6 -top-6 size-16 rounded-full bg-primary/10 blur-xl transition-all group-hover:bg-primary/20"></div>
-                            <div className="relative">
-                                <div className="mb-2 flex justify-center">
-                                    <div className="rounded-full bg-gradient-to-br from-primary to-purple-500 p-2">
-                                        <BookOpen className="size-4 text-white" />
-                                    </div>
-                                </div>
-                                <div className="mb-1 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-2xl font-extrabold text-transparent">100+</div>
-                                <div className="text-xs font-medium text-neutral-600 dark:text-neutral-400">Repository Tersedia</div>
-                            </div>
-                        </div>
-                        <div className="group relative overflow-hidden rounded-xl border border-neutral-200/60 bg-gradient-to-br from-white to-neutral-50 p-5 text-center shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 dark:border-neutral-800/50 dark:from-neutral-900 dark:to-neutral-950">
-                            <div className="absolute -right-6 -top-6 size-16 rounded-full bg-purple-500/10 blur-xl transition-all group-hover:bg-purple-500/20"></div>
-                            <div className="relative">
-                                <div className="mb-2 flex justify-center">
-                                    <div className="rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-2">
-                                        <Calendar className="size-4 text-white" />
-                                    </div>
-                                </div>
-                                <div className="mb-1 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-2xl font-extrabold text-transparent">{currentYear - 2010}+</div>
-                                <div className="text-xs font-medium text-neutral-600 dark:text-neutral-400">Tahun Data</div>
-                            </div>
-                        </div>
-                        <div className="group relative overflow-hidden rounded-xl border border-neutral-200/60 bg-gradient-to-br from-white to-neutral-50 p-5 text-center shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-pink-500/10 dark:border-neutral-800/50 dark:from-neutral-900 dark:to-neutral-950">
-                            <div className="absolute -right-6 -top-6 size-16 rounded-full bg-pink-500/10 blur-xl transition-all group-hover:bg-pink-500/20"></div>
-                            <div className="relative">
-                                <div className="mb-2 flex justify-center">
-                                    <div className="rounded-full bg-gradient-to-br from-pink-500 to-primary p-2">
-                                        <Clock className="size-4 text-white" />
-                                    </div>
-                                </div>
-                                <div className="mb-1 bg-gradient-to-r from-pink-500 to-primary bg-clip-text text-2xl font-extrabold text-transparent">24/7</div>
-                                <div className="text-xs font-medium text-neutral-600 dark:text-neutral-400">Selalu Tersedia</div>
-                            </div>
-                        </div>
+                        </aside>
                     </div>
                 </main>
 
                 {/* Footer */}
-                <footer className="relative border-t border-neutral-200/60 bg-gradient-to-b from-white to-neutral-50 py-6 backdrop-blur-xl dark:border-neutral-800/50 dark:from-neutral-900 dark:to-neutral-950">
+                <footer className="border-t border-gray-200 bg-white py-6 dark:border-neutral-800 dark:bg-neutral-900">
                     <div className="mx-auto max-w-7xl px-6 text-center">
-                        <p className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
-                            &copy; {currentYear} <span className="font-bold text-primary">detooseto</span>
+                        <p className="text-sm text-gray-600 dark:text-neutral-400">
+                            &copy; {currentYear} <span className="font-bold text-yellow-600">LPEM FEB UI</span> - Scientific Repository
                         </p>
-                        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-500">
-                            LPEM FEB UI Repository - Pencarian Repository yang Powerful
+                        <p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
+                            Preserving and sharing academic excellence
                         </p>
                     </div>
                 </footer>
-            {/* </div> */}
+            </div>
         </>
     );
 }

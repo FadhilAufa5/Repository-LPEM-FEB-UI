@@ -1,0 +1,374 @@
+import { dashboard, login, register } from '@/routes';
+import { type SharedData } from '@/types';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Search, Calendar, BookOpen, Users, Filter, FileText, Home, ChevronRight as ChevronRightIcon } from 'lucide-react';
+import { useState } from 'react';
+
+interface RepositoryItem {
+    id: number;
+    title: string;
+    author: string;
+    year: number;
+    abstract: string;
+    file_url?: string;
+}
+
+interface RepositoryPageProps {
+    canRegister?: boolean;
+    repositories: {
+        data: RepositoryItem[];
+        total: number;
+        per_page: number;
+        current_page: number;
+    };
+    filters: {
+        title?: string;
+        author?: string;
+        abstract?: string;
+        year?: string;
+    };
+}
+
+export default function Repository({ canRegister = true, repositories, filters }: RepositoryPageProps) {
+    const { auth } = usePage<SharedData>().props;
+    const [showFilters, setShowFilters] = useState(false);
+    const currentYear = new Date().getFullYear();
+
+    const hasActiveFilters = Object.values(filters).some(v => v);
+
+    const clearFilters = () => {
+        router.get('/repository', {}, { preserveState: true });
+    };
+
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const params: Record<string, string> = {};
+        
+        formData.forEach((value, key) => {
+            if (value) params[key] = value.toString();
+        });
+
+        router.get('/repository', params, { preserveState: true });
+    };
+
+    return (
+        <>
+            <Head title="Repository" />
+
+            <div className="min-h-screen bg-gray-50 dark:bg-neutral-900">
+                {/* Clean Navbar */}
+                <nav className="border-b border-gray-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="mx-auto max-w-7xl px-6">
+                        <div className="flex h-20 items-center justify-between">
+                            {/* Logo & Title */}
+                            <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
+                                <img 
+                                    src="/logo_lpem.png" 
+                                    alt="LPEM FEB UI Logo" 
+                                    className="h-12 w-auto"
+                                />
+                                <div className="hidden md:block">
+                                    <div className="text-sm font-bold text-gray-900 dark:text-white">
+                                        LPEM FEB UI
+                                    </div>
+                                    <div className="text-xs text-gray-600 dark:text-neutral-400">
+                                        Scientific Repository
+                                    </div>
+                                </div>
+                            </Link>
+
+                            {/* Navigation Links & Auth */}
+                            <div className="flex items-center gap-6">
+                                <Link
+                                    href="/"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
+                                >
+                                    Home
+                                </Link>
+                                <Link
+                                    href="/repository"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
+                                >
+                                    All Repository
+                                </Link>
+                                <Link
+                                    href="/repository"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
+                                >
+                                    Collections
+                                </Link>
+                                <Link
+                                    href="/repository"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
+                                >
+                                    Authors
+                                </Link>
+                                <Link
+                                    href="/repository"
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
+                                >
+                                    Titles
+                                </Link>
+                                
+                                {!auth.user ? (
+                                    <Link
+                                        href={login().url}
+                                        className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yellow-700"
+                                    >
+                                        Login
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href={dashboard().url}
+                                        className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yellow-700"
+                                    >
+                                        Dashboard
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                {/* Breadcrumb */}
+                <div className="border-b border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="mx-auto max-w-7xl px-6 py-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-neutral-400">
+                            <Link href="/" className="flex items-center gap-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400">
+                                <Home className="h-4 w-4" />
+                                <span>Home</span>
+                            </Link>
+                            <ChevronRightIcon className="h-3 w-3" />
+                            <span className="font-medium text-gray-900 dark:text-white">Repository</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <main className="mx-auto max-w-7xl px-6 py-8">
+                    {/* Header */}
+                    <div className="mb-6">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                            Repository Search Results
+                        </h1>
+                        <p className="mt-2 text-sm text-gray-600 dark:text-neutral-400">
+                            Found {repositories.total} documents in our collection
+                        </p>
+                    </div>
+
+                    <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+                        {/* Sidebar Filters */}
+                        <aside className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
+                            <div className="sticky top-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h2 className="flex items-center gap-2 text-base font-bold text-gray-900 dark:text-white">
+                                        <Filter className="h-4 w-4" />
+                                        Filter Search
+                                    </h2>
+                                    {hasActiveFilters && (
+                                        <button
+                                            onClick={clearFilters}
+                                            className="text-xs font-medium text-yellow-600 hover:text-yellow-700"
+                                        >
+                                            Reset
+                                        </button>
+                                    )}
+                                </div>
+
+                                <form onSubmit={handleSearch} className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label htmlFor="title" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <BookOpen className="h-4 w-4 text-yellow-600" />
+                                            Title
+                                        </label>
+                                        <input
+                                            id="title"
+                                            name="title"
+                                            type="text"
+                                            defaultValue={filters.title}
+                                            placeholder="Search by title..."
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="author" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <Users className="h-4 w-4 text-yellow-600" />
+                                            Author
+                                        </label>
+                                        <input
+                                            id="author"
+                                            name="author"
+                                            type="text"
+                                            defaultValue={filters.author}
+                                            placeholder="Search by author..."
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="abstract" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <FileText className="h-4 w-4 text-yellow-600" />
+                                            Keywords
+                                        </label>
+                                        <input
+                                            id="abstract"
+                                            name="abstract"
+                                            type="text"
+                                            defaultValue={filters.abstract}
+                                            placeholder="Search by keywords..."
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="year" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                            <Calendar className="h-4 w-4 text-yellow-600" />
+                                            Year
+                                        </label>
+                                        <input
+                                            id="year"
+                                            name="year"
+                                            type="number"
+                                            defaultValue={filters.year}
+                                            placeholder="2024"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+                                    >
+                                        <Search className="h-4 w-4" />
+                                        Apply Filters
+                                    </button>
+                                </form>
+                            </div>
+                        </aside>
+
+                        {/* Main Content */}
+                        <div className="space-y-4">
+                            {/* Mobile Filter Toggle */}
+                            <button
+                                onClick={() => setShowFilters(!showFilters)}
+                                className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 lg:hidden dark:border-neutral-800 dark:bg-neutral-900 dark:text-white"
+                            >
+                                <Filter className="h-4 w-4" />
+                                {showFilters ? 'Hide' : 'Show'} Filters
+                            </button>
+
+                            {/* Active Filters */}
+                            {hasActiveFilters && (
+                                <div className="flex flex-wrap items-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-900 dark:bg-yellow-950/30">
+                                    <span className="text-xs font-semibold text-yellow-900 dark:text-yellow-300">
+                                        Active Filters:
+                                    </span>
+                                    {filters.title && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            Title: {filters.title}
+                                        </span>
+                                    )}
+                                    {filters.author && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            Author: {filters.author}
+                                        </span>
+                                    )}
+                                    {filters.abstract && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            Keywords: {filters.abstract}
+                                        </span>
+                                    )}
+                                    {filters.year && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            Year: {filters.year}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Repository List */}
+                            {repositories.data.length > 0 ? (
+                                <div className="space-y-4">
+                                    {repositories.data.map((repo) => (
+                                        <article
+                                            key={repo.id}
+                                            className="group rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-yellow-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-yellow-700"
+                                        >
+                                            <div className="mb-3">
+                                                <h3 className="text-lg font-bold text-gray-900 transition-colors group-hover:text-yellow-600 dark:text-white dark:group-hover:text-yellow-400">
+                                                    {repo.title}
+                                                </h3>
+                                                <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-neutral-400">
+                                                    <span className="flex items-center gap-1.5">
+                                                        <Users className="h-4 w-4 text-yellow-600" />
+                                                        {repo.author}
+                                                    </span>
+                                                    <span className="flex items-center gap-1.5">
+                                                        <Calendar className="h-4 w-4 text-yellow-600" />
+                                                        {repo.year}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <p className="text-sm leading-relaxed text-gray-700 line-clamp-3 dark:text-neutral-300">
+                                                {repo.abstract}
+                                            </p>
+
+                                            {repo.file_url && (
+                                                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-800">
+                                                    <a
+                                                        href={repo.file_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 text-sm font-semibold text-yellow-600 transition-colors hover:text-yellow-700"
+                                                    >
+                                                        <FileText className="h-4 w-4" />
+                                                        View Document
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </article>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="rounded-lg border border-gray-200 bg-white p-12 text-center dark:border-neutral-800 dark:bg-neutral-900">
+                                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-50 dark:bg-yellow-950/30">
+                                        <Search className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+                                    </div>
+                                    <h3 className="mb-2 text-lg font-bold text-gray-900 dark:text-white">
+                                        No Results Found
+                                    </h3>
+                                    <p className="text-sm text-gray-600 dark:text-neutral-400">
+                                        Try adjusting your search filters to find what you're looking for
+                                    </p>
+                                    {hasActiveFilters && (
+                                        <button
+                                            onClick={clearFilters}
+                                            className="mt-4 rounded-lg bg-yellow-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yellow-700"
+                                        >
+                                            Clear All Filters
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </main>
+
+                {/* Footer */}
+                <footer className="border-t border-gray-200 bg-white py-6 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="mx-auto max-w-7xl px-6 text-center">
+                        <p className="text-sm text-gray-600 dark:text-neutral-400">
+                            &copy; {currentYear} <span className="font-bold text-yellow-600">LPEM FEB UI</span> - Scientific Repository
+                        </p>
+                        <p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
+                            Preserving and sharing academic excellence
+                        </p>
+                    </div>
+                </footer>
+            </div>
+        </>
+    );
+}

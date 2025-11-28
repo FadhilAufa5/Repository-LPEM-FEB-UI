@@ -10,6 +10,8 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+Route::get('/repository', [\App\Http\Controllers\RepositoryController::class, 'index'])->name('repository');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
