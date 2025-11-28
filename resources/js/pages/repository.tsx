@@ -3,6 +3,7 @@ import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Search, Calendar, BookOpen, Users, Filter, FileText, Home, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import { useState } from 'react';
+import { Navbar } from '@/components/navbar';
 
 interface RepositoryItem {
     id: number;
@@ -57,79 +58,11 @@ export default function Repository({ canRegister = true, repositories, filters }
             <Head title="Repository" />
 
             <div className="min-h-screen bg-gray-50 dark:bg-neutral-900">
-                {/* Clean Navbar */}
-                <nav className="border-b border-gray-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="mx-auto max-w-7xl px-6">
-                        <div className="flex h-20 items-center justify-between">
-                            {/* Logo & Title */}
-                            <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
-                                <img 
-                                    src="/logo_lpem.png" 
-                                    alt="LPEM FEB UI Logo" 
-                                    className="h-12 w-auto"
-                                />
-                                <div className="hidden md:block">
-                                    <div className="text-sm font-bold text-gray-900 dark:text-white">
-                                        LPEM FEB UI
-                                    </div>
-                                    <div className="text-xs text-gray-600 dark:text-neutral-400">
-                                        Scientific Repository
-                                    </div>
-                                </div>
-                            </Link>
-
-                            {/* Navigation Links & Auth */}
-                            <div className="flex items-center gap-6">
-                                <Link
-                                    href="/"
-                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
-                                >
-                                    Home
-                                </Link>
-                                <Link
-                                    href="/repository"
-                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
-                                >
-                                    All Repository
-                                </Link>
-                                <Link
-                                    href="/repository"
-                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
-                                >
-                                    Collections
-                                </Link>
-                                <Link
-                                    href="/repository"
-                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
-                                >
-                                    Authors
-                                </Link>
-                                <Link
-                                    href="/repository"
-                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
-                                >
-                                    Titles
-                                </Link>
-                                
-                                {!auth.user ? (
-                                    <Link
-                                        href={login().url}
-                                        className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yellow-700"
-                                    >
-                                        Login
-                                    </Link>
-                                ) : (
-                                    <Link
-                                        href={dashboard().url}
-                                        className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yellow-700"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+                <Navbar 
+                    isAuthenticated={!!auth.user}
+                    loginUrl={login().url}
+                    dashboardUrl={dashboard().url}
+                />
 
                 {/* Breadcrumb */}
                 <div className="border-b border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
@@ -292,9 +225,10 @@ export default function Repository({ canRegister = true, repositories, filters }
                             {repositories.data.length > 0 ? (
                                 <div className="space-y-4">
                                     {repositories.data.map((repo) => (
-                                        <article
+                                        <Link
                                             key={repo.id}
-                                            className="group rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-yellow-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-yellow-700"
+                                            href={`/repository/${repo.id}`}
+                                            className="group block rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-yellow-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-yellow-700"
                                         >
                                             <div className="mb-3">
                                                 <h3 className="text-lg font-bold text-gray-900 transition-colors group-hover:text-yellow-600 dark:text-white dark:group-hover:text-yellow-400">
@@ -316,20 +250,13 @@ export default function Repository({ canRegister = true, repositories, filters }
                                                 {repo.abstract}
                                             </p>
 
-                                            {repo.file_url && (
-                                                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-800">
-                                                    <a
-                                                        href={repo.file_url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-2 text-sm font-semibold text-yellow-600 transition-colors hover:text-yellow-700"
-                                                    >
-                                                        <FileText className="h-4 w-4" />
-                                                        View Document
-                                                    </a>
-                                                </div>
-                                            )}
-                                        </article>
+                                            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-800">
+                                                <span className="inline-flex items-center gap-2 text-sm font-semibold text-yellow-600 transition-colors group-hover:text-yellow-700">
+                                                    <FileText className="h-4 w-4" />
+                                                    View Details
+                                                </span>
+                                            </div>
+                                        </Link>
                                     ))}
                                 </div>
                             ) : (

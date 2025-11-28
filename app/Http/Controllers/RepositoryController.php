@@ -61,4 +61,25 @@ class RepositoryController extends Controller
             ],
         ]);
     }
+
+    public function show($id)
+    {
+        $asset = Asset::findOrFail($id);
+
+        return Inertia::render('repository-detail', [
+            'repository' => [
+                'id' => $asset->id,
+                'kode' => $asset->kode,
+                'title' => $asset->judul_laporan,
+                'abstract' => $asset->abstrak,
+                'jenis_laporan' => $asset->jenis_laporan_label,
+                'grup_kajian' => $asset->grup_kajian_label,
+                'author' => $asset->kepala_proyek,
+                'staff' => $asset->staf,
+                'year' => $asset->tahun,
+                'file_url' => $asset->file_laporan ? asset('storage/' . $asset->file_laporan) : null,
+                'created_at' => $asset->created_at->format('d M Y'),
+            ],
+        ]);
+    }
 }
