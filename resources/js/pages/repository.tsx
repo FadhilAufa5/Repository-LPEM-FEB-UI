@@ -1,7 +1,7 @@
 import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Search, Calendar, BookOpen, Users, Filter, FileText, Home, ChevronRight as ChevronRightIcon } from 'lucide-react';
+import { Search, Calendar, BookOpen, Users, Filter, FileText, Home, ChevronRight as ChevronRightIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { Navbar } from '@/components/navbar';
 
@@ -21,6 +21,7 @@ interface RepositoryPageProps {
         total: number;
         per_page: number;
         current_page: number;
+        last_page: number;
     };
     filters: {
         title?: string;
@@ -278,6 +279,81 @@ export default function Repository({ canRegister = true, repositories, filters }
                                             Clear All Filters
                                         </button>
                                     )}
+                                </div>
+                            )}
+
+                            {/* Pagination */}
+                            {repositories.last_page > 1 && repositories.data.length > 0 && (
+                                <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="text-sm text-gray-600 dark:text-neutral-400">
+                                        Showing {(repositories.current_page - 1) * repositories.per_page + 1} to{' '}
+                                        {Math.min(repositories.current_page * repositories.per_page, repositories.total)} of{' '}
+                                        {repositories.total} documents
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => {
+                                                const params = { ...filters, page: (repositories.current_page - 1).toString() };
+                                                router.get('/repository', params, { preserveState: true, preserveScroll: true });
+                                            }}
+                                            disabled={repositories.current_page === 1}
+                                            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:disabled:hover:bg-neutral-800"
+                                        >
+                                            <ChevronLeft className="h-4 w-4" />
+                                            Previous
+                                        </button>
+                                        
+                                        <div className="flex items-center gap-1">
+                                            {Array.from({ length: repositories.last_page }, (_, i) => i + 1).map((page) => {
+                                                const showPage = 
+                                                    page === 1 ||
+                                                    page === repositories.last_page ||
+                                                    (page >= repositories.current_page - 1 && page <= repositories.current_page + 1);
+                                                
+                                                const showEllipsisBefore = page === repositories.current_page - 2 && repositories.current_page > 3;
+                                                const showEllipsisAfter = page === repositories.current_page + 2 && repositories.current_page < repositories.last_page - 2;
+
+                                                if (showEllipsisBefore || showEllipsisAfter) {
+                                                    return (
+                                                        <span key={page} className="px-2 text-gray-500 dark:text-neutral-500">
+                                                            ...
+                                                        </span>
+                                                    );
+                                                }
+
+                                                if (!showPage) return null;
+
+                                                return (
+                                                    <button
+                                                        key={page}
+                                                        onClick={() => {
+                                                            const params = { ...filters, page: page.toString() };
+                                                            router.get('/repository', params, { preserveState: true, preserveScroll: true });
+                                                        }}
+                                                        className={`hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm font-semibold transition-all ${
+                                                            page === repositories.current_page
+                                                                ? 'bg-yellow-600 text-white shadow-sm hover:bg-yellow-700'
+                                                                : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700'
+                                                        }`}
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+
+                                        <button
+                                            onClick={() => {
+                                                const params = { ...filters, page: (repositories.current_page + 1).toString() };
+                                                router.get('/repository', params, { preserveState: true, preserveScroll: true });
+                                            }}
+                                            disabled={repositories.current_page === repositories.last_page}
+                                            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:disabled:hover:bg-neutral-800"
+                                        >
+                                            Next
+                                            <ChevronRight className="h-4 w-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>

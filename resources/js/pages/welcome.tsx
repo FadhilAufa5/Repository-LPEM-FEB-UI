@@ -260,7 +260,7 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                 <footer className="border-t border-gray-200 bg-white py-6 dark:border-neutral-800 dark:bg-neutral-900">
                     <div className="mx-auto max-w-7xl px-6 text-center">
                         <p className="text-sm text-gray-600 dark:text-neutral-400">
-                            &copy; {currentYear} <span className="font-bold text-yellow-600">LPEM FEB UI</span> - Scientific Repository
+                            &copy; {currentYear} <span className="font-bold text-yellow-600">LPEM FEB UI</span> -Repository
                         </p>
                         <p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
                             Preserving and sharing academic excellence
