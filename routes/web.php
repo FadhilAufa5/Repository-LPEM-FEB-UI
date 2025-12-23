@@ -14,9 +14,7 @@ Route::get('/repository', [\App\Http\Controllers\RepositoryController::class, 'i
 Route::get('/repository/{id}', [\App\Http\Controllers\RepositoryController::class, 'show'])->name('repository.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     // User Management Routes
     Route::resource('users', \App\Http\Controllers\UserController::class);
