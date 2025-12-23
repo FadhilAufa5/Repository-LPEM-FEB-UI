@@ -8,17 +8,24 @@ interface NavbarProps {
     dashboardUrl?: string;
 }
 
-export function Navbar({ isAuthenticated, loginUrl, dashboardUrl }: NavbarProps) {
+export function Navbar({
+    isAuthenticated,
+    loginUrl,
+    dashboardUrl,
+}: NavbarProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
         <nav className="border-b border-gray-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="mx-auto max-w-7xl px-4 sm:px-6">
                 <div className="flex h-16 items-center justify-between sm:h-20">
-                    <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
-                        <img 
-                            src="/logo_lpem.png" 
-                            alt="LPEM FEB UI Logo" 
+                    <Link
+                        href="/"
+                        className="flex items-center gap-3 transition-opacity hover:opacity-80"
+                    >
+                        <img
+                            src="/logo_lpem.png"
+                            alt="LPEM FEB UI Logo"
                             className="h-10 w-auto sm:h-12"
                         />
                     </Link>

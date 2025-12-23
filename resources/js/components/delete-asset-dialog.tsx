@@ -23,7 +23,11 @@ interface DeleteAssetDialogProps {
     asset?: Asset;
 }
 
-export function DeleteAssetDialog({ open, onOpenChange, asset }: DeleteAssetDialogProps) {
+export function DeleteAssetDialog({
+    open,
+    onOpenChange,
+    asset,
+}: DeleteAssetDialogProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = () => {
@@ -51,24 +55,41 @@ export function DeleteAssetDialog({ open, onOpenChange, asset }: DeleteAssetDial
                         </div>
                         <div>
                             <DialogTitle>Hapus Asset</DialogTitle>
-                            <DialogDescription>Tindakan ini tidak dapat dibatalkan</DialogDescription>
+                            <DialogDescription>
+                                Tindakan ini tidak dapat dibatalkan
+                            </DialogDescription>
                         </div>
                     </div>
                 </DialogHeader>
                 <div className="py-4">
                     <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                        Apakah Anda yakin ingin menghapus asset <span className="font-semibold">{asset?.kode}</span> -{' '}
-                        <span className="font-semibold">{asset?.judul_laporan}</span>?
+                        Apakah Anda yakin ingin menghapus asset{' '}
+                        <span className="font-semibold">{asset?.kode}</span> -{' '}
+                        <span className="font-semibold">
+                            {asset?.judul_laporan}
+                        </span>
+                        ?
                     </p>
                     <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                        Data asset dan file yang terkait akan dihapus secara permanen.
+                        Data asset dan file yang terkait akan dihapus secara
+                        permanen.
                     </p>
                 </div>
                 <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isDeleting}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                        disabled={isDeleting}
+                    >
                         Batal
                     </Button>
-                    <Button type="button" variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+                    <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                    >
                         {isDeleting ? 'Menghapus...' : 'Hapus'}
                     </Button>
                 </DialogFooter>

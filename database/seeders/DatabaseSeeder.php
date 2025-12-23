@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,21 +11,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create super admin
-        User::firstOrCreate(
-            ['email' => 'super@admin.com'],
-            [
-                'name' => 'Super Admin',
-                'password' => 'password',
-                'role' => 'admin',
-                'status' => 'active',
-                'email_verified_at' => now(),
-            ]
-        );
+        $this->call([
+            PermissionSeeder::class,
+            RoleSeeder::class,
+            UserSeeder::class,
+        ]);
 
-        // Create sample users
-        // if (User::count() < 5) {
-        //     User::factory(10)->create();
-        // }
+        $this->command->info('');
+        $this->command->info('🎉 Database seeded successfully!');
+        $this->command->info('');
+        $this->command->info('You can now login with:');
+        $this->command->info('Admin: admin@example.com / password');
+        $this->command->info('User: user@example.com / password');
     }
 }

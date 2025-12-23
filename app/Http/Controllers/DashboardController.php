@@ -3,19 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
+        
+        // Base query - filter by user if not admin
+        $baseQuery = Asset::query();
+        if (!$user->hasRole('admin')) {
+            $baseQuery->where('user_id', $user->id);
+        }
+
         // Total repositories
-        $totalRepositories = Asset::count();
+        $totalRepositories = (clone $baseQuery)->count();
 
         // Repositories by year (last 5 years)
         $currentYear = date('Y');
-        $repositoriesByYear = Asset::select('tahun', DB::raw('count(*) as total'))
+        $repositoriesByYear = (clone $baseQuery)
+            ->select('tahun', DB::raw('count(*) as total'))
             ->where('tahun', '>=', $currentYear - 4)
             ->groupBy('tahun')
             ->orderBy('tahun', 'asc')
@@ -28,7 +38,8 @@ class DashboardController extends Controller
             });
 
         // Repositories by type (jenis laporan)
-        $repositoriesByType = Asset::select('jenis_laporan', DB::raw('count(*) as total'))
+        $repositoriesByType = (clone $baseQuery)
+            ->select('jenis_laporan', DB::raw('count(*) as total'))
             ->groupBy('jenis_laporan')
             ->get()
             ->map(function ($item) {
@@ -39,7 +50,8 @@ class DashboardController extends Controller
             });
 
         // Repositories by research group (grup kajian)
-        $repositoriesByGroup = Asset::select('grup_kajian', DB::raw('count(*) as total'))
+        $repositoriesByGroup = (clone $baseQuery)
+            ->select('grup_kajian', DB::raw('count(*) as total'))
             ->groupBy('grup_kajian')
             ->orderBy('total', 'desc')
             ->limit(5)
@@ -55,7 +67,8 @@ class DashboardController extends Controller
             });
 
         // Recent repositories
-        $recentRepositories = Asset::orderBy('created_at', 'desc')
+        $recentRepositories = (clone $baseQuery)
+            ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get()
             ->map(function ($asset) {
@@ -69,9 +82,9 @@ class DashboardController extends Controller
             });
 
         // Statistics cards
-        $totalThisYear = Asset::where('tahun', $currentYear)->count();
-        $totalLastYear = Asset::where('tahun', $currentYear - 1)->count();
-        $uniqueAuthors = Asset::distinct('kepala_proyek')->count('kepala_proyek');
+        $totalThisYear = (clone $baseQuery)->where('tahun', $currentYear)->count();
+        $totalLastYear = (clone $baseQuery)->where('tahun', $currentYear - 1)->count();
+        $uniqueAuthors = (clone $baseQuery)->distinct('kepala_proyek')->count('kepala_proyek');
 
         return Inertia::render('dashboard', [
             'stats' => [

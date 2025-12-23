@@ -10,6 +10,7 @@ class Asset extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'kode',
         'judul_laporan',
         'abstrak',
@@ -97,5 +98,13 @@ class Asset extends Model
     public function getGrupKajianLabelAttribute()
     {
         return self::getGrupKajianOptions()[$this->grup_kajian] ?? $this->grup_kajian;
+    }
+
+    /**
+     * Get the user that owns the asset.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

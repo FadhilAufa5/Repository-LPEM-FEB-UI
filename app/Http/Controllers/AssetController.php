@@ -13,6 +13,12 @@ class AssetController extends Controller
     {
         $query = Asset::query();
 
+        // Filter by user role - only show user's own assets if not admin
+        $user = $request->user();
+        if (!$user->hasRole('admin')) {
+            $query->where('user_id', $user->id);
+        }
+
         // Search
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -72,7 +78,7 @@ class AssetController extends Controller
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 10),
-            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:51200',
         ]);
 
         // Handle file upload
@@ -83,6 +89,9 @@ class AssetController extends Controller
             $validated['file_laporan'] = $path;
         }
 
+        // Assign user_id to the asset
+        $validated['user_id'] = $request->user()->id;
+
         Asset::create($validated);
 
         return redirect()->back()->with('success', 'Asset berhasil ditambahkan!');
@@ -90,6 +99,12 @@ class AssetController extends Controller
 
     public function update(Request $request, Asset $asset)
     {
+        // Check if user owns this asset or is admin
+        $user = $request->user();
+        if (!$user->hasRole('admin') && $asset->user_id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah asset ini.');
+        }
+
         $validated = $request->validate([
             'kode' => 'required|string|max:255|unique:assets,kode,' . $asset->id,
             'judul_laporan' => 'required|string|max:500',
@@ -100,7 +115,7 @@ class AssetController extends Controller
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 10),
-            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:51200',
         ]);
 
         // Handle file upload
@@ -121,8 +136,14 @@ class AssetController extends Controller
         return redirect()->back()->with('success', 'Asset berhasil diperbarui!');
     }
 
-    public function destroy(Asset $asset)
+    public function destroy(Request $request, Asset $asset)
     {
+        // Check if user owns this asset or is admin
+        $user = $request->user();
+        if (!$user->hasRole('admin') && $asset->user_id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus asset ini.');
+        }
+
         // Delete file if exists
         if ($asset->file_laporan && Storage::disk('public')->exists($asset->file_laporan)) {
             Storage::disk('public')->delete($asset->file_laporan);

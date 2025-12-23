@@ -24,7 +24,11 @@ interface DeleteUserDialogProps {
     user?: User;
 }
 
-export function DeleteUserDialog({ open, onOpenChange, user }: DeleteUserDialogProps) {
+export function DeleteUserDialog({
+    open,
+    onOpenChange,
+    user,
+}: DeleteUserDialogProps) {
     const [processing, setProcessing] = useState(false);
 
     const handleDelete = () => {
@@ -59,26 +63,41 @@ export function DeleteUserDialog({ open, onOpenChange, user }: DeleteUserDialogP
                 <div className="rounded-lg border border-sidebar-border/70 p-4 dark:border-sidebar-border">
                     <div className="flex flex-col gap-2">
                         <div>
-                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Nama</p>
+                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                Nama
+                            </p>
                             <p className="font-medium">{user.name}</p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Email</p>
+                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                Email
+                            </p>
                             <p className="font-medium">{user.email}</p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Peran</p>
-                            <p className="font-medium capitalize">{user.role}</p>
+                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                Peran
+                            </p>
+                            <p className="font-medium capitalize">
+                                {user.role}
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950/30">
                     <p className="text-sm text-red-800 dark:text-red-300">
-                        <strong>Peringatan:</strong> Tindakan ini tidak dapat dibatalkan. User akan dihapus secara permanen dari sistem.
+                        <strong>Peringatan:</strong> Tindakan ini tidak dapat
+                        dibatalkan. User akan dihapus secara permanen dari
+                        sistem.
                     </p>
                 </div>
                 <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={processing}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                        disabled={processing}
+                    >
                         Batal
                     </Button>
                     <Button

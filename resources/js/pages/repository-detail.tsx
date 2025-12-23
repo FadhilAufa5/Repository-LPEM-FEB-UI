@@ -1,8 +1,17 @@
-import { dashboard, login, register } from '@/routes';
+import { Navbar } from '@/components/navbar';
+import { dashboard, login } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Users, FileText, Tag, Briefcase, FolderOpen, Download } from 'lucide-react';
-import { Navbar } from '@/components/navbar';
+import {
+    ArrowLeft,
+    Briefcase,
+    Calendar,
+    Download,
+    FileText,
+    FolderOpen,
+    Tag,
+    Users,
+} from 'lucide-react';
 
 interface Repository {
     id: number;
@@ -22,7 +31,9 @@ interface RepositoryDetailProps {
     repository: Repository;
 }
 
-export default function RepositoryDetail({ repository }: RepositoryDetailProps) {
+export default function RepositoryDetail({
+    repository,
+}: RepositoryDetailProps) {
     const { auth } = usePage<SharedData>().props;
     const currentYear = new Date().getFullYear();
 
@@ -31,7 +42,7 @@ export default function RepositoryDetail({ repository }: RepositoryDetailProps) 
             <Head title={repository.title} />
 
             <div className="min-h-screen bg-gray-50 dark:bg-neutral-900">
-                <Navbar 
+                <Navbar
                     isAuthenticated={!!auth.user}
                     loginUrl={login().url}
                     dashboardUrl={dashboard().url}
@@ -113,24 +124,27 @@ export default function RepositoryDetail({ repository }: RepositoryDetailProps) 
                             </div>
 
                             {/* Staff */}
-                            {repository.staff && repository.staff.length > 0 && (
-                                <div>
-                                    <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-neutral-300">
-                                        <Briefcase className="h-4 w-4 text-yellow-600" />
-                                        Research Staff
-                                    </h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {repository.staff.map((staff, index) => (
-                                            <span
-                                                key={index}
-                                                className="rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-700 dark:bg-neutral-800 dark:text-neutral-300"
-                                            >
-                                                {staff}
-                                            </span>
-                                        ))}
+                            {repository.staff &&
+                                repository.staff.length > 0 && (
+                                    <div>
+                                        <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-neutral-300">
+                                            <Briefcase className="h-4 w-4 text-yellow-600" />
+                                            Research Staff
+                                        </h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {repository.staff.map(
+                                                (staff, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-700 dark:bg-neutral-800 dark:text-neutral-300"
+                                                    >
+                                                        {staff}
+                                                    </span>
+                                                ),
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
                             {/* Download Button */}
                             {repository.file_url && (
@@ -154,7 +168,11 @@ export default function RepositoryDetail({ repository }: RepositoryDetailProps) 
                 <footer className="border-t border-gray-200 bg-white py-6 dark:border-neutral-800 dark:bg-neutral-900">
                     <div className="mx-auto max-w-7xl px-6 text-center">
                         <p className="text-sm text-gray-600 dark:text-neutral-400">
-                            &copy; {currentYear} <span className="font-bold text-yellow-600">LPEM FEB UI</span> - Scientific Repository
+                            &copy; {currentYear}{' '}
+                            <span className="font-bold text-yellow-600">
+                                LPEM FEB UI
+                            </span>{' '}
+                            - Scientific Repository
                         </p>
                         <p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
                             Preserving and sharing academic excellence

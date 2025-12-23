@@ -25,7 +25,11 @@ interface DeletePermissionDialogProps {
     permission?: Permission;
 }
 
-export function DeletePermissionDialog({ open, onOpenChange, permission }: DeletePermissionDialogProps) {
+export function DeletePermissionDialog({
+    open,
+    onOpenChange,
+    permission,
+}: DeletePermissionDialogProps) {
     const [processing, setProcessing] = useState(false);
 
     const handleDelete = () => {
@@ -60,21 +64,35 @@ export function DeletePermissionDialog({ open, onOpenChange, permission }: Delet
                 <div className="rounded-lg border border-sidebar-border/70 p-4 dark:border-sidebar-border">
                     <div className="flex flex-col gap-2">
                         <div>
-                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Nama Permission</p>
+                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                Nama Permission
+                            </p>
                             <p className="font-medium">{permission.name}</p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Slug</p>
-                            <p className="font-mono text-sm">{permission.slug}</p>
+                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                Slug
+                            </p>
+                            <p className="font-mono text-sm">
+                                {permission.slug}
+                            </p>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
-                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Module</p>
-                                <p className="capitalize">{permission.module}</p>
+                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                    Module
+                                </p>
+                                <p className="capitalize">
+                                    {permission.module}
+                                </p>
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Roles</p>
-                                <p className="font-medium">{permission.roles_count}</p>
+                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                    Roles
+                                </p>
+                                <p className="font-medium">
+                                    {permission.roles_count}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -82,17 +100,26 @@ export function DeletePermissionDialog({ open, onOpenChange, permission }: Delet
                 {permission.roles_count > 0 && (
                     <div className="rounded-lg bg-yellow-50 p-3 dark:bg-yellow-950/30">
                         <p className="text-sm text-yellow-800 dark:text-yellow-300">
-                            <strong>Perhatian:</strong> Permission ini masih digunakan oleh {permission.roles_count} role. Hapus permission akan menghapus assignment dari semua role.
+                            <strong>Perhatian:</strong> Permission ini masih
+                            digunakan oleh {permission.roles_count} role. Hapus
+                            permission akan menghapus assignment dari semua
+                            role.
                         </p>
                     </div>
                 )}
                 <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950/30">
                     <p className="text-sm text-red-800 dark:text-red-300">
-                        <strong>Peringatan:</strong> Tindakan ini tidak dapat dibatalkan. Permission akan dihapus secara permanen.
+                        <strong>Peringatan:</strong> Tindakan ini tidak dapat
+                        dibatalkan. Permission akan dihapus secara permanen.
                     </p>
                 </div>
                 <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={processing}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                        disabled={processing}
+                    >
                         Batal
                     </Button>
                     <Button

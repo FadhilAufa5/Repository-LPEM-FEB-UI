@@ -1,9 +1,20 @@
-import { dashboard, login, register } from '@/routes';
+import { Navbar } from '@/components/navbar';
+import { dashboard, login } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Search, Calendar, BookOpen, Users, Filter, FileText, Home, ChevronRight as ChevronRightIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+    BookOpen,
+    Calendar,
+    ChevronLeft,
+    ChevronRight,
+    ChevronRight as ChevronRightIcon,
+    FileText,
+    Filter,
+    Home,
+    Search,
+    Users,
+} from 'lucide-react';
 import { useState } from 'react';
-import { Navbar } from '@/components/navbar';
 
 interface RepositoryItem {
     id: number;
@@ -31,12 +42,16 @@ interface RepositoryPageProps {
     };
 }
 
-export default function Repository({ canRegister = true, repositories, filters }: RepositoryPageProps) {
+export default function Repository({
+    canRegister = true,
+    repositories,
+    filters,
+}: RepositoryPageProps) {
     const { auth } = usePage<SharedData>().props;
     const [showFilters, setShowFilters] = useState(false);
     const currentYear = new Date().getFullYear();
 
-    const hasActiveFilters = Object.values(filters).some(v => v);
+    const hasActiveFilters = Object.values(filters).some((v) => v);
 
     const clearFilters = () => {
         router.get('/repository', {}, { preserveState: true });
@@ -46,7 +61,7 @@ export default function Repository({ canRegister = true, repositories, filters }
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const params: Record<string, string> = {};
-        
+
         formData.forEach((value, key) => {
             if (value) params[key] = value.toString();
         });
@@ -59,7 +74,7 @@ export default function Repository({ canRegister = true, repositories, filters }
             <Head title="Repository" />
 
             <div className="min-h-screen bg-gray-50 dark:bg-neutral-900">
-                <Navbar 
+                <Navbar
                     isAuthenticated={!!auth.user}
                     loginUrl={login().url}
                     dashboardUrl={dashboard().url}
@@ -69,12 +84,17 @@ export default function Repository({ canRegister = true, repositories, filters }
                 <div className="border-b border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
                     <div className="mx-auto max-w-7xl px-6 py-3">
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-neutral-400">
-                            <Link href="/" className="flex items-center gap-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400">
+                            <Link
+                                href="/"
+                                className="flex items-center gap-2 text-yellow-600 hover:text-yellow-700 dark:text-yellow-400"
+                            >
                                 <Home className="h-4 w-4" />
                                 <span>Home</span>
                             </Link>
                             <ChevronRightIcon className="h-3 w-3" />
-                            <span className="font-medium text-gray-900 dark:text-white">Repository</span>
+                            <span className="font-medium text-gray-900 dark:text-white">
+                                Repository
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -87,13 +107,16 @@ export default function Repository({ canRegister = true, repositories, filters }
                             Repository Search Results
                         </h1>
                         <p className="mt-2 text-sm text-gray-600 dark:text-neutral-400">
-                            Found {repositories.total} documents in our collection
+                            Found {repositories.total} documents in our
+                            collection
                         </p>
                     </div>
 
                     <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
                         {/* Sidebar Filters */}
-                        <aside className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
+                        <aside
+                            className={`${showFilters ? 'block' : 'hidden'} lg:block`}
+                        >
                             <div className="sticky top-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                                 <div className="mb-4 flex items-center justify-between">
                                     <h2 className="flex items-center gap-2 text-base font-bold text-gray-900 dark:text-white">
@@ -110,9 +133,15 @@ export default function Repository({ canRegister = true, repositories, filters }
                                     )}
                                 </div>
 
-                                <form onSubmit={handleSearch} className="space-y-4">
+                                <form
+                                    onSubmit={handleSearch}
+                                    className="space-y-4"
+                                >
                                     <div className="space-y-2">
-                                        <label htmlFor="title" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                        <label
+                                            htmlFor="title"
+                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
+                                        >
                                             <BookOpen className="h-4 w-4 text-yellow-600" />
                                             Title
                                         </label>
@@ -122,12 +151,15 @@ export default function Repository({ canRegister = true, repositories, filters }
                                             type="text"
                                             defaultValue={filters.title}
                                             placeholder="Search by title..."
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="author" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                        <label
+                                            htmlFor="author"
+                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
+                                        >
                                             <Users className="h-4 w-4 text-yellow-600" />
                                             Author
                                         </label>
@@ -137,12 +169,15 @@ export default function Repository({ canRegister = true, repositories, filters }
                                             type="text"
                                             defaultValue={filters.author}
                                             placeholder="Search by author..."
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="abstract" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                        <label
+                                            htmlFor="abstract"
+                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
+                                        >
                                             <FileText className="h-4 w-4 text-yellow-600" />
                                             Keywords
                                         </label>
@@ -152,12 +187,15 @@ export default function Repository({ canRegister = true, repositories, filters }
                                             type="text"
                                             defaultValue={filters.abstract}
                                             placeholder="Search by keywords..."
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="year" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300">
+                                        <label
+                                            htmlFor="year"
+                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
+                                        >
                                             <Calendar className="h-4 w-4 text-yellow-600" />
                                             Year
                                         </label>
@@ -167,13 +205,13 @@ export default function Repository({ canRegister = true, repositories, filters }
                                             type="number"
                                             defaultValue={filters.year}
                                             placeholder="2024"
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                                         />
                                     </div>
 
                                     <button
                                         type="submit"
-                                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+                                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-yellow-700 focus:ring-2 focus:ring-yellow-500/50 focus:outline-none"
                                     >
                                         <Search className="h-4 w-4" />
                                         Apply Filters
@@ -247,11 +285,11 @@ export default function Repository({ canRegister = true, repositories, filters }
                                                 </div>
                                             </div>
 
-                                            <p className="text-sm leading-relaxed text-gray-700 line-clamp-3 dark:text-neutral-300">
+                                            <p className="line-clamp-3 text-sm leading-relaxed text-gray-700 dark:text-neutral-300">
                                                 {repo.abstract}
                                             </p>
 
-                                            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-800">
+                                            <div className="mt-4 border-t border-gray-200 pt-4 dark:border-neutral-800">
                                                 <span className="inline-flex items-center gap-2 text-sm font-semibold text-yellow-600 transition-colors group-hover:text-yellow-700">
                                                     <FileText className="h-4 w-4" />
                                                     View Details
@@ -269,7 +307,8 @@ export default function Repository({ canRegister = true, repositories, filters }
                                         No Results Found
                                     </h3>
                                     <p className="text-sm text-gray-600 dark:text-neutral-400">
-                                        Try adjusting your search filters to find what you're looking for
+                                        Try adjusting your search filters to
+                                        find what you're looking for
                                     </p>
                                     {hasActiveFilters && (
                                         <button
@@ -283,79 +322,159 @@ export default function Repository({ canRegister = true, repositories, filters }
                             )}
 
                             {/* Pagination */}
-                            {repositories.last_page > 1 && repositories.data.length > 0 && (
-                                <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 sm:flex-row sm:items-center sm:justify-between">
-                                    <div className="text-sm text-gray-600 dark:text-neutral-400">
-                                        Showing {(repositories.current_page - 1) * repositories.per_page + 1} to{' '}
-                                        {Math.min(repositories.current_page * repositories.per_page, repositories.total)} of{' '}
-                                        {repositories.total} documents
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => {
-                                                const params = { ...filters, page: (repositories.current_page - 1).toString() };
-                                                router.get('/repository', params, { preserveState: true, preserveScroll: true });
-                                            }}
-                                            disabled={repositories.current_page === 1}
-                                            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:disabled:hover:bg-neutral-800"
-                                        >
-                                            <ChevronLeft className="h-4 w-4" />
-                                            Previous
-                                        </button>
-                                        
-                                        <div className="flex items-center gap-1">
-                                            {Array.from({ length: repositories.last_page }, (_, i) => i + 1).map((page) => {
-                                                const showPage = 
-                                                    page === 1 ||
-                                                    page === repositories.last_page ||
-                                                    (page >= repositories.current_page - 1 && page <= repositories.current_page + 1);
-                                                
-                                                const showEllipsisBefore = page === repositories.current_page - 2 && repositories.current_page > 3;
-                                                const showEllipsisAfter = page === repositories.current_page + 2 && repositories.current_page < repositories.last_page - 2;
-
-                                                if (showEllipsisBefore || showEllipsisAfter) {
-                                                    return (
-                                                        <span key={page} className="px-2 text-gray-500 dark:text-neutral-500">
-                                                            ...
-                                                        </span>
-                                                    );
-                                                }
-
-                                                if (!showPage) return null;
-
-                                                return (
-                                                    <button
-                                                        key={page}
-                                                        onClick={() => {
-                                                            const params = { ...filters, page: page.toString() };
-                                                            router.get('/repository', params, { preserveState: true, preserveScroll: true });
-                                                        }}
-                                                        className={`hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm font-semibold transition-all ${
-                                                            page === repositories.current_page
-                                                                ? 'bg-yellow-600 text-white shadow-sm hover:bg-yellow-700'
-                                                                : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700'
-                                                        }`}
-                                                    >
-                                                        {page}
-                                                    </button>
-                                                );
-                                            })}
+                            {repositories.last_page > 1 &&
+                                repositories.data.length > 0 && (
+                                    <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
+                                        <div className="text-sm text-gray-600 dark:text-neutral-400">
+                                            Showing{' '}
+                                            {(repositories.current_page - 1) *
+                                                repositories.per_page +
+                                                1}{' '}
+                                            to{' '}
+                                            {Math.min(
+                                                repositories.current_page *
+                                                    repositories.per_page,
+                                                repositories.total,
+                                            )}{' '}
+                                            of {repositories.total} documents
                                         </div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => {
+                                                    const params = {
+                                                        ...filters,
+                                                        page: (
+                                                            repositories.current_page -
+                                                            1
+                                                        ).toString(),
+                                                    };
+                                                    router.get(
+                                                        '/repository',
+                                                        params,
+                                                        {
+                                                            preserveState: true,
+                                                            preserveScroll: true,
+                                                        },
+                                                    );
+                                                }}
+                                                disabled={
+                                                    repositories.current_page ===
+                                                    1
+                                                }
+                                                className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:disabled:hover:bg-neutral-800"
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                                Previous
+                                            </button>
 
-                                        <button
-                                            onClick={() => {
-                                                const params = { ...filters, page: (repositories.current_page + 1).toString() };
-                                                router.get('/repository', params, { preserveState: true, preserveScroll: true });
-                                            }}
-                                            disabled={repositories.current_page === repositories.last_page}
-                                            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:disabled:hover:bg-neutral-800"
-                                        >
-                                            Next
-                                            <ChevronRight className="h-4 w-4" />
-                                        </button>
+                                            <div className="flex items-center gap-1">
+                                                {Array.from(
+                                                    {
+                                                        length: repositories.last_page,
+                                                    },
+                                                    (_, i) => i + 1,
+                                                ).map((page) => {
+                                                    const showPage =
+                                                        page === 1 ||
+                                                        page ===
+                                                            repositories.last_page ||
+                                                        (page >=
+                                                            repositories.current_page -
+                                                                1 &&
+                                                            page <=
+                                                                repositories.current_page +
+                                                                    1);
+
+                                                    const showEllipsisBefore =
+                                                        page ===
+                                                            repositories.current_page -
+                                                                2 &&
+                                                        repositories.current_page >
+                                                            3;
+                                                    const showEllipsisAfter =
+                                                        page ===
+                                                            repositories.current_page +
+                                                                2 &&
+                                                        repositories.current_page <
+                                                            repositories.last_page -
+                                                                2;
+
+                                                    if (
+                                                        showEllipsisBefore ||
+                                                        showEllipsisAfter
+                                                    ) {
+                                                        return (
+                                                            <span
+                                                                key={page}
+                                                                className="px-2 text-gray-500 dark:text-neutral-500"
+                                                            >
+                                                                ...
+                                                            </span>
+                                                        );
+                                                    }
+
+                                                    if (!showPage) return null;
+
+                                                    return (
+                                                        <button
+                                                            key={page}
+                                                            onClick={() => {
+                                                                const params = {
+                                                                    ...filters,
+                                                                    page: page.toString(),
+                                                                };
+                                                                router.get(
+                                                                    '/repository',
+                                                                    params,
+                                                                    {
+                                                                        preserveState: true,
+                                                                        preserveScroll: true,
+                                                                    },
+                                                                );
+                                                            }}
+                                                            className={`hidden h-9 w-9 items-center justify-center rounded-lg text-sm font-semibold transition-all sm:inline-flex ${
+                                                                page ===
+                                                                repositories.current_page
+                                                                    ? 'bg-yellow-600 text-white shadow-sm hover:bg-yellow-700'
+                                                                    : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700'
+                                                            }`}
+                                                        >
+                                                            {page}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            <button
+                                                onClick={() => {
+                                                    const params = {
+                                                        ...filters,
+                                                        page: (
+                                                            repositories.current_page +
+                                                            1
+                                                        ).toString(),
+                                                    };
+                                                    router.get(
+                                                        '/repository',
+                                                        params,
+                                                        {
+                                                            preserveState: true,
+                                                            preserveScroll: true,
+                                                        },
+                                                    );
+                                                }}
+                                                disabled={
+                                                    repositories.current_page ===
+                                                    repositories.last_page
+                                                }
+                                                className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:disabled:hover:bg-neutral-800"
+                                            >
+                                                Next
+                                                <ChevronRight className="h-4 w-4" />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
                         </div>
                     </div>
                 </main>
@@ -364,7 +483,11 @@ export default function Repository({ canRegister = true, repositories, filters }
                 <footer className="border-t border-gray-200 bg-white py-6 dark:border-neutral-800 dark:bg-neutral-900">
                     <div className="mx-auto max-w-7xl px-6 text-center">
                         <p className="text-sm text-gray-600 dark:text-neutral-400">
-                            &copy; {currentYear} <span className="font-bold text-yellow-600">LPEM FEB UI</span> - Scientific Repository
+                            &copy; {currentYear}{' '}
+                            <span className="font-bold text-yellow-600">
+                                LPEM FEB UI
+                            </span>{' '}
+                            - Scientific Repository
                         </p>
                         <p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
                             Preserving and sharing academic excellence
