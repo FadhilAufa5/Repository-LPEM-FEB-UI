@@ -48,6 +48,11 @@ interface Asset {
     tahun: number;
     file_laporan?: string;
     created_at: string;
+    user?: {
+        id: number;
+        name: string;
+        email: string;
+    };
 }
 
 interface AssetsPageProps {
@@ -244,6 +249,7 @@ export default function Assets() {
                                 <TableHead>Kepala Proyek</TableHead>
                                 <TableHead>Grup Kajian</TableHead>
                                 <TableHead>Tahun</TableHead>
+                                <TableHead>Diupload Oleh</TableHead>
                                 <TableHead>File</TableHead>
                                 <TableHead className="text-right">
                                     Aksi
@@ -254,7 +260,7 @@ export default function Assets() {
                             {assets.data.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={9}
                                         className="h-24 text-center"
                                     >
                                         <div className="flex flex-col items-center gap-2 text-neutral-500">
@@ -310,6 +316,18 @@ export default function Assets() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>{asset.tahun}</TableCell>
+                                        <TableCell>
+                                            <div className="text-sm">
+                                                <p className="font-medium">
+                                                    {asset.user?.name || '-'}
+                                                </p>
+                                                {asset.user?.email && (
+                                                    <p className="text-xs text-neutral-500">
+                                                        {asset.user.email}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </TableCell>
                                         <TableCell>
                                             {asset.file_laporan ? (
                                                 <Button

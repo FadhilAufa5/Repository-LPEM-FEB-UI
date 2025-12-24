@@ -49,9 +49,9 @@ class AssetController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
 
-        // Pagination
+        // Pagination with user relationship
         $perPage = $request->input('per_page', 10);
-        $assets = $query->paginate($perPage);
+        $assets = $query->with('user:id,name,email')->paginate($perPage);
 
         return Inertia::render('assets', [
             'assets' => $assets,
