@@ -19,6 +19,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Asset Management Routes - accessible by all authenticated users
     Route::resource('assets', \App\Http\Controllers\AssetController::class);
 
+    // Client Management Routes - accessible by all authenticated users
+    Route::resource('clients', \App\Http\Controllers\ClientController::class);
+
     // Admin Only Routes
     Route::middleware(['role:admin'])->group(function () {
         // User Management Routes

@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Activity, Box, Key, LayoutGrid, Users } from 'lucide-react';
+import { Activity, Box, Key, LayoutGrid, UserCheck, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -30,6 +30,11 @@ const midNavItems: NavItem[] = [
         title: 'Assets',
         href: '/assets',
         icon: Box,
+    },
+    {
+        title: 'Clients',
+        href: '/clients',
+        icon: UserCheck,
     },
     // {
     //     title: 'Categories',
