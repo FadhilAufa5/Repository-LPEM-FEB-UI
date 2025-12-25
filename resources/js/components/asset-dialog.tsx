@@ -17,6 +17,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ClientCombobox } from '@/components/client-combobox';
 import { router, useForm } from '@inertiajs/react';
 import { Plus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -32,12 +33,19 @@ interface Asset {
     staf: string[] | string;
     tahun: number;
     file_laporan?: string;
+    client_id?: number;
+}
+
+interface ClientOption {
+    value: number;
+    label: string;
 }
 
 interface AssetDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     asset?: Asset;
+    clients: ClientOption[];
 }
 
 const jenisLaporanOptions = [
@@ -83,12 +91,13 @@ const grupKajianOptions = [
     },
 ];
 
-export function AssetDialog({ open, onOpenChange, asset }: AssetDialogProps) {
+export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogProps) {
     const isEditing = !!asset;
     const [stafList, setStafList] = useState<string[]>(['']);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { data, setData, errors, reset } = useForm({
+        client_id: null as number | null,
         kode: '',
         judul_laporan: '',
         abstrak: '',
@@ -121,6 +130,7 @@ export function AssetDialog({ open, onOpenChange, asset }: AssetDialogProps) {
             }
 
             setData({
+                client_id: asset.client_id || null,
                 kode: asset.kode,
                 judul_laporan: asset.judul_laporan,
                 abstrak: asset.abstrak,
@@ -167,6 +177,9 @@ export function AssetDialog({ open, onOpenChange, asset }: AssetDialogProps) {
         const filteredStaf = data.staf.filter((s) => s.trim() !== '');
 
         const formData = new FormData();
+        if (data.client_id) {
+            formData.append('client_id', data.client_id.toString());
+        }
         formData.append('kode', data.kode);
         formData.append('judul_laporan', data.judul_laporan);
         formData.append('abstrak', data.abstrak);
@@ -247,6 +260,24 @@ export function AssetDialog({ open, onOpenChange, asset }: AssetDialogProps) {
                             {errors.kode && (
                                 <p className="text-sm text-red-500">
                                     {errors.kode}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Kode Client */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="client_id">
+                                Kode Client
+                            </Label>
+                            <ClientCombobox
+                                clients={clients}
+                                value={data.client_id}
+                                onChange={(value) => setData('client_id', value)}
+                                error={errors.client_id}
+                            />
+                            {errors.client_id && (
+                                <p className="text-sm text-red-500">
+                                    {errors.client_id}
                                 </p>
                             )}
                         </div>

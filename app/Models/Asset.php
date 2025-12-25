@@ -11,6 +11,7 @@ class Asset extends Model
 
     protected $fillable = [
         'user_id',
+        'client_id',
         'kode',
         'judul_laporan',
         'abstrak',
@@ -106,5 +107,13 @@ class Asset extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the client associated with the asset.
+     */
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
     }
 }

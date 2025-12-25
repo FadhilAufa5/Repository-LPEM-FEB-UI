@@ -48,11 +48,22 @@ interface Asset {
     tahun: number;
     file_laporan?: string;
     created_at: string;
+    client_id?: number;
+    client?: {
+        id: number;
+        kode_klien: string;
+        nama_klien: string;
+    };
     user?: {
         id: number;
         name: string;
         email: string;
     };
+}
+
+interface ClientOption {
+    value: number;
+    label: string;
 }
 
 interface AssetsPageProps {
@@ -63,6 +74,7 @@ interface AssetsPageProps {
         per_page: number;
         total: number;
     };
+    clients: ClientOption[];
     filters: {
         search?: string;
         jenis_laporan?: string;
@@ -94,7 +106,7 @@ const grupKajianOptions = {
 };
 
 export default function Assets() {
-    const { assets, filters } = usePage<AssetsPageProps>().props;
+    const { assets, clients, filters } = usePage<AssetsPageProps>().props;
     const [search, setSearch] = useState(filters.search || '');
     const [jenisLaporanFilter, setJenisLaporanFilter] = useState(
         filters.jenis_laporan || 'all',
@@ -246,7 +258,7 @@ export default function Assets() {
                                 <TableHead>Kode</TableHead>
                                 <TableHead>Judul Laporan</TableHead>
                                 <TableHead>Jenis</TableHead>
-                                <TableHead>Kepala Proyek</TableHead>
+                                <TableHead>Kode Client</TableHead>
                                 <TableHead>Grup Kajian</TableHead>
                                 <TableHead>Tahun</TableHead>
                                 <TableHead>Diupload Oleh</TableHead>
@@ -304,7 +316,20 @@ export default function Assets() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            {asset.kepala_proyek}
+                                            {asset.client ? (
+                                                <div className="text-sm">
+                                                    <p className="font-medium">
+                                                        {asset.client.kode_klien}
+                                                    </p>
+                                                    <p className="text-xs text-neutral-500 truncate max-w-[150px]">
+                                                        {asset.client.nama_klien}
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-neutral-400">
+                                                    -
+                                                </span>
+                                            )}
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="secondary">
@@ -402,6 +427,7 @@ export default function Assets() {
                 open={assetDialogOpen}
                 onOpenChange={setAssetDialogOpen}
                 asset={selectedAsset}
+                clients={clients}
             />
             <DeleteAssetDialog
                 open={deleteDialogOpen}

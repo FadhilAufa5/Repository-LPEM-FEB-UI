@@ -17,7 +17,7 @@ class AssetService
         $this->applyTypeFilters($query, $filters);
         $this->applySorting($query, $filters['sort_by'] ?? 'created_at', $filters['sort_order'] ?? 'desc');
 
-        return $query->with('user:id,name,email')->paginate($perPage);
+        return $query->with(['user:id,name,email', 'client:id,kode_klien,nama_klien'])->paginate($perPage);
     }
 
     public function createAsset(array $data, $userId)

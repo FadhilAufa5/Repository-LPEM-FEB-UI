@@ -15,7 +15,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Activity, BookOpen, Box, FileText, Folder, Key, LayoutGrid, UserCheck, Users, Home } from 'lucide-react';
+import { Activity, BookOpen, Box, FileText, Folder, Key, LayoutGrid, UserCheck, Users, Home, ArrowLeftSquareIcon} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -70,14 +70,14 @@ const usersNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
+        title: 'Back To Home',
+        href: '/',
+        icon: ArrowLeftSquareIcon,
+    },
+    {
         title: 'Repository',
        href: '/repository',
         icon: Folder,
-    },
-    {
-        title: 'Homepage',
-        href: '/',
-        icon: Home,
     },
 ];
 

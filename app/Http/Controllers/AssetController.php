@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\Client;
 use App\Services\AssetService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,9 +30,18 @@ class AssetController extends Controller
 
         $perPage = $request->input('per_page', 10);
         $assets = $this->assetService->getFilteredAssets($filters, $request->user(), $perPage);
+        
+        $clients = Client::select('id', 'kode_klien', 'nama_klien')
+            ->orderBy('nama_klien')
+            ->get()
+            ->map(fn($client) => [
+                'value' => $client->id,
+                'label' => "{$client->kode_klien} - {$client->nama_klien}",
+            ]);
 
         return Inertia::render('assets', [
             'assets' => $assets,
+            'clients' => $clients,
             'filters' => $filters,
         ]);
     }
@@ -39,6 +49,7 @@ class AssetController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
             'kode' => 'required|string|max:255|unique:assets,kode',
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
@@ -63,6 +74,7 @@ class AssetController extends Controller
         }
 
         $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
             'kode' => 'required|string|max:255|unique:assets,kode,' . $asset->id,
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
