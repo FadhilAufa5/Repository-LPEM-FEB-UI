@@ -146,7 +146,8 @@ export default function Users() {
                             User Management
                         </h1>
                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                            Kelola pengguna dan hak akses mereka
+                            Kelola pengguna dan hak akses mereka. User terdaftar
+                            dapat login dengan OTP email atau password.
                         </p>
                     </div>
                     <Button onClick={handleAddNew} className="w-full sm:w-auto">
