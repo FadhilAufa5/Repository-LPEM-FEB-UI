@@ -25,7 +25,11 @@ interface DeleteRoleDialogProps {
     role?: Role;
 }
 
-export function DeleteRoleDialog({ open, onOpenChange, role }: DeleteRoleDialogProps) {
+export function DeleteRoleDialog({
+    open,
+    onOpenChange,
+    role,
+}: DeleteRoleDialogProps) {
     const [processing, setProcessing] = useState(false);
 
     const handleDelete = () => {
@@ -60,21 +64,33 @@ export function DeleteRoleDialog({ open, onOpenChange, role }: DeleteRoleDialogP
                 <div className="rounded-lg border border-sidebar-border/70 p-4 dark:border-sidebar-border">
                     <div className="flex flex-col gap-2">
                         <div>
-                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Nama Role</p>
+                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                Nama Role
+                            </p>
                             <p className="font-medium">{role.name}</p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Slug</p>
+                            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                Slug
+                            </p>
                             <p className="font-mono text-sm">{role.slug}</p>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
-                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Permissions</p>
-                                <p className="font-medium">{role.permissions_count}</p>
+                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                    Permissions
+                                </p>
+                                <p className="font-medium">
+                                    {role.permissions_count}
+                                </p>
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Users</p>
-                                <p className="font-medium">{role.users_count}</p>
+                                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                                    Users
+                                </p>
+                                <p className="font-medium">
+                                    {role.users_count}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -82,17 +98,25 @@ export function DeleteRoleDialog({ open, onOpenChange, role }: DeleteRoleDialogP
                 {role.users_count > 0 && (
                     <div className="rounded-lg bg-yellow-50 p-3 dark:bg-yellow-950/30">
                         <p className="text-sm text-yellow-800 dark:text-yellow-300">
-                            <strong>Perhatian:</strong> Role ini masih digunakan oleh {role.users_count} user. Hapus role akan menghapus assignment dari semua user.
+                            <strong>Perhatian:</strong> Role ini masih digunakan
+                            oleh {role.users_count} user. Hapus role akan
+                            menghapus assignment dari semua user.
                         </p>
                     </div>
                 )}
                 <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950/30">
                     <p className="text-sm text-red-800 dark:text-red-300">
-                        <strong>Peringatan:</strong> Tindakan ini tidak dapat dibatalkan. Role akan dihapus secara permanen.
+                        <strong>Peringatan:</strong> Tindakan ini tidak dapat
+                        dibatalkan. Role akan dihapus secara permanen.
                     </p>
                 </div>
                 <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={processing}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                        disabled={processing}
+                    >
                         Batal
                     </Button>
                     <Button

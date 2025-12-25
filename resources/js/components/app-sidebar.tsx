@@ -1,8 +1,8 @@
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
-import { NavUser } from '@/components/nav-user';
 import { NavMid } from '@/components/nav-mid';
+import { NavUser } from '@/components/nav-user';
 import { NavUsers } from '@/components/nav-users';
+import { NavFooter } from '@/components/nav-footer';
 import {
     Sidebar,
     SidebarContent,
@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Box, Users, Key, Activity } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { Activity, BookOpen, Box, FileText, Folder, Key, LayoutGrid, UserCheck, Users, Home, ArrowLeftSquareIcon} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -27,10 +27,16 @@ const mainNavItems: NavItem[] = [
 ];
 
 const midNavItems: NavItem[] = [
+   
     {
         title: 'Assets',
         href: '/assets',
         icon: Box,
+    },
+    {
+        title: 'Clients',
+        href: '/clients',
+        icon: UserCheck,
     },
     // {
     //     title: 'Categories',
@@ -62,21 +68,23 @@ const usersNavItems: NavItem[] = [
     },
 ];
 
-
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
+        title: 'Back To Home',
+        href: '/',
+        icon: ArrowLeftSquareIcon,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Repository',
+       href: '/repository',
+        icon: Folder,
     },
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props as any;
+    const isAdmin = auth.roles?.includes('admin');
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -94,10 +102,8 @@ export function AppSidebar() {
             <SidebarContent>
                 <NavMain items={mainNavItems} />
                 <NavMid items={midNavItems} />
-                <NavUsers items={usersNavItems} />
+                {isAdmin && <NavUsers items={usersNavItems} />}
             </SidebarContent>
-
-          
 
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />

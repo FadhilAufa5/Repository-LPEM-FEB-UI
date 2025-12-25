@@ -1,15 +1,22 @@
+import { DeleteRoleDialog } from '@/components/delete-role-dialog';
+import { RoleDialog } from '@/components/role-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Edit2, Plus, Search, Trash2, Shield } from 'lucide-react';
+import { Edit2, Plus, Search, Shield, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { DeleteRoleDialog } from '@/components/delete-role-dialog';
-import { RoleDialog } from '@/components/role-dialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -63,7 +70,11 @@ export default function Roles() {
 
     const handleSearch = (value: string) => {
         setSearch(value);
-        router.get('/roles', { search: value }, { preserveState: true, preserveScroll: true });
+        router.get(
+            '/roles',
+            { search: value },
+            { preserveState: true, preserveScroll: true },
+        );
     };
 
     const handleEdit = (role: Role) => {
@@ -88,7 +99,9 @@ export default function Roles() {
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Role Management</h1>
+                        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+                            Role Management
+                        </h1>
                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
                             Kelola roles dan permissions sistem
                         </p>
@@ -102,7 +115,7 @@ export default function Roles() {
                 {/* Search */}
                 <div className="flex flex-col gap-4 sm:flex-row">
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500" />
+                        <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
                         <Input
                             placeholder="Cari role berdasarkan nama, slug, atau deskripsi..."
                             value={search}
@@ -118,17 +131,30 @@ export default function Roles() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Nama Role</TableHead>
-                                <TableHead className="hidden md:table-cell">Slug</TableHead>
-                                <TableHead className="hidden lg:table-cell">Deskripsi</TableHead>
-                                <TableHead className="text-center">Permissions</TableHead>
-                                <TableHead className="text-center">Users</TableHead>
-                                <TableHead className="text-right">Aksi</TableHead>
+                                <TableHead className="hidden md:table-cell">
+                                    Slug
+                                </TableHead>
+                                <TableHead className="hidden lg:table-cell">
+                                    Deskripsi
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Permissions
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Users
+                                </TableHead>
+                                <TableHead className="text-right">
+                                    Aksi
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {roles.data.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={6} className="h-24 text-center">
+                                    <TableCell
+                                        colSpan={6}
+                                        className="h-24 text-center"
+                                    >
                                         Tidak ada data role.
                                     </TableCell>
                                 </TableRow>
@@ -153,17 +179,23 @@ export default function Roles() {
                                             {role.description || '-'}
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            <Badge variant="secondary">{role.permissions_count}</Badge>
+                                            <Badge variant="secondary">
+                                                {role.permissions_count}
+                                            </Badge>
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            <Badge variant="secondary">{role.users_count}</Badge>
+                                            <Badge variant="secondary">
+                                                {role.users_count}
+                                            </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex justify-end gap-2">
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => handleEdit(role)}
+                                                    onClick={() =>
+                                                        handleEdit(role)
+                                                    }
                                                     className="size-8 p-0"
                                                 >
                                                     <Edit2 className="size-4" />
@@ -171,7 +203,9 @@ export default function Roles() {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => handleDelete(role)}
+                                                    onClick={() =>
+                                                        handleDelete(role)
+                                                    }
                                                     className="size-8 p-0 text-red-600 hover:bg-red-100 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950"
                                                 >
                                                     <Trash2 className="size-4" />
@@ -189,8 +223,14 @@ export default function Roles() {
                 {roles.last_page > 1 && (
                     <div className="flex items-center justify-between border-t border-sidebar-border/70 pt-4 dark:border-sidebar-border">
                         <div className="text-sm text-neutral-500">
-                            Menampilkan {(roles.current_page - 1) * roles.per_page + 1} hingga{' '}
-                            {Math.min(roles.current_page * roles.per_page, roles.total)} dari {roles.total} role
+                            Menampilkan{' '}
+                            {(roles.current_page - 1) * roles.per_page + 1}{' '}
+                            hingga{' '}
+                            {Math.min(
+                                roles.current_page * roles.per_page,
+                                roles.total,
+                            )}{' '}
+                            dari {roles.total} role
                         </div>
                         <div className="flex gap-2">
                             <Button
@@ -200,7 +240,10 @@ export default function Roles() {
                                     router.get(
                                         `/roles?page=${roles.current_page - 1}`,
                                         { search },
-                                        { preserveState: true, preserveScroll: true }
+                                        {
+                                            preserveState: true,
+                                            preserveScroll: true,
+                                        },
                                     )
                                 }
                                 disabled={roles.current_page === 1}
@@ -214,10 +257,15 @@ export default function Roles() {
                                     router.get(
                                         `/roles?page=${roles.current_page + 1}`,
                                         { search },
-                                        { preserveState: true, preserveScroll: true }
+                                        {
+                                            preserveState: true,
+                                            preserveScroll: true,
+                                        },
                                     )
                                 }
-                                disabled={roles.current_page === roles.last_page}
+                                disabled={
+                                    roles.current_page === roles.last_page
+                                }
                             >
                                 Selanjutnya
                             </Button>
@@ -232,7 +280,11 @@ export default function Roles() {
                 role={selectedRole}
                 allPermissions={allPermissions}
             />
-            <DeleteRoleDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} role={selectedRole} />
+            <DeleteRoleDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                role={selectedRole}
+            />
         </AppLayout>
     );
 }
