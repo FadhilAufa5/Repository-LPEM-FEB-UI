@@ -58,7 +58,7 @@ class Asset extends Model
     const GRUP_DTBS = 'dtbs';
     const GRUP_MFPE = 'mfpe';
     const GRUP_SPL = 'spl';
-    const GRUP_SECE = 'sece';
+    const GRUP_SECE = 'sece';s
     const GRUP_DEVPFIN = 'devpfin';
     const GRUP_MPOWER = 'mpower';
     const GRUP_TRUST = 'trust';
