@@ -34,6 +34,8 @@ class RepositoryService
             'year' => $asset->tahun,
             'abstract' => $asset->abstrak,
             'file_url' => $asset->file_laporan ? asset('storage/' . $asset->file_laporan) : null,
+            'jenis_laporan' => $asset->jenis_laporan_label,
+            'grup_kajian' => $asset->grup_kajian_label,
         ];
     }
 

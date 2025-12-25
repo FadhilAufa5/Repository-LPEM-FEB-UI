@@ -23,6 +23,8 @@ interface RepositoryItem {
     year: number;
     abstract: string;
     file_url?: string;
+    jenis_laporan: string;
+    grup_kajian: string;
 }
 
 interface RepositoryPageProps {
@@ -264,38 +266,39 @@ export default function Repository({
                             {repositories.data.length > 0 ? (
                                 <div className="space-y-4">
                                     {repositories.data.map((repo) => (
-                                        <Link
+                                        <div
                                             key={repo.id}
-                                            href={`/repository/${repo.id}`}
-                                            className="group block rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-yellow-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-yellow-700"
+                                            className="group rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-yellow-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-yellow-700"
                                         >
-                                            <div className="mb-3">
-                                                <h3 className="text-lg font-bold text-gray-900 transition-colors group-hover:text-yellow-600 dark:text-white dark:group-hover:text-yellow-400">
-                                                    {repo.title}
-                                                </h3>
-                                                <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-neutral-400">
-                                                    <span className="flex items-center gap-1.5">
-                                                        <Users className="h-4 w-4 text-yellow-600" />
+                                            <div className="mb-4">
+                                                <p className="text-base leading-relaxed text-gray-900 dark:text-white">
+                                                    <span className="font-medium">
                                                         {repo.author}
+                                                    </span>{' '}
+                                                    ({repo.year}){' '}
+                                                    <span className="font-semibold">
+                                                        {repo.title}
                                                     </span>
-                                                    <span className="flex items-center gap-1.5">
-                                                        <Calendar className="h-4 w-4 text-yellow-600" />
-                                                        {repo.year}
-                                                    </span>
-                                                </div>
+                                                    . {repo.jenis_laporan}, {repo.grup_kajian}.
+                                                </p>
                                             </div>
 
-                                            <p className="line-clamp-3 text-sm leading-relaxed text-gray-700 dark:text-neutral-300">
-                                                {repo.abstract}
+                                            <p className="mb-4 text-sm leading-relaxed text-gray-700 dark:text-neutral-300">
+                                                {repo.abstract.length > 250
+                                                    ? `${repo.abstract.substring(0, 250)}...`
+                                                    : repo.abstract}
                                             </p>
 
-                                            <div className="mt-4 border-t border-gray-200 pt-4 dark:border-neutral-800">
-                                                <span className="inline-flex items-center gap-2 text-sm font-semibold text-yellow-600 transition-colors group-hover:text-yellow-700">
+                                            <div className="border-t border-gray-200 pt-4 dark:border-neutral-800">
+                                                <Link
+                                                    href={`/repository/${repo.id}`}
+                                                    className="inline-flex items-center gap-2 text-sm font-semibold text-yellow-600 transition-colors hover:text-yellow-700"
+                                                >
                                                     <FileText className="h-4 w-4" />
                                                     View Details
-                                                </span>
+                                                </Link>
                                             </div>
-                                        </Link>
+                                        </div>
                                     ))}
                                 </div>
                             ) : (
