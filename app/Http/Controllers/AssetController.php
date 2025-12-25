@@ -3,66 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Services\AssetService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 
 class AssetController extends Controller
 {
+    protected $assetService;
+
+    public function __construct(AssetService $assetService)
+    {
+        $this->assetService = $assetService;
+    }
+
     public function index(Request $request)
     {
-        $query = Asset::query();
+        $filters = [
+            'search' => $request->input('search'),
+            'jenis_laporan' => $request->input('jenis_laporan'),
+            'tahun' => $request->input('tahun'),
+            'grup_kajian' => $request->input('grup_kajian'),
+            'sort_by' => $request->input('sort_by', 'created_at'),
+            'sort_order' => $request->input('sort_order', 'desc'),
+        ];
 
-        // Filter by user role - only show user's own assets if not admin
-        $user = $request->user();
-        if (!$user->hasRole('admin')) {
-            $query->where('user_id', $user->id);
-        }
-
-        // Search
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('kode', 'like', "%{$search}%")
-                    ->orWhere('judul_laporan', 'like', "%{$search}%")
-                    ->orWhere('abstrak', 'like', "%{$search}%")
-                    ->orWhere('kepala_proyek', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by jenis laporan
-        if ($jenisLaporan = $request->input('jenis_laporan')) {
-            $query->where('jenis_laporan', $jenisLaporan);
-        }
-
-        // Filter by tahun
-        if ($tahun = $request->input('tahun')) {
-            $query->where('tahun', $tahun);
-        }
-
-        // Filter by grup kajian
-        if ($grupKajian = $request->input('grup_kajian')) {
-            $query->where('grup_kajian', $grupKajian);
-        }
-
-        // Sorting
-        $sortBy = $request->input('sort_by', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
-
-        // Pagination with user relationship
         $perPage = $request->input('per_page', 10);
-        $assets = $query->with('user:id,name,email')->paginate($perPage);
+        $assets = $this->assetService->getFilteredAssets($filters, $request->user(), $perPage);
 
         return Inertia::render('assets', [
             'assets' => $assets,
-            'filters' => [
-                'search' => $search,
-                'jenis_laporan' => $jenisLaporan,
-                'tahun' => $tahun,
-                'grup_kajian' => $grupKajian,
-                'sort_by' => $sortBy,
-                'sort_order' => $sortOrder,
-            ],
+            'filters' => $filters,
         ]);
     }
 
@@ -81,27 +51,14 @@ class AssetController extends Controller
             'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:51200',
         ]);
 
-        // Handle file upload
-        if ($request->hasFile('file_laporan')) {
-            $file = $request->file('file_laporan');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('assets', $filename, 'public');
-            $validated['file_laporan'] = $path;
-        }
-
-        // Assign user_id to the asset
-        $validated['user_id'] = $request->user()->id;
-
-        Asset::create($validated);
+        $this->assetService->createAsset($validated, $request->user()->id);
 
         return redirect()->back()->with('success', 'Asset berhasil ditambahkan!');
     }
 
     public function update(Request $request, Asset $asset)
     {
-        // Check if user owns this asset or is admin
-        $user = $request->user();
-        if (!$user->hasRole('admin') && $asset->user_id !== $user->id) {
+        if (!$this->assetService->checkAssetOwnership($asset, $request->user())) {
             abort(403, 'Anda tidak memiliki akses untuk mengubah asset ini.');
         }
 
@@ -118,38 +75,18 @@ class AssetController extends Controller
             'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:51200',
         ]);
 
-        // Handle file upload
-        if ($request->hasFile('file_laporan')) {
-            // Delete old file if exists
-            if ($asset->file_laporan && Storage::disk('public')->exists($asset->file_laporan)) {
-                Storage::disk('public')->delete($asset->file_laporan);
-            }
-
-            $file = $request->file('file_laporan');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('assets', $filename, 'public');
-            $validated['file_laporan'] = $path;
-        }
-
-        $asset->update($validated);
+        $this->assetService->updateAsset($asset, $validated);
 
         return redirect()->back()->with('success', 'Asset berhasil diperbarui!');
     }
 
     public function destroy(Request $request, Asset $asset)
     {
-        // Check if user owns this asset or is admin
-        $user = $request->user();
-        if (!$user->hasRole('admin') && $asset->user_id !== $user->id) {
+        if (!$this->assetService->checkAssetOwnership($asset, $request->user())) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus asset ini.');
         }
 
-        // Delete file if exists
-        if ($asset->file_laporan && Storage::disk('public')->exists($asset->file_laporan)) {
-            Storage::disk('public')->delete($asset->file_laporan);
-        }
-
-        $asset->delete();
+        $this->assetService->deleteAsset($asset);
 
         return redirect()->back()->with('success', 'Asset berhasil dihapus!');
     }

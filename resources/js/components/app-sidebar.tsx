@@ -2,6 +2,7 @@ import { NavMain } from '@/components/nav-main';
 import { NavMid } from '@/components/nav-mid';
 import { NavUser } from '@/components/nav-user';
 import { NavUsers } from '@/components/nav-users';
+import { NavFooter } from '@/components/nav-footer';
 import {
     Sidebar,
     SidebarContent,
@@ -14,7 +15,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Activity, Box, Key, LayoutGrid, UserCheck, Users } from 'lucide-react';
+import { Activity, BookOpen, Box, FileText, Folder, Key, LayoutGrid, UserCheck, Users, Home } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -26,6 +27,7 @@ const mainNavItems: NavItem[] = [
 ];
 
 const midNavItems: NavItem[] = [
+   
     {
         title: 'Assets',
         href: '/assets',
@@ -66,18 +68,18 @@ const usersNavItems: NavItem[] = [
     },
 ];
 
-// const footerNavItems: NavItem[] = [
-//     {
-//         title: 'Repository',
-//         href: 'https://github.com/laravel/react-starter-kit',
-//         icon: Folder,
-//     },
-//     {
-//         title: 'Documentation',
-//         href: 'https://laravel.com/docs/starter-kits#react',
-//         icon: BookOpen,
-//     },
-// ];
+const footerNavItems: NavItem[] = [
+    {
+        title: 'Repository',
+       href: '/repository',
+        icon: Folder,
+    },
+    {
+        title: 'Homepage',
+        href: '/',
+        icon: Home,
+    },
+];
 
 export function AppSidebar() {
     const { auth } = usePage().props as any;
@@ -104,7 +106,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
+                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
