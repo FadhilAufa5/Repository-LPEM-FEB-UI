@@ -47,6 +47,7 @@ interface RepositoryPageProps {
         year?: string;
         grup_kajian?: string;
     };
+    grupKajianCounts?: Record<string, number>;
 }
 
 const grupKajianOptions = [
@@ -66,6 +67,7 @@ export default function Repository({
     canRegister = true,
     repositories,
     filters,
+    grupKajianCounts = {},
 }: RepositoryPageProps) {
     const { auth } = usePage<SharedData>().props;
     const [showFilters, setShowFilters] = useState(false);
@@ -86,6 +88,11 @@ export default function Repository({
 
     const hasActiveFilters = Object.values(filters).some((v) => v);
     const activeFilterCount = Object.values(filters).filter((v) => v).length;
+
+    // Function to get count for a specific research group
+    const getGroupCount = (groupValue: string) => {
+        return grupKajianCounts[groupValue] || 0;
+    };
 
     const clearFilters = () => {
         setSelectedGrupKajian('');
@@ -252,44 +259,57 @@ export default function Repository({
                                                     }
                                                     className="h-4 w-4 text-yellow-600 focus:ring-2 focus:ring-yellow-500 border-gray-300 dark:border-neutral-600"
                                                 />
-                                                <span className="font-medium text-gray-700 dark:text-neutral-200">
+                                                <span className="flex-1 font-medium text-gray-700 dark:text-neutral-200">
                                                     All Groups
                                                 </span>
-                                                <span className="ml-auto text-xs text-gray-500 dark:text-neutral-400">
-                                                    {repositories.total}{' '}
-                                                    total
+                                                <span 
+                                                    className="inline-flex items-center justify-center rounded-full bg-gray-200 px-2 py-0.5 text-xs font-semibold text-gray-700 transition-all duration-200 dark:bg-neutral-700 dark:text-neutral-300"
+                                                    title={`${repositories.total} total repositor${repositories.total > 1 ? 'ies' : 'y'}`}
+                                                >
+                                                    {repositories.total}
                                                 </span>
                                             </label>
                                             <div className="grid grid-cols-1 gap-1.5 max-h-64 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-neutral-600 dark:scrollbar-track-neutral-800">
                                                 {grupKajianOptions.map(
-                                                    (option) => (
-                                                        <label
-                                                            key={option.value}
-                                                            className="flex items-center gap-2.5 cursor-pointer rounded-md border border-gray-200 bg-white px-3 py-2 text-sm transition-all hover:border-yellow-400 hover:bg-yellow-50 has-[:checked]:border-yellow-500 has-[:checked]:bg-yellow-50 has-[:checked]:ring-2 has-[:checked]:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20 dark:has-[:checked]:border-yellow-500 dark:has-[:checked]:bg-yellow-900/30"
-                                                        >
-                                                            <input
-                                                                type="radio"
-                                                                name="grup_kajian"
-                                                                value={
-                                                                    option.value
-                                                                }
-                                                                checked={
-                                                                    selectedGrupKajian ===
-                                                                    option.value
-                                                                }
-                                                                onChange={(e) =>
-                                                                    handleGrupKajianChange(
-                                                                        e.target
-                                                                            .value,
-                                                                    )
-                                                                }
-                                                                className="h-4 w-4 text-yellow-600 focus:ring-2 focus:ring-yellow-500 border-gray-300 dark:border-neutral-600"
-                                                            />
-                                                            <span className="font-medium text-gray-700 dark:text-neutral-200">
-                                                                {option.label}
-                                                            </span>
-                                                        </label>
-                                                    ),
+                                                    (option) => {
+                                                        const count = getGroupCount(option.value);
+                                                        return (
+                                                            <label
+                                                                key={option.value}
+                                                                className="flex items-center gap-2.5 cursor-pointer rounded-md border border-gray-200 bg-white px-3 py-2 text-sm transition-all hover:border-yellow-400 hover:bg-yellow-50 has-[:checked]:border-yellow-500 has-[:checked]:bg-yellow-50 has-[:checked]:ring-2 has-[:checked]:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20 dark:has-[:checked]:border-yellow-500 dark:has-[:checked]:bg-yellow-900/30"
+                                                            >
+                                                                <input
+                                                                    type="radio"
+                                                                    name="grup_kajian"
+                                                                    value={
+                                                                        option.value
+                                                                    }
+                                                                    checked={
+                                                                        selectedGrupKajian ===
+                                                                        option.value
+                                                                    }
+                                                                    onChange={(e) =>
+                                                                        handleGrupKajianChange(
+                                                                            e.target
+                                                                                .value,
+                                                                        )
+                                                                    }
+                                                                    className="h-4 w-4 text-yellow-600 focus:ring-2 focus:ring-yellow-500 border-gray-300 dark:border-neutral-600"
+                                                                />
+                                                                <span className="flex-1 font-medium text-gray-700 dark:text-neutral-200">
+                                                                    {option.label}
+                                                                </span>
+                                                                {count > 0 && (
+                                                                    <span 
+                                                                        className="inline-flex items-center justify-center rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-800 transition-all duration-200 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                                                        title={`${count} repositor${count > 1 ? 'ies' : 'y'} available`}
+                                                                    >
+                                                                        {count}
+                                                                    </span>
+                                                                )}
+                                                            </label>
+                                                        );
+                                                    }
                                                 )}
                                             </div>
                                         </div>

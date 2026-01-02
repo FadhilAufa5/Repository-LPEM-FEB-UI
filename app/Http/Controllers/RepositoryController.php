@@ -30,9 +30,13 @@ class RepositoryController extends Controller
 
         $repositories = $assets->through(fn($asset) => $this->repositoryService->transformForList($asset));
 
+        // Get counts for each research group
+        $grupKajianCounts = $this->repositoryService->getGrupKajianCounts();
+
         return Inertia::render('repository', [
             'repositories' => $repositories,
             'filters' => $filters,
+            'grupKajianCounts' => $grupKajianCounts,
         ]);
     }
 

@@ -19,6 +19,7 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/repository', [\App\Http\Controllers\RepositoryController::class, 'index'])->name('repository');
 Route::get('/repository/{id}', [\App\Http\Controllers\RepositoryController::class, 'show'])->name('repository.show');
+Route::get('/report-search', [\App\Http\Controllers\ReportSearchController::class, 'index'])->name('report-search');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');

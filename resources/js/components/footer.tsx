@@ -43,7 +43,7 @@ export function Footer() {
                             <li className="flex items-start gap-3">
                                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-400" />
                                 <span className="text-gray-400">
-                                    Gedung FEB UI, Kampus UI Depok, Jawa Barat 16424
+                                    Jl. Salemba Raya No. 4. Gedung Ali Wardhana, RT.4/RW.5, Kenari, Kec. Senen, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10430
                                 </span>
                             </li>
                             <li className="flex items-center gap-3">
@@ -52,7 +52,7 @@ export function Footer() {
                                     href="tel:+622177200001"
                                     className="text-gray-400 transition-colors hover:text-yellow-400"
                                 >
-                                    (021) 7270001
+                                    (021) 3143177
                                 </a>
                             </li>
                             <li className="flex items-center gap-3">

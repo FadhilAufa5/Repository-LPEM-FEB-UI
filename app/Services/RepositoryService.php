@@ -124,4 +124,26 @@ class RepositoryService
     {
         $query->orderBy('tahun', 'desc')->orderBy('created_at', 'desc');
     }
+
+    public function getGrupKajianCounts(): array
+    {
+        $counts = Asset::query()
+            ->selectRaw('grup_kajian, COUNT(*) as count')
+            ->groupBy('grup_kajian')
+            ->pluck('count', 'grup_kajian')
+            ->toArray();
+
+        return $counts;
+    }
+
+    public function getJenisLaporanCounts(): array
+    {
+        $counts = Asset::query()
+            ->selectRaw('jenis_laporan, COUNT(*) as count')
+            ->groupBy('jenis_laporan')
+            ->pluck('count', 'jenis_laporan')
+            ->toArray();
+
+        return $counts;
+    }
 }

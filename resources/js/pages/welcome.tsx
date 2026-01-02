@@ -157,31 +157,7 @@ export default function Welcome({
                             </nav>
                             
                             {/* Quick Links */}
-                            <div className="flex flex-wrap items-center gap-2">
-                                <Link
-                                    href="/repository"
-                                    className="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 px-3 py-1.5 text-xs font-medium text-yellow-700 transition-colors hover:bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400 dark:hover:bg-yellow-900/50"
-                                >
-                                    <Library className="h-3 w-3" />
-                                    Browse Repository
-                                </Link>
-                                <Link
-                                    href="/repository"
-                                    className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-yellow-400 hover:bg-yellow-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20"
-                                >
-                                    <Search className="h-3 w-3" />
-                                    Advanced Search
-                                </Link>
-                                {!auth.user && (
-                                    <Link
-                                        href={login().url}
-                                        className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-yellow-400 hover:bg-yellow-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20"
-                                    >
-                                        <User className="h-3 w-3" />
-                                        Sign In
-                                    </Link>
-                                )}
-                            </div>
+                          
                         </div>
                     </div>
                 </div>
@@ -254,39 +230,18 @@ export default function Welcome({
                                         <span>All Repository</span>
                                     </Link>
                                     <Link
-                                        href="/repository"
+                                        href="/report-search"
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
                                     >
                                         <FolderOpen className="h-4 w-4" />
-                                        <span>Collections</span>
-                                    </Link>
-                                    <Link
-                                        href="/repository"
-                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
-                                    >
-                                        <CalendarDays className="h-4 w-4" />
-                                        <span>By Issue Date</span>
-                                    </Link>
-                                    <Link
-                                        href="/repository"
-                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
-                                    >
-                                        <Users className="h-4 w-4" />
-                                        <span>Authors</span>
-                                    </Link>
-                                    <Link
-                                        href="/repository"
-                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
-                                    >
-                                        <BookOpen className="h-4 w-4" />
-                                        <span>Titles</span>
+                                        <span>Browse by Report Type</span>
                                     </Link>
                                     <Link
                                         href="/repository"
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
                                     >
                                         <FileText className="h-4 w-4" />
-                                        <span>Subjects</span>
+                                        <span>Browse by Research Group</span>
                                     </Link>
                                 </nav>
                             </div>
