@@ -138,16 +138,49 @@ export default function Welcome({
                     </div>
                 </div>
 
-                {/* Breadcrumb */}
+                {/* Breadcrumb & Quick Links */}
                 <div className="border-b border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
                     <div className="mx-auto max-w-7xl px-6 py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-neutral-400">
-                            <Home className="h-4 w-4" />
-                            <span className="font-medium text-yellow-600 dark:text-yellow-400">
-                                Home
-                            </span>
-                            <ChevronRightIcon className="h-3 w-3" />
-                            <span>Repository</span>
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <nav
+                                aria-label="Breadcrumb"
+                                className="flex items-center gap-2 text-sm text-gray-600 dark:text-neutral-400"
+                            >
+                                <Link
+                                    href="/"
+                                    className="flex items-center gap-2 font-medium text-gray-900 dark:text-white"
+                                >
+                                    {/* <Home className="h-4 w-4" />
+                                    <span>Home</span> */}
+                                </Link>
+                            </nav>
+                            
+                            {/* Quick Links */}
+                            <div className="flex flex-wrap items-center gap-2">
+                                <Link
+                                    href="/repository"
+                                    className="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 px-3 py-1.5 text-xs font-medium text-yellow-700 transition-colors hover:bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400 dark:hover:bg-yellow-900/50"
+                                >
+                                    <Library className="h-3 w-3" />
+                                    Browse Repository
+                                </Link>
+                                <Link
+                                    href="/repository"
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-yellow-400 hover:bg-yellow-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20"
+                                >
+                                    <Search className="h-3 w-3" />
+                                    Advanced Search
+                                </Link>
+                                {!auth.user && (
+                                    <Link
+                                        href={login().url}
+                                        className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-yellow-400 hover:bg-yellow-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20"
+                                    >
+                                        <User className="h-3 w-3" />
+                                        Sign In
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

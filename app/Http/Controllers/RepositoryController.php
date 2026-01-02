@@ -22,6 +22,7 @@ class RepositoryController extends Controller
             'author' => $request->input('author'),
             'abstract' => $request->input('abstract'),
             'year' => $request->input('year'),
+            'grup_kajian' => $request->input('grup_kajian'),
         ];
 
         $perPage = $request->input('per_page', 12);

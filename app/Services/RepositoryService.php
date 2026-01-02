@@ -15,6 +15,7 @@ class RepositoryService
         $this->applyAuthorFilter($query, $filters['author'] ?? null);
         $this->applyAbstractFilter($query, $filters['abstract'] ?? null);
         $this->applyYearFilter($query, $filters['year'] ?? null);
+        $this->applyGrupKajianFilter($query, $filters['grup_kajian'] ?? null);
         $this->applyDefaultSorting($query);
 
         return $query->paginate($perPage);
@@ -59,21 +60,49 @@ class RepositoryService
     private function applyTitleFilter(Builder $query, ?string $title): void
     {
         if ($title) {
-            $query->where('judul_laporan', 'like', "%{$title}%");
+            $searchTerms = explode(' ', trim($title));
+            $query->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    if (!empty($term)) {
+                        $q->where('judul_laporan', 'like', "%{$term}%");
+                    }
+                }
+            });
         }
     }
 
     private function applyAuthorFilter(Builder $query, ?string $author): void
     {
         if ($author) {
-            $query->where('kepala_proyek', 'like', "%{$author}%");
+            $searchTerms = explode(' ', trim($author));
+            $query->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    if (!empty($term)) {
+                        $q->where(function ($subQ) use ($term) {
+                            $subQ->where('kepala_proyek', 'like', "%{$term}%")
+                                 ->orWhere('staf', 'like', "%{$term}%");
+                        });
+                    }
+                }
+            });
         }
     }
 
     private function applyAbstractFilter(Builder $query, ?string $abstract): void
     {
         if ($abstract) {
-            $query->where('abstrak', 'like', "%{$abstract}%");
+            $searchTerms = explode(' ', trim($abstract));
+            $query->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    if (!empty($term)) {
+                        $q->where(function ($subQ) use ($term) {
+                            $subQ->where('abstrak', 'like', "%{$term}%")
+                                 ->orWhere('judul_laporan', 'like', "%{$term}%")
+                                 ->orWhere('kode', 'like', "%{$term}%");
+                        });
+                    }
+                }
+            });
         }
     }
 
@@ -81,6 +110,13 @@ class RepositoryService
     {
         if ($year) {
             $query->where('tahun', $year);
+        }
+    }
+
+    private function applyGrupKajianFilter(Builder $query, ?string $grupKajian): void
+    {
+        if ($grupKajian) {
+            $query->where('grup_kajian', $grupKajian);
         }
     }
 
