@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Facebook, Instagram, Twitter, Linkedin, Globe } from 'lucide-react';
 import { useState } from 'react';
 
 interface NavbarProps {
@@ -44,6 +44,55 @@ export function Navbar({
                         >
                             Repository
                         </Link>
+
+                        {/* Social Media Icons */}
+                        <div className="flex items-center gap-3 border-l border-gray-300 pl-6 dark:border-neutral-700">
+                            <a
+                                href="https://lpem.org"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 transition-colors hover:text-yellow-600 dark:text-neutral-400 dark:hover:text-yellow-400"
+                                aria-label="Website"
+                            >
+                                <Globe className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="https://facebook.com/lpemfebui"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 transition-colors hover:text-yellow-600 dark:text-neutral-400 dark:hover:text-yellow-400"
+                                aria-label="Facebook"
+                            >
+                                <Facebook className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="https://instagram.com/lpemfebui"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 transition-colors hover:text-yellow-600 dark:text-neutral-400 dark:hover:text-yellow-400"
+                                aria-label="Instagram"
+                            >
+                                <Instagram className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="https://twitter.com/lpemfebui"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 transition-colors hover:text-yellow-600 dark:text-neutral-400 dark:hover:text-yellow-400"
+                                aria-label="Twitter"
+                            >
+                                <Twitter className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="https://linkedin.com/company/lpem-feb-ui"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 transition-colors hover:text-yellow-600 dark:text-neutral-400 dark:hover:text-yellow-400"
+                                aria-label="LinkedIn"
+                            >
+                                <Linkedin className="h-5 w-5" />
+                            </a>
+                        </div>
                     </div>
 
                     {/* Mobile Menu Button */}
