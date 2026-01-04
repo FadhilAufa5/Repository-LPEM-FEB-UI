@@ -139,28 +139,7 @@ export default function Welcome({
                     </div>
                 </div>
 
-                {/* Breadcrumb & Quick Links */}
-                <div className="border-b border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="mx-auto max-w-7xl px-6 py-3">
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                            <nav
-                                aria-label="Breadcrumb"
-                                className="flex items-center gap-2 text-sm text-gray-600 dark:text-neutral-400"
-                            >
-                                <Link
-                                    href="/"
-                                    className="flex items-center gap-2 font-medium text-gray-900 dark:text-white"
-                                >
-                                    {/* <Home className="h-4 w-4" />
-                                    <span>Home</span> */}
-                                </Link>
-                            </nav>
-                            
-                            {/* Quick Links */}
-                          
-                        </div>
-                    </div>
-                </div>
+             
 
                 {/* Main Content */}
                 <main className="mx-auto max-w-7xl px-6 py-8">
@@ -251,25 +230,7 @@ export default function Welcome({
                                 <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
                                     My Account
                                 </h3>
-                                {!auth.user ? (
-                                    <div className="space-y-3">
-                                        <Link
-                                            href={login().url}
-                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-yellow-700"
-                                        >
-                                            <User className="h-4 w-4" />
-                                            <span>Login</span>
-                                        </Link>
-                                        {canRegister && (
-                                            <Link
-                                                href={register().url}
-                                                className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-yellow-600 px-4 py-2 text-sm font-semibold text-yellow-600 transition-all hover:bg-yellow-50 dark:hover:bg-yellow-950/30"
-                                            >
-                                                Register
-                                            </Link>
-                                        )}
-                                    </div>
-                                ) : (
+                                {auth.user ? (
                                     <div className="space-y-3">
                                         <p className="text-sm text-gray-600 dark:text-neutral-400">
                                             Welcome,{' '}
@@ -284,6 +245,8 @@ export default function Welcome({
                                             Go to Dashboard
                                         </Link>
                                     </div>
+                                ) : (
+                                    <div className="text-sm text-gray-600 dark:text-neutral-400">Account actions are hidden.</div>
                                 )}
                             </div>
                         </aside>

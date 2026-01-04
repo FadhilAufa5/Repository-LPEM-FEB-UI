@@ -137,6 +137,23 @@ export default function ReportSearch({
         return jenisLaporanCounts[type] || 0;
     };
 
+    const normalizeJenis = (v?: string) =>
+        v
+            ? v
+                  .toString()
+                  .toLowerCase()
+                  .replace(/\s+/g, '_')
+                  .replace(/[^\w_]/g, '')
+            : '';
+
+    const filteredRepositories = selectedType
+        ? repositories.data.filter(
+              (r) => normalizeJenis(r.jenis_laporan) === normalizeJenis(selectedType),
+          )
+        : repositories.data;
+
+    const filteredTotal = filteredRepositories.length;
+
     return (
         <>
             <Head title="Search by Report Type - LPEM FEB UI Repository" />
@@ -239,20 +256,20 @@ export default function ReportSearch({
                                 </button>
                             </div>
 
-                            {repositories.data.length > 0 ? (
+                            {filteredRepositories.length > 0 ? (
                                 <>
                                     <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
                                         <p className="text-sm text-gray-600 dark:text-neutral-400">
                                             Found{' '}
                                             <span className="font-semibold text-yellow-600">
-                                                {repositories.total}
+                                                {filteredTotal}
                                             </span>{' '}
-                                            document{repositories.total !== 1 ? 's' : ''}
+                                            document{filteredTotal !== 1 ? 's' : ''}
                                         </p>
                                     </div>
 
                                     <div className="space-y-4">
-                                        {repositories.data.map((repo) => (
+                                        {filteredRepositories.map((repo) => (
                                             <div
                                                 key={repo.id}
                                                 className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-yellow-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-yellow-700"
