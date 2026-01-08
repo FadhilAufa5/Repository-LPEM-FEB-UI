@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use App\Http\Controllers\Auth\OtpLoginController;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
@@ -10,8 +11,15 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+// OTP Login Routes
+Route::middleware('guest')->group(function () {
+    Route::post('/auth/otp/request', [OtpLoginController::class, 'requestOtp'])->name('otp.request');
+    Route::post('/auth/otp/verify', [OtpLoginController::class, 'verifyOtp'])->name('otp.verify');
+});
+
 Route::get('/repository', [\App\Http\Controllers\RepositoryController::class, 'index'])->name('repository');
 Route::get('/repository/{id}', [\App\Http\Controllers\RepositoryController::class, 'show'])->name('repository.show');
+Route::get('/report-search', [\App\Http\Controllers\ReportSearchController::class, 'index'])->name('report-search');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');

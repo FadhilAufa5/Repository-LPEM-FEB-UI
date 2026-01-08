@@ -22,6 +22,7 @@ class RepositoryController extends Controller
             'author' => $request->input('author'),
             'abstract' => $request->input('abstract'),
             'year' => $request->input('year'),
+            'grup_kajian' => $request->input('grup_kajian'),
         ];
 
         $perPage = $request->input('per_page', 12);
@@ -29,9 +30,13 @@ class RepositoryController extends Controller
 
         $repositories = $assets->through(fn($asset) => $this->repositoryService->transformForList($asset));
 
+        // Get counts for each research group
+        $grupKajianCounts = $this->repositoryService->getGrupKajianCounts();
+
         return Inertia::render('repository', [
             'repositories' => $repositories,
             'filters' => $filters,
+            'grupKajianCounts' => $grupKajianCounts,
         ]);
     }
 

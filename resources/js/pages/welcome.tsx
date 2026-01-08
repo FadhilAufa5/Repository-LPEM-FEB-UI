@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
 import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -138,19 +139,7 @@ export default function Welcome({
                     </div>
                 </div>
 
-                {/* Breadcrumb */}
-                <div className="border-b border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="mx-auto max-w-7xl px-6 py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-neutral-400">
-                            <Home className="h-4 w-4" />
-                            <span className="font-medium text-yellow-600 dark:text-yellow-400">
-                                Home
-                            </span>
-                            <ChevronRightIcon className="h-3 w-3" />
-                            <span>Repository</span>
-                        </div>
-                    </div>
-                </div>
+             
 
                 {/* Main Content */}
                 <main className="mx-auto max-w-7xl px-6 py-8">
@@ -220,40 +209,19 @@ export default function Welcome({
                                         <span>All Repository</span>
                                     </Link>
                                     <Link
-                                        href="/repository"
+                                        href="/report-search"
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
                                     >
                                         <FolderOpen className="h-4 w-4" />
-                                        <span>Collections</span>
+                                        <span>Browse by Report Type</span>
                                     </Link>
-                                    <Link
-                                        href="/repository"
-                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
-                                    >
-                                        <CalendarDays className="h-4 w-4" />
-                                        <span>By Issue Date</span>
-                                    </Link>
-                                    <Link
-                                        href="/repository"
-                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
-                                    >
-                                        <Users className="h-4 w-4" />
-                                        <span>Authors</span>
-                                    </Link>
-                                    <Link
-                                        href="/repository"
-                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
-                                    >
-                                        <BookOpen className="h-4 w-4" />
-                                        <span>Titles</span>
-                                    </Link>
-                                    <Link
+                                    {/* <Link
                                         href="/repository"
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
                                     >
                                         <FileText className="h-4 w-4" />
-                                        <span>Subjects</span>
-                                    </Link>
+                                        <span>Browse by Research Group</span>
+                                    </Link> */}
                                 </nav>
                             </div>
 
@@ -262,25 +230,7 @@ export default function Welcome({
                                 <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
                                     My Account
                                 </h3>
-                                {!auth.user ? (
-                                    <div className="space-y-3">
-                                        <Link
-                                            href={login().url}
-                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-yellow-700"
-                                        >
-                                            <User className="h-4 w-4" />
-                                            <span>Login</span>
-                                        </Link>
-                                        {canRegister && (
-                                            <Link
-                                                href={register().url}
-                                                className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-yellow-600 px-4 py-2 text-sm font-semibold text-yellow-600 transition-all hover:bg-yellow-50 dark:hover:bg-yellow-950/30"
-                                            >
-                                                Register
-                                            </Link>
-                                        )}
-                                    </div>
-                                ) : (
+                                {auth.user ? (
                                     <div className="space-y-3">
                                         <p className="text-sm text-gray-600 dark:text-neutral-400">
                                             Welcome,{' '}
@@ -295,27 +245,15 @@ export default function Welcome({
                                             Go to Dashboard
                                         </Link>
                                     </div>
+                                ) : (
+                                    <div className="text-sm text-gray-600 dark:text-neutral-400">Account actions are hidden.</div>
                                 )}
                             </div>
                         </aside>
                     </div>
                 </main>
 
-                {/* Footer */}
-                <footer className="border-t border-gray-200 bg-white py-6 dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="mx-auto max-w-7xl px-6 text-center">
-                        <p className="text-sm text-gray-600 dark:text-neutral-400">
-                            &copy; {currentYear}{' '}
-                            <span className="font-bold text-yellow-600">
-                                LPEM FEB UI
-                            </span>{' '}
-                            -Repository
-                        </p>
-                        <p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
-                            Preserving and sharing academic excellence
-                        </p>
-                    </div>
-                </footer>
+                <Footer />
             </div>
         </>
     );

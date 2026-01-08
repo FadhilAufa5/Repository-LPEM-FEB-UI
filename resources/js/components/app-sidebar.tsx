@@ -38,16 +38,7 @@ const midNavItems: NavItem[] = [
         href: '/clients',
         icon: UserCheck,
     },
-    // {
-    //     title: 'Categories',
-    //     href: '/categories',
-    //     icon: Box,
-    // },
-    // {
-    //     title: 'Brands',
-    //     href: '/brands',
-    //     icon: Box,
-    // },
+  
 ];
 
 const usersNavItems: NavItem[] = [

@@ -98,7 +98,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                     <DialogDescription>
                         {isEditing
                             ? 'Perbarui informasi user di bawah ini.'
-                            : 'Lengkapi form di bawah untuk menambahkan user baru.'}
+                            : 'Lengkapi form di bawah untuk menambahkan user baru. User dapat login menggunakan password atau OTP email.'}
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
@@ -142,6 +142,12 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                             {errors.email && (
                                 <p className="text-sm text-red-500">
                                     {errors.email}
+                                </p>
+                            )}
+                            {!isEditing && (
+                                <p className="text-xs text-muted-foreground">
+                                    Email ini akan digunakan untuk login dengan
+                                    OTP atau password.
                                 </p>
                             )}
                         </div>
@@ -287,6 +293,10 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                                     {errors.status}
                                 </p>
                             )}
+                            <p className="text-xs text-muted-foreground">
+                                Hanya user dengan status "Aktif" yang dapat
+                                login menggunakan OTP.
+                            </p>
                         </div>
 
                         {/* Avatar URL */}
