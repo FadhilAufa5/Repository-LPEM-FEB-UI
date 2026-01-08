@@ -215,13 +215,13 @@ export default function Welcome({
                                         <FolderOpen className="h-4 w-4" />
                                         <span>Browse by Report Type</span>
                                     </Link>
-                                    <Link
+                                    {/* <Link
                                         href="/repository"
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
                                     >
                                         <FileText className="h-4 w-4" />
                                         <span>Browse by Research Group</span>
-                                    </Link>
+                                    </Link> */}
                                 </nav>
                             </div>
 

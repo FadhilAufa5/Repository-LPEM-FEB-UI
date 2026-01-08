@@ -30,7 +30,7 @@ export default function Login({
 
     return (
         <AuthLayout
-            title="Log in to your account"
+            title="Masuk ke Akun Anda"
             description={
                 loginMethod === 'otp'
                     ? otpSent
@@ -39,11 +39,11 @@ export default function Login({
                     : 'Enter your email and password below to log in'
             }
         >
-            <Head title="Log in" />
+            <Head title="Masuk" />
 
             {/* Login Method Toggle */}
             <div className="mb-6 flex gap-2 rounded-lg bg-muted p-1">
-                <button
+                    <button
                     type="button"
                     onClick={() => {
                         setLoginMethod('otp');
@@ -81,7 +81,7 @@ export default function Login({
                         <>
                             <div className="grid gap-6">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
+                                    <Label htmlFor="email">Alamat email</Label>
                                     <Input
                                         id="email"
                                         type="email"
@@ -93,12 +93,12 @@ export default function Login({
                                         required
                                         autoFocus
                                         autoComplete="email"
-                                        placeholder="email@example.com"
+                                        placeholder="nama@gmail.com"
                                     />
                                     <InputError message={errors.email} />
                                     <p className="text-xs text-muted-foreground">
-                                        Only registered accounts can use OTP
-                                        login. Contact admin if you need access.
+                                        Hanya akun terdaftar yang dapat menggunakan
+                                        OTP. Hubungi admin jika membutuhkan akses.
                                     </p>
                                 </div>
 
@@ -108,7 +108,7 @@ export default function Login({
                                     disabled={processing}
                                 >
                                     {processing && <Spinner />}
-                                    Send OTP Code
+                                    Kirim kode OTP
                                 </Button>
                             </div>
                         </>
@@ -127,7 +127,7 @@ export default function Login({
                             <input type="hidden" name="email" value={email} />
                             <div className="grid gap-6">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="otp">OTP Code</Label>
+                                    <Label htmlFor="otp">Kode OTP</Label>
                                     <Input
                                         id="otp"
                                         type="text"
@@ -141,14 +141,14 @@ export default function Login({
                                     <InputError message={errors.otp} />
                                     <InputError message={errors.email} />
                                     <p className="text-xs text-muted-foreground">
-                                        Check your email for the 6-digit code
+                                        Periksa email Anda untuk kode 6-digit
                                     </p>
                                 </div>
 
                                 <div className="flex items-center space-x-3">
                                     <Checkbox id="remember" name="remember" />
                                     <Label htmlFor="remember">
-                                        Remember me
+                                        Ingat saya
                                     </Label>
                                 </div>
 
@@ -158,7 +158,7 @@ export default function Login({
                                     disabled={processing}
                                 >
                                     {processing && <Spinner />}
-                                    Verify & Log in
+                                    Verifikasi & Masuk
                                 </Button>
 
                                 <Button
@@ -167,7 +167,7 @@ export default function Login({
                                     className="w-full"
                                     onClick={() => setOtpSent(false)}
                                 >
-                                    Back to Email
+                                    Kembali ke Email
                                 </Button>
                             </div>
                         </>
@@ -186,7 +186,7 @@ export default function Login({
                         <>
                             <div className="grid gap-6">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
+                                    <Label htmlFor="email">Alamat email</Label>
                                     <Input
                                         id="email"
                                         type="email"
@@ -195,7 +195,7 @@ export default function Login({
                                         autoFocus
                                         tabIndex={1}
                                         autoComplete="email"
-                                        placeholder="email@example.com"
+                                        placeholder="nama@gmail.com"
                                     />
                                     <InputError message={errors.email} />
                                 </div>
@@ -203,7 +203,7 @@ export default function Login({
                                 <div className="grid gap-2">
                                     <div className="flex items-center">
                                         <Label htmlFor="password">
-                                            Password
+                                            Kata sandi
                                         </Label>
                                         {canResetPassword && (
                                             <TextLink
@@ -211,7 +211,7 @@ export default function Login({
                                                 className="ml-auto text-sm"
                                                 tabIndex={5}
                                             >
-                                                Forgot password?
+                                                Lupa kata sandi?
                                             </TextLink>
                                         )}
                                     </div>
@@ -222,7 +222,7 @@ export default function Login({
                                         required
                                         tabIndex={2}
                                         autoComplete="current-password"
-                                        placeholder="Password"
+                                        placeholder="Kata sandi"
                                     />
                                     <InputError message={errors.password} />
                                 </div>
@@ -234,7 +234,7 @@ export default function Login({
                                         tabIndex={3}
                                     />
                                     <Label htmlFor="remember">
-                                        Remember me
+                                        Ingat saya
                                     </Label>
                                 </div>
 
@@ -246,7 +246,7 @@ export default function Login({
                                     data-test="login-button"
                                 >
                                     {processing && <Spinner />}
-                                    Log in
+                                    Masuk
                                 </Button>
                             </div>
                         </>
@@ -256,9 +256,9 @@ export default function Login({
 
             {canRegister && (
                 <div className="mt-6 text-center text-sm text-muted-foreground">
-                    Don't have an account?{' '}
+                    Belum punya akun?{' '}
                     <TextLink href={register()} tabIndex={5}>
-                        Sign up
+                        Daftar
                     </TextLink>
                 </div>
             )}
@@ -268,6 +268,8 @@ export default function Login({
                     {status}
                 </div>
             )}
+            
         </AuthLayout>
+        
     );
 }
