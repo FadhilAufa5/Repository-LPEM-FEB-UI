@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
+            // Seed wilayah from CSV so clients page can load lokasi data
+            WilayahSeeder::class,
             UserSeeder::class,
         ]);
 
