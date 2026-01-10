@@ -63,7 +63,7 @@ class RoleSeeder extends Seeder
             ['slug' => 'user'],
             [
                 'name' => 'User',
-                'description' => 'Basic user access with view permissions only',
+                'description' => 'Basic user access with asset management capabilities',
             ]
         );
         
@@ -71,6 +71,9 @@ class RoleSeeder extends Seeder
             'dashboard.view',
             'users.view',
             'assets.view',
+            'assets.create',
+            'assets.edit',
+            'assets.delete',
         ])->get();
         $user->permissions()->sync($userPermissions->pluck('id'));
     }
