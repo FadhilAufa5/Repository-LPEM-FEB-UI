@@ -87,6 +87,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the primary role slug for this user (for backward compatibility)
+     */
+    public function getRoleAttribute(): ?string
+    {
+        $primaryRole = $this->roles()->first();
+        return $primaryRole ? $primaryRole->slug : null;
+    }
+
+    /**
      * Check if user has a specific permission.
      */
     public function hasPermission(string $permission): bool

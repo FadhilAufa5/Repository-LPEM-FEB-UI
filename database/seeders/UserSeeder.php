@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         // Fix existing users without roles
         $this->assignRolesToExistingUsers($adminRole, $userRole);
 
-        // Create Admin User
+        
         $admin = User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
