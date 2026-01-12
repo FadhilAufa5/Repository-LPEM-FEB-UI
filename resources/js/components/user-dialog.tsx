@@ -146,8 +146,8 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                             )}
                             {!isEditing && (
                                 <p className="text-xs text-muted-foreground">
-                                    Email ini akan digunakan untuk login dengan
-                                    OTP atau password.
+                                    This email will be used for login with
+                                    OTP or password.
                                 </p>
                             )}
                         </div>
@@ -222,7 +222,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                                 }
                                 placeholder={
                                     isEditing
-                                        ? 'Kosongkan jika tidak ingin mengubah'
+                                        ? 'Leave blank if you don\'t want to change'
                                         : '••••••••'
                                 }
                             />
@@ -281,10 +281,10 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="active">
-                                        Aktif
+                                        Active
                                     </SelectItem>
                                     <SelectItem value="inactive">
-                                        Tidak Aktif
+                                        Inactive
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
@@ -294,8 +294,8 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                                 </p>
                             )}
                             <p className="text-xs text-muted-foreground">
-                                Hanya user dengan status "Aktif" yang dapat
-                                login menggunakan OTP.
+                                Only users with "Active" status can
+                                login using OTP.
                             </p>
                         </div>
 

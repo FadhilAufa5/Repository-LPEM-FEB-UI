@@ -232,13 +232,13 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[700px]">
                 <DialogHeader>
-                    <DialogTitle>
-                        {isEditing ? 'Edit Asset' : 'Tambah Asset Baru'}
+                        <DialogTitle>
+                        {isEditing ? 'Edit Asset' : 'Add New Asset'}
                     </DialogTitle>
                     <DialogDescription>
                         {isEditing
-                            ? 'Perbarui informasi asset di bawah ini.'
-                            : 'Lengkapi form di bawah untuk menambahkan asset baru.'}
+                            ? 'Update the asset information below.'
+                            : 'Fill out the form below to add a new asset.'}
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
@@ -246,7 +246,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Kode */}
                         <div className="grid gap-2">
                             <Label htmlFor="kode">
-                                Kode <span className="text-red-500">*</span>
+                                Code <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="kode"
@@ -294,7 +294,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 onChange={(e) =>
                                     setData('judul_laporan', e.target.value)
                                 }
-                                placeholder="Masukkan judul laporan"
+                                placeholder="Enter report title"
                                 className={
                                     errors.judul_laporan ? 'border-red-500' : ''
                                 }
@@ -309,7 +309,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Abstrak */}
                         <div className="grid gap-2">
                             <Label htmlFor="abstrak">
-                                Abstrak <span className="text-red-500">*</span>
+                                Abstract <span className="text-red-500">*</span>
                             </Label>
                             <Textarea
                                 id="abstrak"
@@ -317,7 +317,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 onChange={(e) =>
                                     setData('abstrak', e.target.value)
                                 }
-                                placeholder="Masukkan abstrak laporan"
+                                placeholder="Enter report abstract"
                                 rows={4}
                                 className={
                                     errors.abstrak ? 'border-red-500' : ''
@@ -333,7 +333,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Jenis Laporan */}
                         <div className="grid gap-2">
                             <Label htmlFor="jenis_laporan">
-                                Jenis Laporan{' '}
+                                Report Type{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Select
@@ -367,12 +367,12 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                     {errors.jenis_laporan}
                                 </p>
                             )}
-                        </div>
+                        </div>  
 
                         {/* Grup Kajian */}
                         <div className="grid gap-2">
                             <Label htmlFor="grup_kajian">
-                                Grup Kajian{' '}
+                                Research Group{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Select
@@ -411,7 +411,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Kepala Proyek */}
                         <div className="grid gap-2">
                             <Label htmlFor="kepala_proyek">
-                                Kepala Proyek{' '}
+                                Project Lead{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -420,7 +420,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 onChange={(e) =>
                                     setData('kepala_proyek', e.target.value)
                                 }
-                                placeholder="Nama kepala proyek"
+                                placeholder="Project lead name"
                                 className={
                                     errors.kepala_proyek ? 'border-red-500' : ''
                                 }
@@ -445,7 +445,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                     onClick={addStafField}
                                 >
                                     <Plus className="mr-1 size-3" />
-                                    Tambah Staf
+                                        Add Staff
                                 </Button>
                             </div>
                             <div className="space-y-2">
@@ -459,7 +459,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                                     e.target.value,
                                                 )
                                             }
-                                            placeholder={`Nama staf ${index + 1}`}
+                                            placeholder={`Staff name ${index + 1}`}
                                             className={
                                                 errors.staf
                                                     ? 'border-red-500'
@@ -491,7 +491,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Tahun */}
                         <div className="grid gap-2">
                             <Label htmlFor="tahun">
-                                Tahun <span className="text-red-500">*</span>
+                                Year <span className="text-red-500">*</span>
                             </Label>
                             <Select
                                 value={data.tahun.toString()}
@@ -526,7 +526,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
 
                         {/* File Laporan */}
                         <div className="grid gap-2">
-                            <Label htmlFor="file_laporan">File Laporan</Label>
+                            <Label htmlFor="file_laporan">Report File</Label>
                             <Input
                                 id="file_laporan"
                                 type="file"
@@ -547,9 +547,9 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 </p>
                             )}
                             <p className="text-xs text-neutral-500">
-                                Format: PDF, DOC, DOCX, ZIP, RAR. Maksimal 50MB.{' '}
+                                Format: PDF, DOC, DOCX, ZIP, RAR. Maximum 50MB.{' '}
                                 {isEditing &&
-                                    'Kosongkan jika tidak ingin mengubah file.'}
+                                    'Leave empty if you do not want to change the file.'}
                             </p>
                         </div>
                     </div>
@@ -560,14 +560,14 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             onClick={() => onOpenChange(false)}
                             disabled={isSubmitting}
                         >
-                            Batal
+                            Cancel
                         </Button>
                         <Button type="submit" disabled={isSubmitting}>
                             {isSubmitting
-                                ? 'Menyimpan...'
+                                ? 'Saving...'
                                 : isEditing
-                                  ? 'Perbarui'
-                                  : 'Simpan'}
+                                  ? 'Update'
+                                  : 'Save'}
                         </Button>
                     </DialogFooter>
                 </form>
