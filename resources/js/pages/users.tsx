@@ -146,13 +146,13 @@ export default function Users() {
                             User Management
                         </h1>
                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                            Kelola pengguna dan hak akses mereka. User terdaftar
-                            dapat login dengan OTP email atau password.
+                            Manage users and their access rights. Registered users
+                            can login with email OTP or password.
                         </p>
                     </div>
                     <Button onClick={handleAddNew} className="w-full sm:w-auto">
                         <Plus className="mr-2 size-4" />
-                        Tambah User
+                        Add User
                     </Button>
                 </div>
 
@@ -161,7 +161,7 @@ export default function Users() {
                     <div className="relative flex-1">
                         <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
                         <Input
-                            placeholder="Cari berdasarkan nama, email, atau telepon..."
+                            placeholder="Search by name, email, or phone..."
                             value={search}
                             onChange={(e) => handleSearch(e.target.value)}
                             className="pl-10"
@@ -172,7 +172,7 @@ export default function Users() {
                             <SelectValue placeholder="Semua Peran" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Semua Peran</SelectItem>
+                            <SelectItem value="all">All Roles</SelectItem>
                             <SelectItem value="admin">Admin</SelectItem>
                             <SelectItem value="user">User</SelectItem>
                         </SelectContent>
@@ -185,10 +185,10 @@ export default function Users() {
                             <SelectValue placeholder="Semua Status" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Semua Status</SelectItem>
-                            <SelectItem value="active">Aktif</SelectItem>
+                            <SelectItem value="all">All Status</SelectItem>
+                            <SelectItem value="active">Active</SelectItem>
                             <SelectItem value="inactive">
-                                Tidak Aktif
+                                Inactive
                             </SelectItem>
                         </SelectContent>
                     </Select>
@@ -202,17 +202,17 @@ export default function Users() {
                                 <TableHead className="w-[50px]">
                                     Avatar
                                 </TableHead>
-                                <TableHead>Nama</TableHead>
+                                <TableHead>Name</TableHead>
                                 <TableHead className="hidden md:table-cell">
                                     Email
                                 </TableHead>
                                 <TableHead className="hidden lg:table-cell">
-                                    Telepon
+                                    Phone
                                 </TableHead>
-                                <TableHead>Peran</TableHead>
+                                <TableHead>Role</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead className="text-right">
-                                    Aksi
+                                    Actions
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -223,7 +223,7 @@ export default function Users() {
                                         colSpan={7}
                                         className="h-24 text-center"
                                     >
-                                        Tidak ada data user.
+                                        No user data available.
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -280,8 +280,8 @@ export default function Users() {
                                                 }
                                             >
                                                 {user.status === 'active'
-                                                    ? 'Aktif'
-                                                    : 'Tidak Aktif'}
+                                                    ? 'Active'
+                                                    : 'Inactive'}
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
@@ -319,14 +319,14 @@ export default function Users() {
                 {users.last_page > 1 && (
                     <div className="flex items-center justify-between border-t border-sidebar-border/70 pt-4 dark:border-sidebar-border">
                         <div className="text-sm text-neutral-500">
-                            Menampilkan{' '}
+                            Showing{' '}
                             {(users.current_page - 1) * users.per_page + 1}{' '}
-                            hingga{' '}
+                            to{' '}
                             {Math.min(
                                 users.current_page * users.per_page,
                                 users.total,
                             )}{' '}
-                            dari {users.total} user
+                            of {users.total} users
                         </div>
                         <div className="flex gap-2">
                             <Button
@@ -354,7 +354,7 @@ export default function Users() {
                                 }
                                 disabled={users.current_page === 1}
                             >
-                                Sebelumnya
+                                Previous
                             </Button>
                             <Button
                                 variant="outline"
@@ -383,7 +383,7 @@ export default function Users() {
                                     users.current_page === users.last_page
                                 }
                             >
-                                Selanjutnya
+                                Next
                             </Button>
                         </div>
                     </div>

@@ -86,8 +86,8 @@ export function DeleteUserDialog({
                 </div>
                 <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950/30">
                     <p className="text-sm text-red-800 dark:text-red-300">
-                        <strong>Peringatan:</strong> Tindakan ini tidak dapat
-                        dibatalkan. User akan dihapus secara permanen dari
+                        <strong>Warning:</strong> This action cannot be
+                        undone. User akan dihapus secara permanen dari
                         sistem.
                     </p>
                 </div>

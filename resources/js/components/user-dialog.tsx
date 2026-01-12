@@ -93,12 +93,12 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[525px]">
                 <DialogHeader>
                     <DialogTitle>
-                        {isEditing ? 'Edit User' : 'Tambah User Baru'}
+                        {isEditing ? 'Edit User' : 'Add New User'}
                     </DialogTitle>
                     <DialogDescription>
                         {isEditing
-                            ? 'Perbarui informasi user di bawah ini.'
-                            : 'Lengkapi form di bawah untuk menambahkan user baru. User dapat login menggunakan password atau OTP email.'}
+                            ? 'Update the user information below.'
+                            : 'Fill out the form below to add a new user. Users can login using password or email OTP.'}
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
@@ -106,7 +106,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                         {/* Name */}
                         <div className="grid gap-2">
                             <Label htmlFor="name">
-                                Nama <span className="text-red-500">*</span>
+                                Name <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="name"
@@ -154,7 +154,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 
                         {/* Phone */}
                         <div className="grid gap-2">
-                            <Label htmlFor="phone">Nomor Telepon</Label>
+                            <Label htmlFor="phone">Phone Number</Label>
                             <Input
                                 id="phone"
                                 value={data.phone}
@@ -174,7 +174,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                         {/* Password */}
                         <div className="grid gap-2">
                             <Label htmlFor="password">
-                                Kata Sandi{' '}
+                                Password{' '}
                                 {!isEditing && (
                                     <span className="text-red-500">*</span>
                                 )}
@@ -205,7 +205,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                         {/* Password Confirmation */}
                         <div className="grid gap-2">
                             <Label htmlFor="password_confirmation">
-                                Konfirmasi Kata Sandi{' '}
+                                Confirm Password{' '}
                                 {!isEditing && (
                                     <span className="text-red-500">*</span>
                                 )}
@@ -231,7 +231,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                         {/* Role */}
                         <div className="grid gap-2">
                             <Label htmlFor="role">
-                                Peran <span className="text-red-500">*</span>
+                                Role <span className="text-red-500">*</span>
                             </Label>
                             <Select
                                 value={data.role}
@@ -319,7 +319,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                                 </p>
                             )}
                             <p className="text-xs text-neutral-500">
-                                Opsional. Masukkan URL gambar avatar.
+                                Optional. Enter the avatar image URL.
                             </p>
                         </div>
                     </div>
@@ -330,14 +330,14 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
                             onClick={() => onOpenChange(false)}
                             disabled={processing}
                         >
-                            Batal
+                            Cancel
                         </Button>
                         <Button type="submit" disabled={processing}>
                             {processing
-                                ? 'Menyimpan...'
+                                ? 'Saving...'
                                 : isEditing
-                                  ? 'Perbarui'
-                                  : 'Simpan'}
+                                  ? 'Update'
+                                  : 'Save'}
                         </Button>
                     </DialogFooter>
                 </form>

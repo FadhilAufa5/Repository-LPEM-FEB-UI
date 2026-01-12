@@ -194,12 +194,12 @@ export default function Assets() {
                             Asset Management
                         </h1>
                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                            Kelola laporan dan asset repository LPEM FEB UI
+                            Manage reports and assets repository LPEM FEB UI
                         </p>
                     </div>
                     <Button onClick={handleAddNew} className="w-full sm:w-auto">
                         <Plus className="mr-2 size-4" />
-                        Tambah Asset
+                        Add Asset
                     </Button>
                 </div>
 
@@ -208,7 +208,7 @@ export default function Assets() {
                     <div className="relative flex-1">
                         <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
                         <Input
-                            placeholder="Cari berdasarkan kode, judul, abstrak, atau kepala proyek..."
+                            placeholder="Search by code, title, abstract, or project leader..."
                             value={search}
                             onChange={(e) => handleSearch(e.target.value)}
                             className="pl-10"
@@ -222,7 +222,7 @@ export default function Assets() {
                             <SelectValue placeholder="Semua Jenis" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Semua Jenis</SelectItem>
+                            <SelectItem value="all">All Types</SelectItem>
                             {Object.entries(jenisLaporanOptions).map(
                                 ([value, label]) => (
                                     <SelectItem key={value} value={value}>
@@ -240,7 +240,7 @@ export default function Assets() {
                             <SelectValue placeholder="Semua Tahun" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Semua Tahun</SelectItem>
+                            <SelectItem value="all">All Years</SelectItem>
                             {yearOptions.map((year) => (
                                 <SelectItem key={year} value={year.toString()}>
                                     {year}
@@ -255,16 +255,16 @@ export default function Assets() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Kode</TableHead>
-                                <TableHead>Judul Laporan</TableHead>
-                                <TableHead>Jenis</TableHead>
-                                <TableHead>Kode Client</TableHead>
-                                <TableHead>Grup Kajian</TableHead>
-                                <TableHead>Tahun</TableHead>
-                                <TableHead>Diupload Oleh</TableHead>
+                                <TableHead>Code</TableHead>
+                                <TableHead>Report Title</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead>Client Code</TableHead>
+                                <TableHead>Research Group</TableHead>
+                                <TableHead>Year</TableHead>
+                                <TableHead>Uploaded By</TableHead>
                                 <TableHead>File</TableHead>
                                 <TableHead className="text-right">
-                                    Aksi
+                                    Actions
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -278,7 +278,7 @@ export default function Assets() {
                                         <div className="flex flex-col items-center gap-2 text-neutral-500">
                                             <FileText className="size-8" />
                                             <p className="text-sm">
-                                                Tidak ada data asset
+                                                No asset data available
                                             </p>
                                         </div>
                                     </TableCell>
@@ -406,17 +406,16 @@ export default function Assets() {
                 {assets.data.length > 0 && (
                     <div className="flex items-center justify-between text-sm text-neutral-500">
                         <p>
-                            Menampilkan{' '}
+                            Showing{' '}
                             {(assets.current_page - 1) * assets.per_page + 1} -{' '}
                             {Math.min(
                                 assets.current_page * assets.per_page,
                                 assets.total,
                             )}{' '}
-                            dari {assets.total} data
+                            of {assets.total} entries
                         </p>
                         <p>
-                            Halaman {assets.current_page} dari{' '}
-                            {assets.last_page}
+                            Page {assets.current_page} of {assets.last_page}
                         </p>
                     </div>
                 )}

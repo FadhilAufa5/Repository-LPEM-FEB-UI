@@ -182,12 +182,12 @@ export default function Clients() {
                             Client Management
                         </h1>
                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                            Kelola data client Anda
+                            Manage your clients and customer information.
                         </p>
                     </div>
                     <Button onClick={handleAddNew} className="w-full sm:w-auto">
                         <Plus className="mr-2 size-4" />
-                        Tambah Client
+                        Add Client
                     </Button>
                 </div>
 
@@ -196,7 +196,7 @@ export default function Clients() {
                     <div className="relative flex-1">
                         <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
                         <Input
-                            placeholder="Cari kode, nama, alamat, kontak..."
+                            placeholder="Search by code, name, address, contact..."
                             value={search}
                             onChange={(e) => handleSearch(e.target.value)}
                             className="pl-10"
@@ -210,7 +210,7 @@ export default function Clients() {
                             <SelectValue placeholder="Filter Provinsi" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Semua Provinsi</SelectItem>
+                            <SelectItem value="all">All Provinces</SelectItem>
                             {provinsiList.map((provinsi) => (
                                 <SelectItem key={provinsi} value={provinsi}>
                                     {provinsi}
@@ -225,14 +225,14 @@ export default function Clients() {
                     <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Kode Client</TableHead>
-                                    <TableHead>Nama Client</TableHead>
-                                    <TableHead>Wilayah</TableHead>
-                                    <TableHead>Kontak Person</TableHead>
-                                    <TableHead>Telepon</TableHead>
-                                    <TableHead>Alamat</TableHead>
+                                    <TableHead>Client Code</TableHead>
+                                    <TableHead>Client Name</TableHead>
+                                    <TableHead>Region</TableHead>
+                                    <TableHead>Contact Person</TableHead>
+                                    <TableHead>Phone</TableHead>
+                                    <TableHead>Address</TableHead>
                                     <TableHead className="text-right">
-                                        Aksi
+                                        Actions
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -246,7 +246,7 @@ export default function Clients() {
                                             <div className="flex flex-col items-center gap-2 text-neutral-500">
                                                 <Building2 className="size-8" />
                                                 <p className="text-sm">
-                                                    Tidak ada data client
+                                                    No client data available
                                                 </p>
                                             </div>
                                         </TableCell>
@@ -336,18 +336,17 @@ export default function Clients() {
                 {clients.data.length > 0 && (
                     <div className="flex items-center justify-between text-sm text-neutral-500">
                         <p>
-                            Menampilkan{' '}
+                            Showing{' '}
                             {(clients.current_page - 1) * clients.per_page + 1}{' '}
                             -{' '}
                             {Math.min(
                                 clients.current_page * clients.per_page,
                                 clients.total,
                             )}{' '}
-                            dari {clients.total} data
+                            of {clients.total} entries
                         </p>
                         <p>
-                            Halaman {clients.current_page} dari{' '}
-                            {clients.last_page}
+                            Page {clients.current_page} of {clients.last_page}
                         </p>
                     </div>
                 )}
