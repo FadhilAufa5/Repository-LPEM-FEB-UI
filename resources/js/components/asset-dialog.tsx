@@ -267,7 +267,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Kode Client */}
                         <div className="grid gap-2">
                             <Label htmlFor="client_id">
-                                Kode Client
+                                Code Client
                             </Label>
                             <ClientCombobox
                                 clients={clients}
@@ -285,7 +285,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Judul Laporan */}
                         <div className="grid gap-2">
                             <Label htmlFor="judul_laporan">
-                                Judul Laporan{' '}
+                                Report Title{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Input

@@ -130,12 +130,12 @@ export function ClientDialog({
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[650px]">
                 <DialogHeader>
                     <DialogTitle>
-                        {isEditing ? 'Edit Client' : 'Tambah Client Baru'}
+                        {isEditing ? 'Edit Client' : 'Add New Client'}
                     </DialogTitle>
                     <DialogDescription>
                         {isEditing
-                            ? 'Ubah informasi client yang sudah ada'
-                            : 'Masukkan informasi client baru yang akan ditambahkan'}
+                            ? 'Modify the existing client information'
+                            : 'Enter the new client information to be added'}
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -143,7 +143,7 @@ export function ClientDialog({
                         {/* Kode Klien */}
                         <div className="grid gap-2">
                             <Label htmlFor="kode_klien">
-                                Kode Klien{' '}
+                                Client Code{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -152,7 +152,7 @@ export function ClientDialog({
                                 onChange={(e) =>
                                     setData('kode_klien', e.target.value)
                                 }
-                                placeholder="Contoh: KLN-001"
+                                placeholder="Example: KLN-001"
                                 autoFocus
                                 required
                                 disabled={isSubmitting}
@@ -167,7 +167,7 @@ export function ClientDialog({
                         {/* Nama Klien */}
                         <div className="grid gap-2">
                             <Label htmlFor="nama_klien">
-                                Nama Klien{' '}
+                                Client Name{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -176,7 +176,7 @@ export function ClientDialog({
                                 onChange={(e) =>
                                     setData('nama_klien', e.target.value)
                                 }
-                                placeholder="Nama lengkap client"
+                                placeholder="Full client name"
                                 required
                                 disabled={isSubmitting}
                             />
@@ -184,13 +184,13 @@ export function ClientDialog({
                                 <p className="text-sm text-red-500">
                                     {errors.nama_klien}
                                 </p>
-                            )}
+                            )}  
                         </div>
 
                         {/* Alamat */}
                         <div className="grid gap-2">
                             <Label htmlFor="alamat">
-                                Alamat <span className="text-red-500">*</span>
+                                Address <span className="text-red-500">*</span>
                             </Label>
                             <Textarea
                                 id="alamat"
@@ -198,7 +198,7 @@ export function ClientDialog({
                                 onChange={(e) =>
                                     setData('alamat', e.target.value)
                                 }
-                                placeholder="Alamat lengkap client"
+                                placeholder="Full client address"
                                 rows={3}
                                 required
                                 disabled={isSubmitting}
@@ -213,24 +213,24 @@ export function ClientDialog({
                         {/* Kode Kabupaten (Auto-filled, Read-only) */}
                         <div className="grid gap-2">
                             <Label htmlFor="kode_kabupaten_display">
-                                Kode Kabupaten
+                                District Code
                             </Label>
                             <Input
                                 id="kode_kabupaten_display"
                                 value={data.kode_kabupaten || ''}
-                                placeholder="Pilih wilayah terlebih dahulu"
+                                placeholder="Select a region first"
                                 disabled
                                 className="bg-muted"
                             />
                             <p className="text-xs text-muted-foreground">
-                                Kode akan otomatis terisi saat memilih wilayah
+                                Code will auto-fill when selecting a region
                             </p>
                         </div>
 
                         {/* Wilayah/Kabupaten */}
                         <div className="grid gap-2">
                             <Label htmlFor="kode_kabupaten">
-                                Wilayah/Kabupaten{' '}
+                                Region / District{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Select
@@ -242,12 +242,12 @@ export function ClientDialog({
                                 disabled={isSubmitting}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Pilih wilayah/kabupaten" />
+                                    <SelectValue placeholder="Select region/district" />
                                 </SelectTrigger>
                                 <SelectContent className="max-h-[300px]">
                                     <div className="sticky top-0 z-10 bg-background p-2">
                                         <Input
-                                            placeholder="Cari wilayah..."
+                                            placeholder="Search region..."
                                             value={searchWilayah}
                                             onChange={(e) =>
                                                 setSearchWilayah(e.target.value)
@@ -267,14 +267,14 @@ export function ClientDialog({
                                         ))
                                     ) : (
                                         <div className="p-4 text-center text-sm text-muted-foreground">
-                                            Tidak ada wilayah yang sesuai
+                                            No matching regions
                                         </div>
                                     )}
                                 </SelectContent>
                             </Select>
                             {selectedWilayah && (
                                 <p className="text-xs text-muted-foreground">
-                                    Kode: <span className="font-mono font-medium">{selectedWilayah.value}</span> - {selectedWilayah.kabupaten}, {selectedWilayah.provinsi}
+                                    Code: <span className="font-mono font-medium">{selectedWilayah.value}</span> - {selectedWilayah.kabupaten}, {selectedWilayah.provinsi}
                                 </p>
                             )}
                             {errors.kode_kabupaten && (
@@ -287,7 +287,7 @@ export function ClientDialog({
                         {/* Kontak Person */}
                         <div className="grid gap-2">
                             <Label htmlFor="kontak_person">
-                                Kontak Person{' '}
+                                Contact Person{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -296,7 +296,7 @@ export function ClientDialog({
                                 onChange={(e) =>
                                     setData('kontak_person', e.target.value)
                                 }
-                                placeholder="Nama kontak person"
+                                placeholder="Contact person name"
                                 required
                                 disabled={isSubmitting}
                             />
@@ -310,7 +310,7 @@ export function ClientDialog({
                         {/* Telepon */}
                         <div className="grid gap-2">
                             <Label htmlFor="telp">
-                                Telepon <span className="text-red-500">*</span>
+                                Phone <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="telp"
@@ -319,7 +319,7 @@ export function ClientDialog({
                                 onChange={(e) =>
                                     setData('telp', e.target.value)
                                 }
-                                placeholder="Contoh: 0812-3456-7890"
+                                placeholder="Example: 0812-3456-7890"
                                 required
                                 disabled={isSubmitting}
                             />
@@ -338,17 +338,17 @@ export function ClientDialog({
                             onClick={() => onOpenChange(false)}
                             disabled={isSubmitting}
                         >
-                            Batal
+                            Cancel
                         </Button>
                         <Button type="submit" disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <>
-                                    <span className="mr-2">Menyimpan...</span>
+                                    <span className="mr-2">Saving...</span>
                                 </>
                             ) : isEditing ? (
                                 'Update Client'
                             ) : (
-                                'Simpan Client'
+                                'Save Client'
                             )}
                         </Button>
                     </DialogFooter>
