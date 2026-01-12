@@ -103,12 +103,12 @@ export default function Roles() {
                             Role Management
                         </h1>
                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                            Kelola roles dan permissions sistem
+                            Manage system roles and permissions
                         </p>
                     </div>
                     <Button onClick={handleAddNew} className="w-full sm:w-auto">
                         <Plus className="mr-2 size-4" />
-                        Tambah Role
+                        Add Role
                     </Button>
                 </div>
 
@@ -117,7 +117,7 @@ export default function Roles() {
                     <div className="relative flex-1">
                         <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
                         <Input
-                            placeholder="Cari role berdasarkan nama, slug, atau deskripsi..."
+                            placeholder="Search roles by name, slug, or description..."
                             value={search}
                             onChange={(e) => handleSearch(e.target.value)}
                             className="pl-10"
@@ -130,12 +130,12 @@ export default function Roles() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Nama Role</TableHead>
+                                <TableHead>Role Name</TableHead>
                                 <TableHead className="hidden md:table-cell">
                                     Slug
                                 </TableHead>
                                 <TableHead className="hidden lg:table-cell">
-                                    Deskripsi
+                                    Description
                                 </TableHead>
                                 <TableHead className="text-center">
                                     Permissions
@@ -144,7 +144,7 @@ export default function Roles() {
                                     Users
                                 </TableHead>
                                 <TableHead className="text-right">
-                                    Aksi
+                                    Actions
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -155,7 +155,7 @@ export default function Roles() {
                                         colSpan={6}
                                         className="h-24 text-center"
                                     >
-                                        Tidak ada data role.
+                                        No role data available.
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -223,14 +223,14 @@ export default function Roles() {
                 {roles.last_page > 1 && (
                     <div className="flex items-center justify-between border-t border-sidebar-border/70 pt-4 dark:border-sidebar-border">
                         <div className="text-sm text-neutral-500">
-                            Menampilkan{' '}
+                            Showing{' '}
                             {(roles.current_page - 1) * roles.per_page + 1}{' '}
-                            hingga{' '}
+                            to{' '}
                             {Math.min(
                                 roles.current_page * roles.per_page,
                                 roles.total,
                             )}{' '}
-                            dari {roles.total} role
+                            of {roles.total} roles
                         </div>
                         <div className="flex gap-2">
                             <Button
@@ -248,7 +248,7 @@ export default function Roles() {
                                 }
                                 disabled={roles.current_page === 1}
                             >
-                                Sebelumnya
+                                Previous
                             </Button>
                             <Button
                                 variant="outline"
@@ -267,7 +267,7 @@ export default function Roles() {
                                     roles.current_page === roles.last_page
                                 }
                             >
-                                Selanjutnya
+                                Next
                             </Button>
                         </div>
                     </div>

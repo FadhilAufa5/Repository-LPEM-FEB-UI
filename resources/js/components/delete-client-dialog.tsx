@@ -53,10 +53,10 @@ export function DeleteClientDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Hapus Client</DialogTitle>
+                    <DialogTitle>Delete Client</DialogTitle>
                     <DialogDescription>
-                        Apakah Anda yakin ingin menghapus client ini? Tindakan
-                        ini tidak dapat dibatalkan.
+                        Are you sure you want to delete this client? This action
+                        cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
                 {client && (
@@ -85,14 +85,14 @@ export function DeleteClientDialog({
                         onClick={() => onOpenChange(false)}
                         disabled={isDeleting}
                     >
-                        Batal
+                        Cancel
                     </Button>
                     <Button
                         variant="destructive"
                         onClick={handleDelete}
                         disabled={isDeleting}
                     >
-                        {isDeleting ? 'Menghapus...' : 'Hapus'}
+                        {isDeleting ? 'Deleting...' : 'Delete'}
                     </Button>
                 </DialogFooter>
             </DialogContent>
