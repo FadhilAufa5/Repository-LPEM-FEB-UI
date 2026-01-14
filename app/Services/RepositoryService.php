@@ -34,7 +34,8 @@ class RepositoryService
             'author' => $asset->kepala_proyek,
             'year' => $asset->tahun,
             'abstract' => $asset->abstrak,
-            'file_url' => $asset->file_laporan ? asset('storage/' . $asset->file_laporan) : null,
+            'file_url' => $asset->file_name ? route('repository.download', $asset->id) : null,
+            'file_name' => $asset->file_name,
             'jenis_laporan' => $asset->jenis_laporan_label,
             'grup_kajian' => $asset->grup_kajian_label,
         ];
@@ -52,7 +53,9 @@ class RepositoryService
             'author' => $asset->kepala_proyek,
             'staff' => $asset->staf,
             'year' => $asset->tahun,
-            'file_url' => $asset->file_laporan ? asset('storage/' . $asset->file_laporan) : null,
+            'file_url' => $asset->file_name ? route('repository.download', $asset->id) : null,
+            'file_name' => $asset->file_name,
+            'file_size' => $asset->file_size,
             'created_at' => $asset->created_at->format('d M Y'),
         ];
     }

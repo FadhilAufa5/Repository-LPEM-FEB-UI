@@ -19,6 +19,7 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/repository', [\App\Http\Controllers\RepositoryController::class, 'index'])->name('repository');
 Route::get('/repository/{id}', [\App\Http\Controllers\RepositoryController::class, 'show'])->name('repository.show');
+Route::get('/repository/{id}/download', [\App\Http\Controllers\RepositoryController::class, 'download'])->name('repository.download');
 Route::get('/report-search', [\App\Http\Controllers\ReportSearchController::class, 'index'])->name('report-search');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -26,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Asset Management Routes - accessible by all authenticated users
     Route::resource('assets', \App\Http\Controllers\AssetController::class);
+    Route::get('assets/{asset}/download', [\App\Http\Controllers\AssetController::class, 'download'])->name('assets.download');
 
     // Client Management Routes - accessible by all authenticated users
     Route::resource('clients', \App\Http\Controllers\ClientController::class);

@@ -21,6 +21,7 @@ import { ClientCombobox } from '@/components/client-combobox';
 import { router, useForm } from '@inertiajs/react';
 import { Plus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface Asset {
     id: number;
@@ -95,6 +96,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
     const isEditing = !!asset;
     const [stafList, setStafList] = useState<string[]>(['']);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const { data, setData, errors, reset } = useForm({
         client_id: null as number | null,
@@ -169,8 +171,13 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setShowConfirm(true);
+    };
+
+    const handleConfirmSubmit = () => {
+        setShowConfirm(false);
         setIsSubmitting(true);
 
         // Filter staf yang tidak kosong
@@ -193,8 +200,13 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
             formData.append(`staf[${index}]`, s);
         });
 
+        // Show upload progress toast if file is being uploaded
+        let uploadToastId: string | number | undefined;
         if (data.file_laporan) {
             formData.append('file_laporan', data.file_laporan);
+            uploadToastId = toast.loading('Uploading file...', {
+                description: `Uploading ${data.file_laporan.name}. Please wait...`
+            });
         }
 
         if (isEditing) {
@@ -202,9 +214,27 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
             router.post(`/assets/${asset.id}`, formData, {
                 preserveScroll: true,
                 onSuccess: () => {
+                    // Dismiss upload toast if exists
+                    if (uploadToastId) {
+                        toast.dismiss(uploadToastId);
+                    }
+                    toast.success('Asset updated successfully!', {
+                        description: `Asset "${data.judul_laporan}" has been updated.`
+                    });
                     onOpenChange(false);
                     reset();
                     setStafList(['']);
+                },
+                onError: (errors) => {
+                    // Dismiss upload toast if exists
+                    if (uploadToastId) {
+                        toast.dismiss(uploadToastId);
+                    }
+                    const errorMessages = Object.values(errors).flat();
+                    const errorMessage = errorMessages.join(', ');
+                    toast.error('Failed to update asset', {
+                        description: errorMessage || 'Please check your input and try again.'
+                    });
                 },
                 onFinish: () => {
                     setIsSubmitting(false);
@@ -214,9 +244,27 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
             router.post('/assets', formData, {
                 preserveScroll: true,
                 onSuccess: () => {
+                    // Dismiss upload toast if exists
+                    if (uploadToastId) {
+                        toast.dismiss(uploadToastId);
+                    }
+                    toast.success('Asset created successfully!', {
+                        description: `Asset "${data.judul_laporan}" has been added.`
+                    });
                     onOpenChange(false);
                     reset();
                     setStafList(['']);
+                },
+                onError: (errors) => {
+                    // Dismiss upload toast if exists
+                    if (uploadToastId) {
+                        toast.dismiss(uploadToastId);
+                    }
+                    const errorMessages = Object.values(errors).flat();
+                    const errorMessage = errorMessages.join(', ');
+                    toast.error('Failed to create asset', {
+                        description: errorMessage || 'Please check your input and try again.'
+                    });
                 },
                 onFinish: () => {
                     setIsSubmitting(false);
@@ -241,7 +289,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             : 'Fill out the form below to add a new asset.'}
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleFormSubmit}>
                     <div className="grid gap-4 py-4">
                         {/* Kode */}
                         <div className="grid gap-2">
@@ -572,6 +620,48 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                     </DialogFooter>
                 </form>
             </DialogContent>
+
+            {/* Confirmation Dialog */}
+            <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Confirm {isEditing ? 'Update' : 'Create'}</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to {isEditing ? 'update' : 'create'} this asset?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            <span className="font-semibold">Code:</span> {data.kode}
+                        </p>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            <span className="font-semibold">Title:</span> {data.judul_laporan}
+                        </p>
+                        {data.file_laporan && (
+                            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                                <span className="font-semibold">File:</span> {data.file_laporan.name}
+                            </p>
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setShowConfirm(false)}
+                            disabled={isSubmitting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={handleConfirmSubmit}
+                            disabled={isSubmitting}
+                        >
+                            Confirm
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </Dialog>
     );
 }
