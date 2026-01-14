@@ -10,6 +10,7 @@ import {
 import { router } from '@inertiajs/react';
 import { AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Asset {
     id: number;
@@ -37,7 +38,16 @@ export function DeleteAssetDialog({
         router.delete(`/assets/${asset.id}`, {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('Asset deleted successfully!', {
+                    description: `Asset "${asset.judul_laporan}" has been permanently deleted.`,
+                });
                 onOpenChange(false);
+            },
+            onError: (errors) => {
+                const errorMessage = Object.values(errors).flat().join(', ');
+                toast.error('Failed to delete asset', {
+                    description: errorMessage || 'An error occurred while deleting the asset.',
+                });
             },
             onFinish: () => {
                 setIsDeleting(false);

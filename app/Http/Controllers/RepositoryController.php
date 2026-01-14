@@ -49,4 +49,17 @@ class RepositoryController extends Controller
             'repository' => $repository,
         ]);
     }
+
+    public function download($id)
+    {
+        $asset = $this->repositoryService->getRepositoryById($id);
+
+        if (!$asset->file_content || !$asset->file_name) {
+            abort(404, 'File not found');
+        }
+
+        return response($asset->file_content)
+            ->header('Content-Type', $asset->file_mime ?? 'application/octet-stream')
+            ->header('Content-Disposition', 'inline; filename="' . $asset->file_name . '"');
+    }
 }

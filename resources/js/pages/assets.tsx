@@ -24,6 +24,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Download, Edit2, FileText, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -46,7 +47,9 @@ interface Asset {
     kepala_proyek: string;
     staf: string[] | string;
     tahun: number;
-    file_laporan?: string;
+    file_name?: string;
+    file_size?: number;
+    file_mime?: string;
     created_at: string;
     client_id?: number;
     client?: {
@@ -162,6 +165,10 @@ export default function Assets() {
     };
 
     const handleEdit = (asset: Asset) => {
+        toast.info(`Opening edit form for "${asset.judul_laporan}"`, {
+            description: 'You can now modify the asset details.',
+            duration: 3000,
+        });
         setSelectedAsset(asset);
         setAssetDialogOpen(true);
     };
@@ -176,8 +183,8 @@ export default function Assets() {
         setAssetDialogOpen(true);
     };
 
-    const handleDownload = (filePath: string) => {
-        window.open(`/storage/${filePath}`, '_blank');
+    const handleDownload = (assetId: number) => {
+        window.location.href = `/assets/${assetId}/download`;
     };
 
     const currentYear = new Date().getFullYear();
@@ -354,14 +361,12 @@ export default function Assets() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            {asset.file_laporan ? (
+                                            {asset.file_name ? (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() =>
-                                                        handleDownload(
-                                                            asset.file_laporan!,
-                                                        )
+                                                        handleDownload(asset.id)
                                                     }
                                                 >
                                                     <Download className="size-4" />

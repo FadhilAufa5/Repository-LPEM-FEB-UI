@@ -26,6 +26,8 @@ interface Repository {
     staff: string[];
     year: number;
     file_url?: string;
+    file_name?: string;
+    file_size?: number;
     created_at: string;
 }
 
@@ -109,18 +111,24 @@ export default function RepositoryDetail({
                                         </div>
                                     </div>
                                     <div className="flex-shrink-0 text-right">
-                                        {repository.file_url ? (
-                                            <a
-                                                href={repository.file_url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-yellow-700 hover:text-yellow-800"
-                                            >
-                                                <Download className="h-4 w-4" />
-                                                Open
-                                            </a>
+                                        {repository.file_url && repository.file_name ? (
+                                            <div className="space-y-1">
+                                                <a
+                                                    href={repository.file_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 text-sm font-semibold text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800 dark:bg-yellow-950/30 dark:text-yellow-400 dark:hover:bg-yellow-950/50"
+                                                >
+                                                    <Download className="h-4 w-4" />
+                                                    View File
+                                                </a>
+                                                <p className="text-xs text-gray-500 dark:text-neutral-500">
+                                                    {repository.file_name}
+                                                    {repository.file_size && ` (${(repository.file_size / 1024 / 1024).toFixed(2)} MB)`}
+                                                </p>
+                                            </div>
                                         ) : (
-                                            <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600">
+                                            <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-400 dark:text-neutral-600">
                                                 <FileText className="h-4 w-4" />
                                                 No File
                                             </span>
@@ -208,21 +216,21 @@ export default function RepositoryDetail({
             <div className="mt-5 space-y-2 border-t border-gray-100 pt-4 dark:border-neutral-800">
                 <button
                     onClick={copyCitation}
-                    className="flex w-full items-center gap-2 text-sm font-medium text-yellow-700 hover:text-yellow-800"
+                    className="flex w-full items-center gap-2 text-sm font-medium text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
                 >
                     <Tag className="h-4 w-4" />
                     {copied ? 'Citation Copied' : 'Copy Citation'}
                 </button>
 
-                {repository.file_url && (
+                {repository.file_url && repository.file_name && (
                     <a
                         href={repository.file_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-2 text-sm font-medium text-yellow-700 hover:text-yellow-800"
+                        className="flex items-center gap-2 text-sm font-medium text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
                     >
                         <Download className="h-4 w-4" />
-                        Download File
+                        View File ({repository.file_name})
                     </a>
                 )}
             </div>

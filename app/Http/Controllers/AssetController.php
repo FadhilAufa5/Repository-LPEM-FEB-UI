@@ -59,7 +59,7 @@ class AssetController extends Controller
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 10),
-            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:51200',
+            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
         ]);
 
         $this->assetService->createAsset($validated, $request->user()->id);
@@ -84,7 +84,7 @@ class AssetController extends Controller
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 10),
-            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:51200',
+            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
         ]);
 
         $this->assetService->updateAsset($asset, $validated);
@@ -101,5 +101,21 @@ class AssetController extends Controller
         $this->assetService->deleteAsset($asset);
 
         return redirect()->back()->with('success', 'Asset berhasil dihapus!');
+    }
+
+    public function download(Asset $asset)
+    {
+        if (!$asset->file_content) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        // Decode base64 content
+        $fileContent = base64_decode($asset->file_content);
+
+        // Return file as download response
+        return response($fileContent)
+            ->header('Content-Type', $asset->file_mime)
+            ->header('Content-Disposition', 'attachment; filename="' . $asset->file_name . '"')
+            ->header('Content-Length', $asset->file_size);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Asset;
+use App\Jobs\ProcessAssetFileUpload;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -24,27 +25,49 @@ class AssetService
     {
         $data['user_id'] = $userId;
 
+        $file = null;
         if (isset($data['file_laporan'])) {
-            $data['file_laporan'] = $this->handleFileUpload($data['file_laporan']);
+            $file = $data['file_laporan'];
+            unset($data['file_laporan']); // Remove file from data, will be handled by queue
         }
 
-        return Asset::create($data);
+        $asset = Asset::create($data);
+
+        // Dispatch queue job for file upload if file exists
+        if ($file) {
+            $this->dispatchFileUpload($asset, $file);
+        }
+
+        return $asset;
     }
 
     public function updateAsset(Asset $asset, array $data)
     {
+        $file = null;
         if (isset($data['file_laporan'])) {
-            $this->deleteFile($asset->file_laporan);
-            $data['file_laporan'] = $this->handleFileUpload($data['file_laporan']);
+            $file = $data['file_laporan'];
+            unset($data['file_laporan']); // Remove file from data, will be handled by queue
+            
+            // Clear old file data if exists
+            $data['file_content'] = null;
+            $data['file_name'] = null;
+            $data['file_mime'] = null;
+            $data['file_size'] = null;
         }
 
         $asset->update($data);
+
+        // Dispatch queue job for file upload if file exists
+        if ($file) {
+            $this->dispatchFileUpload($asset, $file);
+        }
+
         return $asset;
     }
 
     public function deleteAsset(Asset $asset)
     {
-        $this->deleteFile($asset->file_laporan);
+        // No need to delete physical file anymore, just delete database record
         return $asset->delete();
     }
 
@@ -90,6 +113,22 @@ class AssetService
     private function applySorting(Builder $query, string $sortBy, string $sortOrder): void
     {
         $query->orderBy($sortBy, $sortOrder);
+    }
+
+    private function dispatchFileUpload(Asset $asset, $file): void
+    {
+        // Store file temporarily
+        $tempFilename = 'temp_' . time() . '_' . $file->getClientOriginalName();
+        $tempPath = $file->storeAs('temp', $tempFilename, 'public');
+
+        // Dispatch queue job
+        ProcessAssetFileUpload::dispatch(
+            $asset->id,
+            $tempPath,
+            $file->getClientOriginalName(),
+            $file->getMimeType(),
+            $file->getSize()
+        );
     }
 
     private function handleFileUpload($file): string

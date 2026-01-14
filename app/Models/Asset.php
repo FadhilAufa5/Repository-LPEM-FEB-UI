@@ -20,11 +20,19 @@ class Asset extends Model
         'kepala_proyek',
         'staf',
         'tahun',
-        'file_laporan',
+        'file_content',
+        'file_name',
+        'file_mime',
+        'file_size',
     ];
 
     protected $casts = [
         'tahun' => 'integer',
+        'file_size' => 'integer',
+    ];
+
+    protected $hidden = [
+        'file_content', // Hide binary content from JSON responses
     ];
 
     // Accessor for staf to ensure it's always an array
