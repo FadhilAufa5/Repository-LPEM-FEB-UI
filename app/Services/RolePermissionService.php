@@ -69,12 +69,12 @@ class RolePermissionService
 
     public function deleteRole(Role $role)
     {
-        $usersCount = $role->users()->count();
+        // Detach all users from this role before deleting
+        $role->users()->detach();
         
-        if ($usersCount > 0) {
-            throw new \Exception("Tidak dapat menghapus role karena masih ada {$usersCount} user yang menggunakan role ini!");
-        }
-
+        // Detach all permissions from this role
+        $role->permissions()->detach();
+        
         return $role->delete();
     }
 

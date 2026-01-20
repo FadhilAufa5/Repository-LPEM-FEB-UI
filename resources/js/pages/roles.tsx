@@ -15,8 +15,9 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Edit2, Plus, Search, Shield, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit2, Plus, Search, Shield, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -78,6 +79,10 @@ export default function Roles() {
     };
 
     const handleEdit = (role: Role) => {
+        toast.info(`Opening edit form for "${role.name}"`, {
+            description: 'You can now modify the role details.',
+            duration: 3000,
+        });
         setSelectedRole(role);
         setRoleDialogOpen(true);
     };
@@ -90,6 +95,17 @@ export default function Roles() {
     const handleAddNew = () => {
         setSelectedRole(undefined);
         setRoleDialogOpen(true);
+    };
+
+    const handlePageChange = (page: number) => {
+        router.get(
+            '/roles',
+            {
+                search,
+                page: page.toString(),
+            },
+            { preserveState: true, preserveScroll: false },
+        );
     };
 
     return (
@@ -220,54 +236,99 @@ export default function Roles() {
                 </div>
 
                 {/* Pagination */}
-                {roles.last_page > 1 && (
-                    <div className="flex items-center justify-between border-t border-sidebar-border/70 pt-4 dark:border-sidebar-border">
-                        <div className="text-sm text-neutral-500">
+                {roles.total > 10 && roles.data.length > 0 && (
+                    <div className="flex flex-col gap-4 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
+                        <div className="text-sm text-neutral-600 dark:text-neutral-400">
                             Showing{' '}
-                            {(roles.current_page - 1) * roles.per_page + 1}{' '}
-                            to{' '}
+                            {(roles.current_page - 1) * roles.per_page + 1} to{' '}
                             {Math.min(
                                 roles.current_page * roles.per_page,
                                 roles.total,
                             )}{' '}
                             of {roles.total} roles
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex items-center gap-2">
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() =>
-                                    router.get(
-                                        `/roles?page=${roles.current_page - 1}`,
-                                        { search },
-                                        {
-                                            preserveState: true,
-                                            preserveScroll: true,
-                                        },
-                                    )
+                                    handlePageChange(roles.current_page - 1)
                                 }
                                 disabled={roles.current_page === 1}
+                                className="gap-2"
                             >
+                                <ChevronLeft className="size-4" />
                                 Previous
                             </Button>
+
+                            <div className="flex items-center gap-1">
+                                {Array.from(
+                                    { length: roles.last_page },
+                                    (_, i) => i + 1,
+                                ).map((page) => {
+                                    const showPage =
+                                        page === 1 ||
+                                        page === roles.last_page ||
+                                        (page >= roles.current_page - 1 &&
+                                            page <= roles.current_page + 1);
+
+                                    const showEllipsisBefore =
+                                        page === roles.current_page - 2 &&
+                                        roles.current_page > 3;
+                                    const showEllipsisAfter =
+                                        page === roles.current_page + 2 &&
+                                        roles.current_page <
+                                            roles.last_page - 2;
+
+                                    if (
+                                        showEllipsisBefore ||
+                                        showEllipsisAfter
+                                    ) {
+                                        return (
+                                            <span
+                                                key={page}
+                                                className="px-2 text-neutral-500 dark:text-neutral-500"
+                                            >
+                                                ...
+                                            </span>
+                                        );
+                                    }
+
+                                    if (!showPage) return null;
+
+                                    return (
+                                        <Button
+                                            key={page}
+                                            variant={
+                                                page === roles.current_page
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            size="sm"
+                                            onClick={() =>
+                                                handlePageChange(page)
+                                            }
+                                            className="hidden size-9 sm:inline-flex"
+                                        >
+                                            {page}
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() =>
-                                    router.get(
-                                        `/roles?page=${roles.current_page + 1}`,
-                                        { search },
-                                        {
-                                            preserveState: true,
-                                            preserveScroll: true,
-                                        },
-                                    )
+                                    handlePageChange(roles.current_page + 1)
                                 }
                                 disabled={
                                     roles.current_page === roles.last_page
                                 }
+                                className="gap-2"
                             >
                                 Next
+                                <ChevronRight className="size-4" />
                             </Button>
                         </div>
                     </div>

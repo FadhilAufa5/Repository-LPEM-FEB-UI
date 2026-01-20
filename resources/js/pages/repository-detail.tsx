@@ -41,6 +41,9 @@ export default function RepositoryDetail({
     const { auth } = usePage<SharedData>().props;
     const [copied, setCopied] = useState(false);
     const currentYear = new Date().getFullYear();
+    
+    // Check if user is admin
+    const isAdmin = auth.user && auth.roles?.includes('admin');
 
     const formatDate = (d: string) => {
         try {
@@ -96,7 +99,7 @@ export default function RepositoryDetail({
                                                 {repository.year}
                                             </span>
                                         </div>
-                                        <h1 className="mb-3 text-3xl font-extrabold leading-tight text-gray-900 dark:text-white">
+                                        <h1 className="mb-3 text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">
                                             {repository.title}
                                         </h1>
                                         <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-neutral-400">
@@ -113,15 +116,26 @@ export default function RepositoryDetail({
                                     <div className="flex-shrink-0 text-right">
                                         {repository.file_url && repository.file_name ? (
                                             <div className="space-y-1">
-                                                <a
-                                                    href={repository.file_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 text-sm font-semibold text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800 dark:bg-yellow-950/30 dark:text-yellow-400 dark:hover:bg-yellow-950/50"
-                                                >
-                                                    <Download className="h-4 w-4" />
-                                                    View File
-                                                </a>
+                                                {isAdmin ? (
+                                                    <a
+                                                        href={repository.file_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 text-sm font-semibold text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800 dark:bg-yellow-950/30 dark:text-yellow-400 dark:hover:bg-yellow-950/50"
+                                                    >
+                                                        <Download className="h-4 w-4" />
+                                                        View File
+                                                    </a>
+                                                ) : (
+                                                    <button
+                                                        disabled
+                                                        className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-400 cursor-not-allowed dark:bg-neutral-800 dark:text-neutral-600"
+                                                        title="Download access is restricted to administrators only"
+                                                    >
+                                                        <Download className="h-4 w-4" />
+                                                        No Access
+                                                    </button>
+                                                )}
                                                 <p className="text-xs text-gray-500 dark:text-neutral-500">
                                                     {repository.file_name}
                                                     {repository.file_size && ` (${(repository.file_size / 1024 / 1024).toFixed(2)} MB)`}
@@ -223,15 +237,26 @@ export default function RepositoryDetail({
                 </button>
 
                 {repository.file_url && repository.file_name && (
-                    <a
-                        href={repository.file_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-2 text-sm font-medium text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
-                    >
-                        <Download className="h-4 w-4" />
-                        View File ({repository.file_name})
-                    </a>
+                    isAdmin ? (
+                        <a
+                            href={repository.file_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-2 text-sm font-medium text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
+                        >
+                            <Download className="h-4 w-4" />
+                            View File ({repository.file_name})
+                        </a>
+                    ) : (
+                        <button
+                            disabled
+                            className="flex items-center gap-2 text-sm font-medium text-gray-400 cursor-not-allowed dark:text-neutral-600"
+                            title="Download access is restricted to administrators only"
+                        >
+                            <Download className="h-4 w-4" />
+                            No Access
+                        </button>
+                    )
                 )}
             </div>
 

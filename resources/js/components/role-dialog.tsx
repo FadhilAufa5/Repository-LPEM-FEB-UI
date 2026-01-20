@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface Permission {
     id: number;
@@ -70,16 +71,36 @@ export function RoleDialog({
             put(`/roles/${role.id}`, {
                 preserveScroll: true,
                 onSuccess: () => {
+                    toast.success('Role updated successfully!', {
+                        description: `Role "${data.name}" has been updated.`,
+                    });
                     onOpenChange(false);
                     reset();
+                },
+                onError: (errors) => {
+                    const errorMessages = Object.values(errors).flat();
+                    const errorMessage = errorMessages.join(', ');
+                    toast.error('Failed to update role', {
+                        description: errorMessage || 'Please check your input and try again.',
+                    });
                 },
             });
         } else {
             post('/roles', {
                 preserveScroll: true,
                 onSuccess: () => {
+                    toast.success('Role created successfully!', {
+                        description: `Role "${data.name}" has been added.`,
+                    });
                     onOpenChange(false);
                     reset();
+                },
+                onError: (errors) => {
+                    const errorMessages = Object.values(errors).flat();
+                    const errorMessage = errorMessages.join(', ');
+                    toast.error('Failed to create role', {
+                        description: errorMessage || 'Please check your input and try again.',
+                    });
                 },
             });
         }

@@ -12,6 +12,8 @@ import {
     FolderOpen,
     Home,
     Library,
+    Mail,
+    Phone,
     Search,
     User,
     Users,
@@ -56,9 +58,10 @@ export default function Welcome({
         e.preventDefault();
         const params: Record<string, string> = {};
 
-        if (title) params.title = title;
+        if (title) {
+            params.search = title; // Single search field that filters both title and abstract
+        }
         if (author) params.author = author;
-        if (abstract) params.abstract = abstract;
         if (year) params.year = year;
 
         router.get('/repository', params);
@@ -125,7 +128,7 @@ export default function Welcome({
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Search for articles, theses, journals..."
+                                    placeholder="Search for articles, abstracts..."
                                     className="w-full rounded-full border-2 border-gray-300 py-3 pr-12 pl-6 text-sm shadow-sm transition-all focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:border-yellow-400"
                                 />
                                 <button
@@ -154,16 +157,15 @@ export default function Welcome({
                                 <p className="mb-4 leading-relaxed text-gray-700 dark:text-neutral-300">
                                     This repository is a digital archive of
                                     intellectual output from LPEM FEB UI,
-                                    including research papers, theses,
-                                    dissertations, journals, and other scholarly
+                                    including research papers, journals, and other scholarly
                                     works. Our mission is to preserve and
                                     provide open access to academic research for
                                     the benefit of the global research
                                     community.
                                 </p>
                                 <p className="leading-relaxed text-gray-700 dark:text-neutral-300">
-                                    Browse our collections, search by author or
-                                    subject, and discover the wealth of
+                                    Browse our repository, search by report or
+                                    all, and discover the wealth of
                                     knowledge produced by our academic
                                     community.
                                 </p>
@@ -188,6 +190,57 @@ export default function Welcome({
                                             administration for submission
                                             guidelines and procedures.
                                         </p>
+                                        <p className="mt-4 text-sm leading-relaxed text-red-600 dark:text-red-300">
+                                            <span className="font-semibold">Please contact the LPEM FEB UI administration:</span>
+                                        </p>
+                                        
+                                        <div className="mt-4 space-y-3">
+                                            {/* Contact 1 */}
+                                            <div className="rounded-lg bg-white/50 p-3 dark:bg-neutral-800/50">
+                                                <p className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">
+                                                    Bintoro Seto
+                                                </p>
+                                                <div className="space-y-1">
+                                                    <a
+                                                        href="tel:+6285611073826"
+                                                        className="flex items-center gap-2 text-sm text-yellow-800 hover:text-yellow-600 dark:text-yellow-300 dark:hover:text-yellow-400 transition-colors"
+                                                    >
+                                                        <Phone className="h-4 w-4 flex-shrink-0" />
+                                                        <span>+62 856-1107-382</span>
+                                                    </a>
+                                                    <a
+                                                        href="mailto:bin@lpem-febui.org"
+                                                        className="flex items-center gap-2 text-sm text-yellow-800 hover:text-yellow-600 dark:text-yellow-300 dark:hover:text-yellow-400 transition-colors"
+                                                    >
+                                                        <Mail className="h-4 w-4 flex-shrink-0" />
+                                                        <span>bin@lpem-febui.org</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            {/* Contact 2 */}
+                                            <div className="rounded-lg bg-white/50 p-3 dark:bg-neutral-800/50">
+                                                <p className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">
+                                                    Ahmad Mahmuda
+                                                </p>
+                                                <div className="space-y-1">
+                                                    <a
+                                                        href="tel:+6285714048212"
+                                                        className="flex items-center gap-2 text-sm text-yellow-800 hover:text-yellow-600 dark:text-yellow-300 dark:hover:text-yellow-400 transition-colors"
+                                                    >
+                                                        <Phone className="h-4 w-4 flex-shrink-0" />
+                                                        <span>+62 857-1404-8212</span>
+                                                    </a>
+                                                    <a
+                                                        href="mailto:ahmadmahmuda97@gmail.com"
+                                                        className="flex items-center gap-2 text-sm text-yellow-800 hover:text-yellow-600 dark:text-yellow-300 dark:hover:text-yellow-400 transition-colors"
+                                                    >
+                                                        <Mail className="h-4 w-4 flex-shrink-0" />
+                                                        <span>ahmadmahmuda97@gmail.com</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
