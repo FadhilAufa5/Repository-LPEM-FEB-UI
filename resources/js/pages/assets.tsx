@@ -22,7 +22,7 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Download, Edit2, FileText, Plus, Search, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Edit2, FileText, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -185,6 +185,22 @@ export default function Assets() {
 
     const handleDownload = (assetId: number) => {
         window.location.href = `/assets/${assetId}/download`;
+    };
+
+    const handlePageChange = (page: number) => {
+        router.get(
+            '/assets',
+            {
+                search,
+                jenis_laporan:
+                    jenisLaporanFilter !== 'all'
+                        ? jenisLaporanFilter
+                        : undefined,
+                tahun: tahunFilter !== 'all' ? tahunFilter : undefined,
+                page: page.toString(),
+            },
+            { preserveState: true, preserveScroll: false },
+        );
     };
 
     const currentYear = new Date().getFullYear();
@@ -407,21 +423,106 @@ export default function Assets() {
                     </Table>
                 </div>
 
-                {/* Pagination Info */}
-                {assets.data.length > 0 && (
-                    <div className="flex items-center justify-between text-sm text-neutral-500">
-                        <p>
+                {/* Pagination */}
+                {assets.total > 10 && assets.data.length > 0 && (
+                    <div className="flex flex-col gap-4 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
+                        <div className="text-sm text-neutral-600 dark:text-neutral-400">
                             Showing{' '}
-                            {(assets.current_page - 1) * assets.per_page + 1} -{' '}
+                            {(assets.current_page - 1) * assets.per_page + 1} to{' '}
                             {Math.min(
                                 assets.current_page * assets.per_page,
                                 assets.total,
                             )}{' '}
                             of {assets.total} entries
-                        </p>
-                        <p>
-                            Page {assets.current_page} of {assets.last_page}
-                        </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    handlePageChange(assets.current_page - 1)
+                                }
+                                disabled={assets.current_page === 1}
+                                className="gap-2"
+                            >
+                                <ChevronLeft className="size-4" />
+                                Previous
+                            </Button>
+
+                            <div className="flex items-center gap-1">
+                                {Array.from(
+                                    { length: assets.last_page },
+                                    (_, i) => i + 1,
+                                ).map((page) => {
+                                    const showPage =
+                                        page === 1 ||
+                                        page === assets.last_page ||
+                                        (page >= assets.current_page - 1 &&
+                                            page <= assets.current_page + 1);
+
+                                    const showEllipsisBefore =
+                                        page === assets.current_page - 2 &&
+                                        assets.current_page > 3;
+                                    const showEllipsisAfter =
+                                        page === assets.current_page + 2 &&
+                                        assets.current_page <
+                                            assets.last_page - 2;
+
+                                    if (
+                                        showEllipsisBefore ||
+                                        showEllipsisAfter
+                                    ) {
+                                        return (
+                                            <span
+                                                key={page}
+                                                className="px-2 text-neutral-500 dark:text-neutral-500"
+                                            >
+                                                ...
+                                            </span>
+                                        );
+                                    }
+
+                                    if (!showPage) return null;
+
+                                    return (
+                                        <Button
+                                            key={page}
+                                            variant={
+                                                page === assets.current_page
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            size="sm"
+                                            onClick={() =>
+                                                handlePageChange(page)
+                                            }
+                                            className={`hidden size-9 sm:inline-flex ${
+                                                page === assets.current_page
+                                                    ? ''
+                                                    : ''
+                                            }`}
+                                        >
+                                            {page}
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    handlePageChange(assets.current_page + 1)
+                                }
+                                disabled={
+                                    assets.current_page === assets.last_page
+                                }
+                                className="gap-2"
+                            >
+                                Next
+                                <ChevronRight className="size-4" />
+                            </Button>
+                        </div>
                     </div>
                 )}
             </div>

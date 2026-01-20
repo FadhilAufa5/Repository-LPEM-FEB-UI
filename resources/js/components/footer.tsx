@@ -17,11 +17,10 @@ export function Footer() {
                                 className="h-14 w-auto brightness-0 invert"
                             />
                         </div>
-                        <h3 className="mb-3 text-lg font-bold text-white">
-                            LPEM FEB UI
-                        </h3>
+                        
                         <p className="mb-4 text-sm leading-relaxed text-gray-400">
-                            Lembaga Penyelidikan Ekonomi dan Masyarakat Fakultas Ekonomi dan Bisnis Universitas Indonesia - Pusat penelitian dan analisis kebijakan ekonomi terkemuka di Indonesia.
+                            Lembaga Penyelidikan Ekonomi dan Masyarakat Fakultas Ekonomi dan Bisnis Universitas Indonesia <br />
+                            <i className="text-white">Pusat penelitian dan analisis kebijakan ekonomi terkemuka di Indonesia.</i>
                         </p>
                         <div className="flex items-center gap-2 text-sm text-gray-400">
                             <Globe className="h-4 w-4 text-yellow-400" />
@@ -38,7 +37,7 @@ export function Footer() {
 
                     {/* Contact Section */}
                     <div>
-                        <h3 className="mb-4 text-base font-bold text-white">Kontak Kami</h3>
+                        <h3 className="mb-4 text-base font-bold text-white">Contact Us</h3>
                         <ul className="space-y-3 text-sm">
                             <li className="flex items-start gap-3">
                                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-400" />
@@ -69,9 +68,9 @@ export function Footer() {
 
                     {/* Social Media Section */}
                     <div>
-                        <h3 className="mb-4 text-base font-bold text-white">Ikuti Kami</h3>
+                        <h3 className="mb-4 text-base font-bold text-white">Follow Me</h3>
                         <p className="mb-4 text-sm text-gray-400">
-                            Terhubung dengan kami di media sosial untuk update terbaru
+                            Connect with us on social media for the latest updates and news.
                         </p>
                         <div className="flex flex-wrap gap-3">
                             <a
@@ -125,7 +124,7 @@ export function Footer() {
                             . All rights reserved.
                         </p>
                         <p className="text-center text-xs text-gray-500">
-                            Scientific Repository - Preserving Academic Excellence
+                            Created by BinSETO
                         </p>
                     </div>
                 </div>

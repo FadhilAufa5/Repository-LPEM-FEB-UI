@@ -378,7 +378,7 @@ export default function Users() {
                                             preserveScroll: true,
                                         },
                                     )
-                                }
+                                }w
                                 disabled={
                                     users.current_page === users.last_page
                                 }

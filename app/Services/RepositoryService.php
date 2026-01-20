@@ -32,6 +32,7 @@ class RepositoryService
             'id' => $asset->id,
             'title' => $asset->judul_laporan,
             'author' => $asset->kepala_proyek,
+            'staff' => $asset->staf,
             'year' => $asset->tahun,
             'abstract' => $asset->abstrak,
             'file_url' => $asset->file_name ? route('repository.download', $asset->id) : null,

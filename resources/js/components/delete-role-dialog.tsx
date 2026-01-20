@@ -10,6 +10,7 @@ import {
 import { router } from '@inertiajs/react';
 import { AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Role {
     id: number;
@@ -38,9 +39,23 @@ export function DeleteRoleDialog({
         setProcessing(true);
         router.delete(`/roles/${role.id}`, {
             preserveScroll: true,
-            onFinish: () => {
+            onSuccess: () => {
+                toast.success('Role deleted successfully!', {
+                    description: `Role "${role.name}" has been removed.`,
+                });
                 setProcessing(false);
                 onOpenChange(false);
+            },
+            onError: (errors) => {
+                const errorMessages = Object.values(errors).flat();
+                const errorMessage = errorMessages.join(', ');
+                toast.error('Failed to delete role', {
+                    description: errorMessage || 'This role may still be in use.',
+                });
+                setProcessing(false);
+            },
+            onFinish: () => {
+                setProcessing(false);
             },
         });
     };

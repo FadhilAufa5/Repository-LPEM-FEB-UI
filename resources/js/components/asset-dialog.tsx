@@ -103,8 +103,8 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
         kode: '',
         judul_laporan: '',
         abstrak: '',
-        jenis_laporan: 'penelitian',
-        grup_kajian: 'bc_glove',
+        jenis_laporan: '',
+        grup_kajian: '',
         kepala_proyek: '',
         staf: [''],
         tahun: new Date().getFullYear(),
@@ -386,9 +386,13 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             </Label>
                             <Select
                                 value={data.jenis_laporan}
-                                onValueChange={(value) =>
-                                    setData('jenis_laporan', value)
-                                }
+                                onValueChange={(value) => {
+                                    setData('jenis_laporan', value);
+                                    // Enable research group selection by clearing it when creating new asset
+                                    if (!isEditing) {
+                                        setData('grup_kajian', '');
+                                    }
+                                }}
                             >
                                 <SelectTrigger
                                     className={
@@ -397,7 +401,13 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                             : ''
                                     }
                                 >
-                                    <SelectValue />
+                                    <SelectValue 
+                                        placeholder={
+                                            isEditing 
+                                                ? "Select report type" 
+                                                : "Select report type"
+                                        }
+                                    />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {jenisLaporanOptions.map((option) => (
@@ -428,6 +438,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 onValueChange={(value) =>
                                     setData('grup_kajian', value)
                                 }
+                                disabled={!data.jenis_laporan}
                             >
                                 <SelectTrigger
                                     className={
@@ -436,7 +447,13 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                             : ''
                                     }
                                 >
-                                    <SelectValue />
+                                    <SelectValue 
+                                        placeholder={
+                                            !data.jenis_laporan
+                                                ? 'Please select Report Type first'
+                                                : 'Select research group'
+                                        }
+                                    />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {grupKajianOptions.map((option) => (
@@ -449,6 +466,11 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                     ))}
                                 </SelectContent>
                             </Select>
+                            {!data.jenis_laporan && (
+                                <p className="text-xs text-amber-600 dark:text-amber-400">
+                                    Please select Report Type before choosing Research Group
+                                </p>
+                            )}
                             {errors.grup_kajian && (
                                 <p className="text-sm text-red-500">
                                     {errors.grup_kajian}
@@ -459,7 +481,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         {/* Kepala Proyek */}
                         <div className="grid gap-2">
                             <Label htmlFor="kepala_proyek">
-                                Project Lead{' '}
+                                Project Leader{' '}
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -574,7 +596,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
 
                         {/* File Laporan */}
                         <div className="grid gap-2">
-                            <Label htmlFor="file_laporan">Report File</Label>
+                            <Label htmlFor="file_laporan">Upload File</Label>
                             <Input
                                 id="file_laporan"
                                 type="file"
