@@ -29,6 +29,7 @@ interface RepositoryItem {
     file_url?: string;
     jenis_laporan: string;
     grup_kajian: string;
+    staff: string;
 }
 
 interface RepositoryPageProps {
@@ -557,7 +558,12 @@ export default function Repository({
                                                 <p className="text-sm leading-snug text-gray-900 dark:text-white">
                                                     <span className="font-medium">
                                                         {repo.author}
-                                                    </span>{' '}
+                                                    </span>{', '}
+                                                    {repo.staff && (
+                                                        <>
+                                                            <span className="text-xs text-gray-600 dark:text-neutral-400">{repo.staff}</span>{' '}
+                                                        </>
+                                                    )}
                                                     ({repo.year}){' '}
                                                     <span className="font-semibold">
                                                         {repo.title}
