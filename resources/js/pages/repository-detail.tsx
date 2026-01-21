@@ -200,6 +200,7 @@ export default function RepositoryDetail({
                         Authors
                     </p>
                     <p className="font-medium text-gray-900 dark:text-neutral-200">
+                        <span className="text-xs text-gray-500 mr-1">in</span>
                         {repository.author}
                     </p>
                 </div>
