@@ -68,7 +68,7 @@ export function Footer() {
 
                     {/* Social Media Section */}
                     <div>
-                        <h3 className="mb-4 text-base font-bold text-white">Follow Me</h3>
+                        <h3 className="mb-4 text-base font-bold text-white">Follow Us</h3>
                         <p className="mb-4 text-sm text-gray-400">
                             Connect with us on social media for the latest updates and news.
                         </p>

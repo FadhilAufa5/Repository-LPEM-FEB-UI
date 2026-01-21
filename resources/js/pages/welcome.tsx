@@ -213,7 +213,7 @@ export default function Welcome({
                                                         className="flex items-center gap-2 text-sm text-yellow-800 hover:text-yellow-600 dark:text-yellow-300 dark:hover:text-yellow-400 transition-colors"
                                                     >
                                                         <Mail className="h-4 w-4 flex-shrink-0" />
-                                                        <span>bin@lpem-febui.org</span>
+                                                        <span>bin@lpem-febui.org | binseto@gmail.com</span>
                                                     </a>
                                                 </div>
                                             </div>
