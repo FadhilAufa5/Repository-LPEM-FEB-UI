@@ -506,7 +506,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         <div className="grid gap-2">
                             <div className="flex items-center justify-between">
                                 <Label>
-                                    Staf <span className="text-red-500">*</span>
+                                    Staff <span className="text-red-500">*</span>
                                 </Label>
                                 <Button
                                     type="button"

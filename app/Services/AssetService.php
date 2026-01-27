@@ -137,7 +137,7 @@ class AssetService
         return $file->storeAs('assets', $filename, 'public');
     }
 
-    private function deleteFile(?string $filePath): void
+c    private function deleteFile(?string $filePath): void
     {
         if ($filePath && Storage::disk('public')->exists($filePath)) {
             Storage::disk('public')->delete($filePath);
