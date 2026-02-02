@@ -54,7 +54,9 @@ class AssetController extends Controller
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
             'jenis_laporan' => 'required|string|in:penelitian_survey,penelitian,diklat,jurnal,buku,lainnya',
-            'grup_kajian' => 'required|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
+            'grup_kajian' => $request->input('jenis_laporan') === 'penelitian' || $request->input('jenis_laporan') === 'penelitian_survey' 
+                ? 'nullable|string' 
+                : 'required|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
             'kepala_proyek' => 'required|string|max:255',
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
@@ -79,7 +81,9 @@ class AssetController extends Controller
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
             'jenis_laporan' => 'required|string|in:penelitian_survey,penelitian,diklat,jurnal,buku,lainnya',
-            'grup_kajian' => 'required|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
+            'grup_kajian' => $request->input('jenis_laporan') === 'penelitian' || $request->input('jenis_laporan') === 'penelitian_survey' 
+                ? 'nullable|string' 
+                : 'required|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
             'kepala_proyek' => 'required|string|max:255',
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
