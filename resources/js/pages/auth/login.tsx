@@ -254,14 +254,14 @@ export default function Login({
                 </Form>
             )}
 
-            {canRegister && (
+            {/* {canRegister && (
                 <div className="mt-6 text-center text-sm text-muted-foreground">
                     Belum punya akun?{' '}
                     <TextLink href={register()} tabIndex={5}>
                         Daftar
                     </TextLink>
                 </div>
-            )}
+            )} */}
 
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">

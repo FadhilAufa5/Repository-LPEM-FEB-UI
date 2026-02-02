@@ -62,6 +62,7 @@ export default function Welcome({
             params.search = title; // Single search field that filters both title and abstract
         }
         if (author) params.author = author;
+        if (abstract) params.abstract = abstract;
         if (year) params.year = year;
 
         router.get('/repository', params);
@@ -121,14 +122,15 @@ export default function Welcome({
                     <div className="mx-auto max-w-7xl px-6">
                         <form
                             onSubmit={handleSearch}
-                            className="mx-auto max-w-3xl"
+                            className="mx-auto max-w-3xl space-y-4"
                         >
+                            {/* Main Search Input */}
                             <div className="relative">
                                 <input
                                     type="text"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Search for articles, abstracts..."
+                                    value= {abstract}
+                                     onChange={(e) => setAbstract(e.target.value)}
+                                    placeholder="Search for articles, abstracts, or keywords..."
                                     className="w-full rounded-full border-2 border-gray-300 py-3 pr-12 pl-6 text-sm shadow-sm transition-all focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:border-yellow-400"
                                 />
                                 <button
@@ -185,10 +187,7 @@ export default function Welcome({
                                             publications produced by LPEM FEB UI
                                             are required to be submitted to this
                                             repository for proper archiving and
-                                            institutional record-keeping. Please
-                                            contact the LPEM FEB UI
-                                            administration for submission
-                                            guidelines and procedures.
+                                            institutional record-keeping. 
                                         </p>
                                         <p className="mt-4 text-sm leading-relaxed text-red-600 dark:text-red-300">
                                             <span className="font-semibold">Please contact the LPEM FEB UI administration:</span>

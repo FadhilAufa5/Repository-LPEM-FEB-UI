@@ -388,8 +388,11 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 value={data.jenis_laporan}
                                 onValueChange={(value) => {
                                     setData('jenis_laporan', value);
-                                    // Enable research group selection by clearing it when creating new asset
-                                    if (!isEditing) {
+                                    // Clear research group if selecting penelitian or penelitian_survey
+                                    if (value === 'penelitian' || value === 'penelitian_survey') {
+                                        setData('grup_kajian', '');
+                                    } else if (!isEditing) {
+                                        // For other types, clear if creating new asset
                                         setData('grup_kajian', '');
                                     }
                                 }}
@@ -427,61 +430,63 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             )}
                         </div>  
 
-                        {/* Grup Kajian */}
-                        <div className="grid gap-2">
-                            <Label htmlFor="grup_kajian">
-                                Research Group{' '}
-                                <span className="text-red-500">*</span>
-                            </Label>
-                            <Select
-                                value={data.grup_kajian}
-                                onValueChange={(value) =>
-                                    setData('grup_kajian', value)
-                                }
-                                disabled={!data.jenis_laporan}
-                            >
-                                <SelectTrigger
-                                    className={
-                                        errors.grup_kajian
-                                            ? 'border-red-500'
-                                            : ''
+                        {/* Grup Kajian - Only show if not penelitian or penelitian_survey */}
+                        {data.jenis_laporan !== 'penelitian' && data.jenis_laporan !== 'penelitian_survey' && (
+                            <div className="grid gap-2">
+                                <Label htmlFor="grup_kajian">
+                                    Research Group{' '}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Select
+                                    value={data.grup_kajian}
+                                    onValueChange={(value) =>
+                                        setData('grup_kajian', value)
                                     }
+                                    disabled={!data.jenis_laporan}
                                 >
-                                    <SelectValue 
-                                        placeholder={
-                                            !data.jenis_laporan
-                                                ? 'Please select Report Type first'
-                                                : 'Select research group'
+                                    <SelectTrigger
+                                        className={
+                                            errors.grup_kajian
+                                                ? 'border-red-500'
+                                                : ''
                                         }
-                                    />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {grupKajianOptions.map((option) => (
-                                        <SelectItem
-                                            key={option.value}
-                                            value={option.value}
-                                        >
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {!data.jenis_laporan && (
-                                <p className="text-xs text-amber-600 dark:text-amber-400">
-                                    Please select Report Type before choosing Research Group
-                                </p>
-                            )}
-                            {errors.grup_kajian && (
-                                <p className="text-sm text-red-500">
-                                    {errors.grup_kajian}
-                                </p>
-                            )}
-                        </div>
+                                    >
+                                        <SelectValue 
+                                            placeholder={
+                                                !data.jenis_laporan
+                                                    ? 'Please select Report Type first'
+                                                    : 'Select research group'
+                                            }
+                                        />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {grupKajianOptions.map((option) => (
+                                            <SelectItem
+                                                key={option.value}
+                                                value={option.value}
+                                            >
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {!data.jenis_laporan && (
+                                    <p className="text-xs text-amber-600 dark:text-amber-400">
+                                        Please select Report Type before choosing Research Group
+                                    </p>
+                                )}
+                                {errors.grup_kajian && (
+                                    <p className="text-sm text-red-500">
+                                        {errors.grup_kajian}
+                                    </p>
+                                )}
+                            </div>
+                        )}
 
                         {/* Kepala Proyek */}
                         <div className="grid gap-2">
                             <Label htmlFor="kepala_proyek">
-                                Project Leader{' '}
+                                Project Leader{' '} 
                                 <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -506,7 +511,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         <div className="grid gap-2">
                             <div className="flex items-center justify-between">
                                 <Label>
-                                    Staf <span className="text-red-500">*</span>
+                                    Staff <span className="text-red-500">*</span>
                                 </Label>
                                 <Button
                                     type="button"
