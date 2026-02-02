@@ -455,7 +455,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                             placeholder={
                                                 !data.jenis_laporan
                                                     ? 'Please select Report Type first'
-                                                    : 'Select research group'w
+                                                    : 'Select research group'
                                             }
                                         />
                                     </SelectTrigger>
