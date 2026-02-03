@@ -18,24 +18,10 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ClientCombobox } from '@/components/client-combobox';
-import { router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { Plus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-
-interface Asset {
-    id: number;
-    kode: string;
-    judul_laporan: string;
-    abstrak: string;
-    jenis_laporan: string;
-    grup_kajian: string;
-    kepala_proyek: string;
-    staf: string[] | string;
-    tahun: number;
-    file_laporan?: string;
-    client_id?: number;
-}
+import { assetService, AssetFormData, Asset } from '@/services/assetService';
 
 interface ClientOption {
     value: number;
@@ -49,7 +35,7 @@ interface AssetDialogProps {
     clients: ClientOption[];
 }
 
-const jenisLaporanOptions = [
+const JENIS_LAPORAN_OPTIONS = [
     { value: 'penelitian_survey', label: 'Penelitian + Survey' },
     { value: 'penelitian', label: 'Penelitian' },
     { value: 'diklat', label: 'Diklat' },
@@ -58,38 +44,17 @@ const jenisLaporanOptions = [
     { value: 'lainnya', label: 'Lainnya' },
 ];
 
-const grupKajianOptions = [
-    {
-        value: 'bc_glove',
-        label: 'Business Climate and Global Value Chain (BC-GLOVE)',
-    },
+const GRUP_KAJIAN_OPTIONS = [
+    { value: 'bc_glove', label: 'Business Climate and Global Value Chain (BC-GLOVE)' },
     { value: 'nres', label: 'Natural Resources and Energy Studies (NRES)' },
-    {
-        value: 'gec_rg',
-        label: 'Green Economy and Climate - Research Group (GEC-RG)',
-    },
-    {
-        value: 'dtbs',
-        label: 'Digital Transformation and Behavioral Studies (DTBS)',
-    },
+    { value: 'gec_rg', label: 'Green Economy and Climate - Research Group (GEC-RG)' },
+    { value: 'dtbs', label: 'Digital Transformation and Behavioral Studies (DTBS)' },
     { value: 'mfpe', label: 'Macro, Finance, and Political Economy (MFPE)' },
     { value: 'spl', label: 'Social Protection and Labor (SPL)' },
-    {
-        value: 'sece',
-        label: 'Social Engineering and Community Empowerment (SECE)',
-    },
-    {
-        value: 'devpfin',
-        label: 'Public Finance and Development Planning (DEVPFIN)',
-    },
-    {
-        value: 'mpower',
-        label: 'Multidimensional Poverty and Well Being Research Group (MPOWER)',
-    },
-    {
-        value: 'trust',
-        label: 'Transport, Real Estate, and Urban Studies (TRUST)',
-    },
+    { value: 'sece', label: 'Social Engineering and Community Empowerment (SECE)' },
+    { value: 'devpfin', label: 'Public Finance and Development Planning (DEVPFIN)' },
+    { value: 'mpower', label: 'Multidimensional Poverty and Well Being Research Group (MPOWER)' },
+    { value: 'trust', label: 'Transport, Real Estate, and Urban Studies (TRUST)' },
 ];
 
 export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogProps) {
@@ -98,51 +63,15 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    const { data, setData, errors, reset } = useForm({
-        client_id: null as number | null,
-        kode: '',
-        judul_laporan: '',
-        abstrak: '',
-        jenis_laporan: '',
-        grup_kajian: '',
-        kepala_proyek: '',
-        staf: [''],
-        tahun: new Date().getFullYear(),
-        file_laporan: null as File | null,
-    });
+    const { data, setData, errors, reset } = useForm<AssetFormData>(
+        asset ? assetService.initializeFormData(asset) : assetService.getDefaultFormData()
+    );
 
     useEffect(() => {
         if (asset) {
-            // Ensure staf is always an array
-            let stafArray: string[] = [''];
-            if (asset.staf) {
-                if (Array.isArray(asset.staf)) {
-                    stafArray = asset.staf.length > 0 ? asset.staf : [''];
-                } else if (typeof asset.staf === 'string') {
-                    try {
-                        const parsed = JSON.parse(asset.staf);
-                        stafArray =
-                            Array.isArray(parsed) && parsed.length > 0
-                                ? parsed
-                                : [''];
-                    } catch {
-                        stafArray = [''];
-                    }
-                }
-            }
-
-            setData({
-                client_id: asset.client_id || null,
-                kode: asset.kode,
-                judul_laporan: asset.judul_laporan,
-                abstrak: asset.abstrak,
-                jenis_laporan: asset.jenis_laporan,
-                grup_kajian: asset.grup_kajian,
-                kepala_proyek: asset.kepala_proyek,
-                staf: stafArray,
-                tahun: asset.tahun,
-                file_laporan: null,
-            });
+            const stafArray = assetService.parseStafArray(asset.staf);
+            const formData = assetService.initializeFormData(asset);
+            setData(formData);
             setStafList(stafArray);
         } else {
             reset();
@@ -180,97 +109,19 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
         setShowConfirm(false);
         setIsSubmitting(true);
 
-        // Filter staf yang tidak kosong
-        const filteredStaf = data.staf.filter((s) => s.trim() !== '');
-
-        const formData = new FormData();
-        if (data.client_id) {
-            formData.append('client_id', data.client_id.toString());
-        }
-        formData.append('kode', data.kode);
-        formData.append('judul_laporan', data.judul_laporan);
-        formData.append('abstrak', data.abstrak);
-        formData.append('jenis_laporan', data.jenis_laporan);
-        formData.append('grup_kajian', data.grup_kajian);
-        formData.append('kepala_proyek', data.kepala_proyek);
-        formData.append('tahun', data.tahun.toString());
-
-        // Append staf as array
-        filteredStaf.forEach((s, index) => {
-            formData.append(`staf[${index}]`, s);
-        });
-
-        // Show upload progress toast if file is being uploaded
-        let uploadToastId: string | number | undefined;
-        if (data.file_laporan) {
-            formData.append('file_laporan', data.file_laporan);
-            uploadToastId = toast.loading('Uploading file...', {
-                description: `Uploading ${data.file_laporan.name}. Please wait...`
-            });
-        }
-
-        if (isEditing) {
-            formData.append('_method', 'PUT');
-            router.post(`/assets/${asset.id}`, formData, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    // Dismiss upload toast if exists
-                    if (uploadToastId) {
-                        toast.dismiss(uploadToastId);
-                    }
-                    toast.success('Asset updated successfully!', {
-                        description: `Asset "${data.judul_laporan}" has been updated.`
-                    });
-                    onOpenChange(false);
-                    reset();
-                    setStafList(['']);
-                },
-                onError: (errors) => {
-                    // Dismiss upload toast if exists
-                    if (uploadToastId) {
-                        toast.dismiss(uploadToastId);
-                    }
-                    const errorMessages = Object.values(errors).flat();
-                    const errorMessage = errorMessages.join(', ');
-                    toast.error('Failed to update asset', {
-                        description: errorMessage || 'Please check your input and try again.'
-                    });
-                },
-                onFinish: () => {
-                    setIsSubmitting(false);
-                },
-            });
-        } else {
-            router.post('/assets', formData, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    // Dismiss upload toast if exists
-                    if (uploadToastId) {
-                        toast.dismiss(uploadToastId);
-                    }
-                    toast.success('Asset created successfully!', {
-                        description: `Asset "${data.judul_laporan}" has been added.`
-                    });
-                    onOpenChange(false);
-                    reset();
-                    setStafList(['']);
-                },
-                onError: (errors) => {
-                    // Dismiss upload toast if exists
-                    if (uploadToastId) {
-                        toast.dismiss(uploadToastId);
-                    }
-                    const errorMessages = Object.values(errors).flat();
-                    const errorMessage = errorMessages.join(', ');
-                    toast.error('Failed to create asset', {
-                        description: errorMessage || 'Please check your input and try again.'
-                    });
-                },
-                onFinish: () => {
-                    setIsSubmitting(false);
-                },
-            });
-        }
+        assetService.submitAsset(
+            data,
+            isEditing,
+            asset?.id,
+            () => {
+                onOpenChange(false);
+                reset();
+                setStafList(['']);
+            },
+            () => {
+                setIsSubmitting(false);
+            }
+        );
     };
 
     const currentYear = new Date().getFullYear();
@@ -280,7 +131,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[700px]">
                 <DialogHeader>
-                        <DialogTitle>
+                    <DialogTitle>
                         {isEditing ? 'Edit Asset' : 'Add New Asset'}
                     </DialogTitle>
                     <DialogDescription>
@@ -291,7 +142,6 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                 </DialogHeader>
                 <form onSubmit={handleFormSubmit}>
                     <div className="grid gap-4 py-4">
-                        {/* Kode */}
                         <div className="grid gap-2">
                             <Label htmlFor="kode">
                                 Code <span className="text-red-500">*</span>
@@ -299,24 +149,17 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             <Input
                                 id="kode"
                                 value={data.kode}
-                                onChange={(e) =>
-                                    setData('kode', e.target.value)
-                                }
+                                onChange={(e) => setData('kode', e.target.value)}
                                 placeholder="LP-2025-001"
                                 className={errors.kode ? 'border-red-500' : ''}
                             />
                             {errors.kode && (
-                                <p className="text-sm text-red-500">
-                                    {errors.kode}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.kode}</p>
                             )}
                         </div>
 
-                        {/* Kode Client */}
                         <div className="grid gap-2">
-                            <Label htmlFor="client_id">
-                                Code Client
-                            </Label>
+                            <Label htmlFor="client_id">Code Client</Label>
                             <ClientCombobox
                                 clients={clients}
                                 value={data.client_id}
@@ -324,37 +167,26 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 error={errors.client_id}
                             />
                             {errors.client_id && (
-                                <p className="text-sm text-red-500">
-                                    {errors.client_id}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.client_id}</p>
                             )}
                         </div>
 
-                        {/* Judul Laporan */}
                         <div className="grid gap-2">
                             <Label htmlFor="judul_laporan">
-                                Report Title{' '}
-                                <span className="text-red-500">*</span>
+                                Report Title <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="judul_laporan"
                                 value={data.judul_laporan}
-                                onChange={(e) =>
-                                    setData('judul_laporan', e.target.value)
-                                }
+                                onChange={(e) => setData('judul_laporan', e.target.value)}
                                 placeholder="Enter report title"
-                                className={
-                                    errors.judul_laporan ? 'border-red-500' : ''
-                                }
+                                className={errors.judul_laporan ? 'border-red-500' : ''}
                             />
                             {errors.judul_laporan && (
-                                <p className="text-sm text-red-500">
-                                    {errors.judul_laporan}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.judul_laporan}</p>
                             )}
                         </div>
 
-                        {/* Abstrak */}
                         <div className="grid gap-2">
                             <Label htmlFor="abstrak">
                                 Abstract <span className="text-red-500">*</span>
@@ -362,157 +194,84 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             <Textarea
                                 id="abstrak"
                                 value={data.abstrak}
-                                onChange={(e) =>
-                                    setData('abstrak', e.target.value)
-                                }
+                                onChange={(e) => setData('abstrak', e.target.value)}
                                 placeholder="Enter report abstract"
                                 rows={4}
-                                className={
-                                    errors.abstrak ? 'border-red-500' : ''
-                                }
+                                className={errors.abstrak ? 'border-red-500' : ''}
                             />
                             {errors.abstrak && (
-                                <p className="text-sm text-red-500">
-                                    {errors.abstrak}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.abstrak}</p>
                             )}
                         </div>
 
-                        {/* Jenis Laporan */}
                         <div className="grid gap-2">
                             <Label htmlFor="jenis_laporan">
-                                Report Type{' '}
-                                <span className="text-red-500">*</span>
+                                Report Type <span className="text-red-500">*</span>
                             </Label>
                             <Select
                                 value={data.jenis_laporan}
-                                onValueChange={(value) => {
-                                    setData('jenis_laporan', value);
-                                    // Clear research group if selecting penelitian or penelitian_survey
-                                    if (value === 'penelitian' || value === 'penelitian_survey') {
-                                        setData('grup_kajian', '');
-                                    } else if (!isEditing) {
-                                        // For other types, clear if creating new asset
-                                        setData('grup_kajian', '');
-                                    }
-                                }}
+                                onValueChange={(value) => setData('jenis_laporan', value)}
                             >
-                                <SelectTrigger
-                                    className={
-                                        errors.jenis_laporan
-                                            ? 'border-red-500'
-                                            : ''
-                                    }
-                                >
-                                    <SelectValue 
-                                        placeholder={
-                                            isEditing 
-                                                ? "Select report type" 
-                                                : "Select report type"
-                                        }
-                                    />
+                                <SelectTrigger className={errors.jenis_laporan ? 'border-red-500' : ''}>
+                                    <SelectValue placeholder="Select report type" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {jenisLaporanOptions.map((option) => (
-                                        <SelectItem
-                                            key={option.value}
-                                            value={option.value}
-                                        >
+                                    {JENIS_LAPORAN_OPTIONS.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
                                             {option.label}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                             {errors.jenis_laporan && (
-                                <p className="text-sm text-red-500">
-                                    {errors.jenis_laporan}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.jenis_laporan}</p>
                             )}
-                        </div>  
+                        </div>
 
-                        {/* Grup Kajian - Only show if not penelitian or penelitian_survey */}
-                        {data.jenis_laporan !== 'penelitian' && data.jenis_laporan !== 'penelitian_survey' && (
+                        {/* Grup Kajian - Show only for penelitian types */}
+                        {assetService.shouldShowResearchGroup(data.jenis_laporan) && (
                             <div className="grid gap-2">
-                                <Label htmlFor="grup_kajian">
-                                    Research Group{' '}
-                                    <span className="text-red-500">*</span>
-                                </Label>
+                                <Label htmlFor="grup_kajian">Research Group</Label>
                                 <Select
                                     value={data.grup_kajian}
-                                    onValueChange={(value) =>
-                                        setData('grup_kajian', value)
-                                    }
-                                    disabled={!data.jenis_laporan}
+                                    onValueChange={(value) => setData('grup_kajian', value)}
                                 >
-                                    <SelectTrigger
-                                        className={
-                                            errors.grup_kajian
-                                                ? 'border-red-500'
-                                                : ''
-                                        }
-                                    >
-                                        <SelectValue 
-                                            placeholder={
-                                                !data.jenis_laporan
-                                                    ? 'Please select Report Type first'
-                                                    : 'Select research group'
-                                            }
-                                        />
+                                    <SelectTrigger className={errors.grup_kajian ? 'border-red-500' : ''}>
+                                        <SelectValue placeholder="Select research group" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {grupKajianOptions.map((option) => (
-                                            <SelectItem
-                                                key={option.value}
-                                                value={option.value}
-                                            >
+                                        {GRUP_KAJIAN_OPTIONS.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
                                                 {option.label}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                {!data.jenis_laporan && (
-                                    <p className="text-xs text-amber-600 dark:text-amber-400">
-                                        Please select Report Type before choosing Research Group
-                                    </p>
-                                )}
                                 {errors.grup_kajian && (
-                                    <p className="text-sm text-red-500">
-                                        {errors.grup_kajian}
-                                    </p>
+                                    <p className="text-sm text-red-500">{errors.grup_kajian}</p>
                                 )}
                             </div>
                         )}
 
-                        {/* Kepala Proyek */}
                         <div className="grid gap-2">
                             <Label htmlFor="kepala_proyek">
-                                Project Leader{' '} 
-                                <span className="text-red-500">*</span>
+                                Project Leader <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="kepala_proyek"
                                 value={data.kepala_proyek}
-                                onChange={(e) =>
-                                    setData('kepala_proyek', e.target.value)
-                                }
+                                onChange={(e) => setData('kepala_proyek', e.target.value)}
                                 placeholder="Project lead name"
-                                className={
-                                    errors.kepala_proyek ? 'border-red-500' : ''
-                                }
+                                className={errors.kepala_proyek ? 'border-red-500' : ''}
                             />
                             {errors.kepala_proyek && (
-                                <p className="text-sm text-red-500">
-                                    {errors.kepala_proyek}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.kepala_proyek}</p>
                             )}
                         </div>
 
-                        {/* Staf */}
                         <div className="grid gap-2">
                             <div className="flex items-center justify-between">
-                                <Label>
-                                    Staff <span className="text-red-500">*</span>
-                                </Label>
+                                <Label>Staff <span className="text-red-500">*</span></Label>
                                 <Button
                                     type="button"
                                     variant="outline"
@@ -520,7 +279,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                     onClick={addStafField}
                                 >
                                     <Plus className="mr-1 size-3" />
-                                        Add Staff
+                                    Add Staff
                                 </Button>
                             </div>
                             <div className="space-y-2">
@@ -528,27 +287,16 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                     <div key={index} className="flex gap-2">
                                         <Input
                                             value={staf}
-                                            onChange={(e) =>
-                                                handleStafChange(
-                                                    index,
-                                                    e.target.value,
-                                                )
-                                            }
+                                            onChange={(e) => handleStafChange(index, e.target.value)}
                                             placeholder={`Staff name ${index + 1}`}
-                                            className={
-                                                errors.staf
-                                                    ? 'border-red-500'
-                                                    : ''
-                                            }
+                                            className={errors.staf ? 'border-red-500' : ''}
                                         />
                                         {stafList.length > 1 && (
                                             <Button
                                                 type="button"
                                                 variant="outline"
                                                 size="icon"
-                                                onClick={() =>
-                                                    removeStafField(index)
-                                                }
+                                                onClick={() => removeStafField(index)}
                                             >
                                                 <X className="size-4" />
                                             </Button>
@@ -557,74 +305,66 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 ))}
                             </div>
                             {errors.staf && (
-                                <p className="text-sm text-red-500">
-                                    {errors.staf}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.staf}</p>
                             )}
                         </div>
 
-                        {/* Tahun */}
                         <div className="grid gap-2">
                             <Label htmlFor="tahun">
                                 Year <span className="text-red-500">*</span>
                             </Label>
                             <Select
                                 value={data.tahun.toString()}
-                                onValueChange={(value) =>
-                                    setData('tahun', parseInt(value))
-                                }
+                                onValueChange={(value) => setData('tahun', parseInt(value))}
                             >
-                                <SelectTrigger
-                                    className={
-                                        errors.tahun ? 'border-red-500' : ''
-                                    }
-                                >
+                                <SelectTrigger className={errors.tahun ? 'border-red-500' : ''}>
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {yearOptions.map((year) => (
-                                        <SelectItem
-                                            key={year}
-                                            value={year.toString()}
-                                        >
+                                        <SelectItem key={year} value={year.toString()}>
                                             {year}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                             {errors.tahun && (
-                                <p className="text-sm text-red-500">
-                                    {errors.tahun}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.tahun}</p>
                             )}
                         </div>
 
-                        {/* File Laporan */}
                         <div className="grid gap-2">
-                            <Label htmlFor="file_laporan">Upload File</Label>
+                            <Label htmlFor="file_laporan">Report File</Label>
                             <Input
                                 id="file_laporan"
                                 type="file"
                                 accept=".pdf,.doc,.docx,.zip,.rar"
-                                onChange={(e) =>
-                                    setData(
-                                        'file_laporan',
-                                        e.target.files?.[0] || null,
-                                    )
-                                }
-                                className={
-                                    errors.file_laporan ? 'border-red-500' : ''
-                                }
+                                onChange={(e) => setData('file_laporan', e.target.files?.[0] || null)}
+                                className={errors.file_laporan ? 'border-red-500' : ''}
                             />
                             {errors.file_laporan && (
-                                <p className="text-sm text-red-500">
-                                    {errors.file_laporan}
-                                </p>
+                                <p className="text-sm text-red-500">{errors.file_laporan}</p>
                             )}
                             <p className="text-xs text-neutral-500">
                                 Format: PDF, DOC, DOCX, ZIP, RAR. Maximum 50MB.{' '}
-                                {isEditing &&
-                                    'Leave empty if you do not want to change the file.'}
+                                {isEditing && 'Leave empty if you do not want to change the file.'}
+                            </p>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="file_proposal">Proposal File</Label>
+                            <Input
+                                id="file_proposal"
+                                type="file"
+                                accept=".pdf,.doc,.docx,.zip,.rar"
+                                onChange={(e) => setData('file_proposal', e.target.files?.[0] || null)}
+                                className={errors.file_proposal ? 'border-red-500' : ''}
+                            />
+                            {errors.file_proposal && (
+                                <p className="text-sm text-red-500">{errors.file_proposal}</p>
+                            )}
+                            <p className="text-xs text-neutral-500">
+                                Format: PDF, DOC, DOCX. Maximum 50MB.{' '}
+                                {isEditing && 'Leave empty if you do not want to change the proposal.'}
                             </p>
                         </div>
                     </div>
@@ -638,11 +378,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             Cancel
                         </Button>
                         <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting
-                                ? 'Saving...'
-                                : isEditing
-                                  ? 'Update'
-                                  : 'Save'}
+                            {isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Save'}
                         </Button>
                     </DialogFooter>
                 </form>
@@ -657,7 +393,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             Are you sure you want to {isEditing ? 'update' : 'create'} this asset?
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="py-4">
+                    <div className="py-4 space-y-2">
                         <p className="text-sm text-neutral-600 dark:text-neutral-400">
                             <span className="font-semibold">Code:</span> {data.kode}
                         </p>
@@ -665,25 +401,25 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                             <span className="font-semibold">Title:</span> {data.judul_laporan}
                         </p>
                         {data.file_laporan && (
-                            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                            <p className="text-sm text-neutral-600 dark:text-neutral-400">
                                 <span className="font-semibold">File:</span> {data.file_laporan.name}
+                            </p>
+                        )}
+                        {data.file_proposal && (
+                            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                                <span className="font-semibold">Proposal:</span> {data.file_proposal.name}
                             </p>
                         )}
                     </div>
                     <DialogFooter>
                         <Button
                             type="button"
-                            variant="outline"
                             onClick={() => setShowConfirm(false)}
                             disabled={isSubmitting}
                         >
                             Cancel
                         </Button>
-                        <Button
-                            type="button"
-                            onClick={handleConfirmSubmit}
-                            disabled={isSubmitting}
-                        >
+                        <Button type="button" onClick={handleConfirmSubmit} disabled={isSubmitting}>
                             Confirm
                         </Button>
                     </DialogFooter>

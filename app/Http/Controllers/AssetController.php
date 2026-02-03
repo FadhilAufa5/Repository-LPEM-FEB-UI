@@ -54,14 +54,14 @@ class AssetController extends Controller
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
             'jenis_laporan' => 'required|string|in:penelitian_survey,penelitian,diklat,jurnal,buku,lainnya',
-            'grup_kajian' => $request->input('jenis_laporan') === 'penelitian' || $request->input('jenis_laporan') === 'penelitian_survey' 
-                ? 'nullable|string' 
-                : 'required|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
+            // Make grup_kajian optional — validate only when provided
+            'grup_kajian' => 'nullable|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
             'kepala_proyek' => 'required|string|max:255',
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 10),
             'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
+            'file_proposal' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
         ]);
 
         $this->assetService->createAsset($validated, $request->user()->id);
@@ -81,14 +81,14 @@ class AssetController extends Controller
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
             'jenis_laporan' => 'required|string|in:penelitian_survey,penelitian,diklat,jurnal,buku,lainnya',
-            'grup_kajian' => $request->input('jenis_laporan') === 'penelitian' || $request->input('jenis_laporan') === 'penelitian_survey' 
-                ? 'nullable|string' 
-                : 'required|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
+            // Make grup_kajian optional on update as well
+            'grup_kajian' => 'nullable|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
             'kepala_proyek' => 'required|string|max:255',
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 10),
             'file_laporan' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
+            'file_proposal' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
         ]);
 
         $this->assetService->updateAsset($asset, $validated);

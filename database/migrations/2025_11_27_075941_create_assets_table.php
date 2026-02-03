@@ -22,6 +22,7 @@ return new class extends Migration
             $table->json('staf');
             $table->integer('tahun');
             $table->string('file_laporan')->nullable();
+            $table->string('file_proposal')->nullable();
             $table->timestamps();
         });
     }
