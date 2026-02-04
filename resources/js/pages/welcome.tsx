@@ -298,7 +298,18 @@ export default function Welcome({
                                         </Link>
                                     </div>
                                 ) : (
-                                    <div className="text-sm text-gray-600 dark:text-neutral-400">Account actions are hidden.</div>
+                                    <div className="space-y-3">
+                                        <p className="text-sm text-gray-600 dark:text-neutral-400">
+                                            Sign in to access inventory
+                                        </p>
+                                        <Link
+                                            href={login().url}
+                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-yellow-700"
+                                        >
+                                            <User className="h-4 w-4" />
+                                            Sign In
+                                        </Link>
+                                    </div>
                                 )}
                             </div>
                         </aside>

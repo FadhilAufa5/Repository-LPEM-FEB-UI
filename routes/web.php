@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Asset Management Routes - accessible by all authenticated users
     Route::resource('assets', \App\Http\Controllers\AssetController::class);
     Route::get('assets/{asset}/download', [\App\Http\Controllers\AssetController::class, 'download'])->name('assets.download');
+    Route::get('assets/{asset}/download-proposal', [\App\Http\Controllers\AssetController::class, 'downloadProposal'])->name('assets.download-proposal');
 
     // Client Management Routes - accessible by all authenticated users
     Route::resource('clients', \App\Http\Controllers\ClientController::class);

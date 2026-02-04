@@ -24,15 +24,21 @@ class Asset extends Model
         'file_name',
         'file_mime',
         'file_size',
+        'proposal_content',
+        'proposal_name',
+        'proposal_mime',
+        'proposal_size',
     ];
 
     protected $casts = [
         'tahun' => 'integer',
         'file_size' => 'integer',
+        'proposal_size' => 'integer',
     ];
 
     protected $hidden = [
         'file_content', // Hide binary content from JSON responses
+        'proposal_content', // Hide binary content from JSON responses
     ];
 
     // Accessor for staf to ensure it's always an array

@@ -122,4 +122,20 @@ class AssetController extends Controller
             ->header('Content-Disposition', 'attachment; filename="' . $asset->file_name . '"')
             ->header('Content-Length', $asset->file_size);
     }
+    
+    public function downloadProposal(Asset $asset)
+    {
+        if (!$asset->proposal_content) {
+            abort(404, 'Proposal file tidak ditemukan.');
+        }
+
+        // Decode base64 content 
+        $fileContent = base64_decode($asset->proposal_content);
+
+        // Return file as download response
+        return response($fileContent)
+            ->header('Content-Type', $asset->proposal_mime)
+            ->header('Content-Disposition', 'attachment; filename="' . $asset->proposal_name . '"')
+            ->header('Content-Length', $asset->proposal_size);
+    }
 }

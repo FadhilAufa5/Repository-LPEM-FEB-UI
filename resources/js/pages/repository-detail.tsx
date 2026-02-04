@@ -136,10 +136,10 @@ export default function RepositoryDetail({
                                                         No Access
                                                     </button>
                                                 )}
-                                                <p className="text-xs text-gray-500 dark:text-neutral-500">
+                                                {/* <p className="text-xs text-gray-500 dark:text-neutral-500">
                                                     {repository.file_name}
                                                     {repository.file_size && ` (${(repository.file_size / 1024 / 1024).toFixed(2)} MB)`}
-                                                </p>
+                                                </p> */}
                                             </div>
                                         ) : (
                                             <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-400 dark:text-neutral-600">
@@ -228,7 +228,7 @@ export default function RepositoryDetail({
             )}
 
             {/* Actions */}
-            <div className="mt-5 space-y-2 border-t border-gray-100 pt-4 dark:border-neutral-800">
+            {/* <div className="mt-5 space-y-2 border-t border-gray-100 pt-4 dark:border-neutral-800">
                 <button
                     onClick={copyCitation}
                     className="flex w-full items-center gap-2 text-sm font-medium text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
@@ -259,7 +259,7 @@ export default function RepositoryDetail({
                         </button>
                     )
                 )}
-            </div>
+            </div> */}
 
             {/* Footer */}
             <div className="mt-4 text-xs text-gray-500">

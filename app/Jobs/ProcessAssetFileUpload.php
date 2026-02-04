@@ -23,7 +23,8 @@ class ProcessAssetFileUpload implements ShouldQueue
         public string $tempFilePath,
         public string $originalFileName,
         public string $mimeType,
-        public int $fileSize
+        public int $fileSize,
+        public string $fileType = 'report' // 'report' or 'proposal'
     ) {
         //
     }
@@ -43,29 +44,41 @@ class ProcessAssetFileUpload implements ShouldQueue
                 // Encode to base64 for database storage
                 $base64Content = base64_encode($fileContent);
                 
-                // Update asset with file data
-                $asset->update([
-                    'file_content' => $base64Content,
-                    'file_name' => $this->originalFileName,
-                    'file_mime' => $this->mimeType,
-                    'file_size' => $this->fileSize,
-                ]);
+                // Determine which columns to update based on file type
+                if ($this->fileType === 'proposal') {
+                    $asset->update([
+                        'proposal_content' => $base64Content,
+                        'proposal_name' => $this->originalFileName,
+                        'proposal_mime' => $this->mimeType,
+                        'proposal_size' => $this->fileSize,
+                    ]);
+                } else {
+                    // Default to report file
+                    $asset->update([
+                        'file_content' => $base64Content,
+                        'file_name' => $this->originalFileName,
+                        'file_mime' => $this->mimeType,
+                        'file_size' => $this->fileSize,
+                    ]);
+                }
                 
                 // Delete temp file after successful storage
                 Storage::disk('public')->delete($this->tempFilePath);
                 
-                Log::info("Asset file uploaded successfully to database", [
+                Log::info("Asset {$this->fileType} file uploaded successfully to database", [
                     'asset_id' => $this->assetId,
                     'file_name' => $this->originalFileName,
-                    'file_size' => $this->fileSize
+                    'file_size' => $this->fileSize,
+                    'file_type' => $this->fileType
                 ]);
             } else {
                 throw new \Exception("Temp file not found: {$this->tempFilePath}");
             }
         } catch (\Exception $e) {
-            Log::error("Failed to process asset file upload", [
+            Log::error("Failed to process asset {$this->fileType} file upload", [
                 'asset_id' => $this->assetId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'file_type' => $this->fileType
             ]);
             
             // Clean up temp file if exists

@@ -18,9 +18,11 @@ class ReportSearchController extends Controller
     public function index(Request $request)
     {
         $jenisLaporan = $request->input('jenis_laporan');
+        $year = $request->input('year');
         
         $filters = [
             'jenis_laporan' => $jenisLaporan,
+            'year' => $year,
         ];
 
         // Get repositories if a report type is selected
@@ -40,13 +42,18 @@ class ReportSearchController extends Controller
 
         // Get counts for each report type
         $jenisLaporanCounts = $this->repositoryService->getJenisLaporanCounts();
+        
+        // Get available years for filter
+        $availableYears = $this->repositoryService->getAvailableYears();
 
         return Inertia::render('report-search', [
             'repositories' => $repositories,
             'filters' => [
                 'jenis_laporan' => $jenisLaporan,
+                'year' => $year,
             ],
             'jenisLaporanCounts' => $jenisLaporanCounts,
+            'availableYears' => $availableYears,
         ]);
     }
 }
