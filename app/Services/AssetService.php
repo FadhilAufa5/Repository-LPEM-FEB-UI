@@ -26,16 +26,28 @@ class AssetService
         $data['user_id'] = $userId;
 
         $file = null;
+        $proposalFile = null;
+        
         if (isset($data['file_laporan'])) {
             $file = $data['file_laporan'];
             unset($data['file_laporan']); // Remove file from data, will be handled by queue
         }
+        
+        if (isset($data['file_proposal'])) {
+            $proposalFile = $data['file_proposal'];
+            unset($data['file_proposal']); // Remove file from data, will be handled by queue
+        }
 
         $asset = Asset::create($data);
 
-        // Dispatch queue job for file upload if file exists
+        // Dispatch queue job for report file upload if file exists
         if ($file) {
-            $this->dispatchFileUpload($asset, $file);
+            $this->dispatchFileUpload($asset, $file, 'report');
+        }
+        
+        // Dispatch queue job for proposal file upload if file exists
+        if ($proposalFile) {
+            $this->dispatchFileUpload($asset, $proposalFile, 'proposal');
         }
 
         return $asset;
@@ -44,6 +56,8 @@ class AssetService
     public function updateAsset(Asset $asset, array $data)
     {
         $file = null;
+        $proposalFile = null;
+        
         if (isset($data['file_laporan'])) {
             $file = $data['file_laporan'];
             unset($data['file_laporan']); // Remove file from data, will be handled by queue
@@ -54,12 +68,28 @@ class AssetService
             $data['file_mime'] = null;
             $data['file_size'] = null;
         }
+        
+        if (isset($data['file_proposal'])) {
+            $proposalFile = $data['file_proposal'];
+            unset($data['file_proposal']); // Remove file from data, will be handled by queue
+            
+            // Clear old proposal data if exists
+            $data['proposal_content'] = null;
+            $data['proposal_name'] = null;
+            $data['proposal_mime'] = null;
+            $data['proposal_size'] = null;
+        }
 
         $asset->update($data);
 
-        // Dispatch queue job for file upload if file exists
+        // Dispatch queue job for report file upload if file exists
         if ($file) {
-            $this->dispatchFileUpload($asset, $file);
+            $this->dispatchFileUpload($asset, $file, 'report');
+        }
+        
+        // Dispatch queue job for proposal file upload if file exists
+        if ($proposalFile) {
+            $this->dispatchFileUpload($asset, $proposalFile, 'proposal');
         }
 
         return $asset;
@@ -115,19 +145,20 @@ class AssetService
         $query->orderBy($sortBy, $sortOrder);
     }
 
-    private function dispatchFileUpload(Asset $asset, $file): void
+    private function dispatchFileUpload(Asset $asset, $file, string $fileType = 'report'): void
     {
         // Store file temporarily
         $tempFilename = 'temp_' . time() . '_' . $file->getClientOriginalName();
         $tempPath = $file->storeAs('temp', $tempFilename, 'public');
 
-        // Dispatch queue job
+        // Dispatch queue job with file type
         ProcessAssetFileUpload::dispatch(
             $asset->id,
             $tempPath,
             $file->getClientOriginalName(),
             $file->getMimeType(),
-            $file->getSize()
+            $file->getSize(),
+            $fileType
         );
     }
 

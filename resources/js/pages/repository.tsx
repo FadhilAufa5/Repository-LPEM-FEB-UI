@@ -167,7 +167,7 @@ export default function Repository({
                     {/* Header */}
                     <div className="mb-6">
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                            Repository Search Results
+                            Research Repository Search Results
                         </h1>
                         <div className="mt-2 flex items-center gap-3">
                             <p className="text-sm text-gray-600 dark:text-neutral-400">

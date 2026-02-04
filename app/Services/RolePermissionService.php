@@ -10,7 +10,9 @@ class RolePermissionService
 {
     public function getFilteredRoles(array $filters, int $perPage = 10)
     {
-        $query = Role::query()->withCount(['permissions', 'users']);
+        $query = Role::query()
+            ->with('permissions') // Eager load permissions for edit dialog
+            ->withCount(['permissions', 'users']);
 
         $this->applySearchFilter($query, $filters['search'] ?? null);
         $this->applySorting($query, $filters['sort_by'] ?? 'created_at', $filters['sort_order'] ?? 'desc');

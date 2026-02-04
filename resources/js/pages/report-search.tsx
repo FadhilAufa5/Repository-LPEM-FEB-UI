@@ -14,6 +14,8 @@ import {
     Home,
     ChevronRight,
     Search,
+    Calendar,
+    X,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -37,8 +39,10 @@ interface ReportSearchPageProps {
         last_page: number;
     };
     jenisLaporanCounts: Record<string, number>;
+    availableYears: number[];
     filters: {
         jenis_laporan?: string;
+        year?: number;
     };
 }
 
@@ -123,36 +127,26 @@ const colorClasses = {
 export default function ReportSearch({
     repositories,
     jenisLaporanCounts,
+    availableYears,
     filters,
 }: ReportSearchPageProps) {
     const { auth } = usePage<SharedData>().props;
     const [selectedType, setSelectedType] = useState(filters.jenis_laporan || '');
+    const [selectedYear, setSelectedYear] = useState<number | undefined>(filters.year);
 
     const handleTypeSelect = (type: string) => {
         setSelectedType(type);
-        router.get('/report-search', { jenis_laporan: type }, { preserveState: true });
+        router.get('/report-search', { jenis_laporan: type, year: selectedYear }, { preserveState: true });
+    };
+
+    const handleYearSelect = (year: number | undefined) => {
+        setSelectedYear(year);
+        router.get('/report-search', { jenis_laporan: selectedType, year }, { preserveState: true });
     };
 
     const getCount = (type: string) => {
         return jenisLaporanCounts[type] || 0;
     };
-
-    const normalizeJenis = (v?: string) =>
-        v
-            ? v
-                  .toString()
-                  .toLowerCase()
-                  .replace(/\s+/g, '_')
-                  .replace(/[^\w_]/g, '')
-            : '';
-
-    const filteredRepositories = selectedType
-        ? repositories.data.filter(
-              (r) => normalizeJenis(r.jenis_laporan) === normalizeJenis(selectedType),
-          )
-        : repositories.data;
-
-    const filteredTotal = filteredRepositories.length;
 
     return (
         <>
@@ -248,6 +242,7 @@ export default function ReportSearch({
                                 <button
                                     onClick={() => {
                                         setSelectedType('');
+                                        setSelectedYear(undefined);
                                         router.get('/report-search', {}, { preserveState: true });
                                     }}
                                     className="text-sm font-medium text-yellow-600 hover:text-yellow-700 dark:text-yellow-400"
@@ -256,20 +251,89 @@ export default function ReportSearch({
                                 </button>
                             </div>
 
-                            {filteredRepositories.length > 0 ? (
+                            {/* Year Filter - Calendar Style */}
+                            {availableYears.length > 0 && (
+                                <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-6 shadow-sm dark:border-neutral-800 dark:from-neutral-900 dark:to-neutral-900/50">
+                                    <div className="mb-4 flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className="rounded-lg bg-yellow-100 p-2 dark:bg-yellow-900/30">
+                                                <Calendar className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-white">
+                                                    Filter by Year
+                                                </h3>
+                                                <p className="text-xs text-gray-500 dark:text-neutral-400">
+                                                    Select a publication year
+                                                </p>
+                                            </div>
+                                        </div>
+                                        {selectedYear && (
+                                            <button
+                                                onClick={() => handleYearSelect(undefined)}
+                                                className="flex items-center gap-1.5 rounded-lg bg-yellow-100 px-3 py-1.5 text-sm font-medium text-yellow-800 transition-all hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:hover:bg-yellow-900/50"
+                                            >
+                                                <X className="h-3.5 w-3.5" />
+                                                Clear
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Calendar Grid */}
+                                    <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10">
+                                        {availableYears.map((year) => (
+                                            <button
+                                                key={year}
+                                                onClick={() => handleYearSelect(year)}
+                                                className={`group relative overflow-hidden rounded-lg border-2 p-3 text-center transition-all duration-200 ${
+                                                    selectedYear === year
+                                                        ? 'border-yellow-500 bg-yellow-500 text-white shadow-lg shadow-yellow-500/20 scale-105'
+                                                        : 'border-gray-200 bg-white text-gray-700 hover:border-yellow-400 hover:bg-yellow-50 hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-yellow-600 dark:hover:bg-neutral-700'
+                                                }`}
+                                            >
+                                                <div className="relative z-10">
+                                                    <div className={`text-lg font-bold ${
+                                                        selectedYear === year
+                                                            ? 'text-white'
+                                                            : 'text-gray-900 dark:text-white'
+                                                    }`}>
+                                                        {year}
+                                                    </div>
+                                                </div>
+                                                {selectedYear !== year && (
+                                                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/0 to-yellow-500/0 opacity-0 transition-opacity group-hover:from-yellow-400/10 group-hover:to-yellow-500/5 group-hover:opacity-100" />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {selectedYear && (
+                                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 dark:bg-yellow-900/20">
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500 text-xs font-bold text-white">
+                                                ✓
+                                            </div>
+                                            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-400">
+                                                Showing documents from year <span className="font-bold">{selectedYear}</span>
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {repositories.data.length > 0 ? (
                                 <>
                                     <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
                                         <p className="text-sm text-gray-600 dark:text-neutral-400">
                                             Found{' '}
                                             <span className="font-semibold text-yellow-600">
-                                                {filteredTotal}
+                                                {repositories.total}
                                             </span>{' '}
-                                            document{filteredTotal !== 1 ? 's' : ''}
+                                            document{repositories.total !== 1 ? 's' : ''}
                                         </p>
                                     </div>
 
                                     <div className="space-y-4">
-                                        {filteredRepositories.map((repo) => (
+                                        {repositories.data.map((repo) => (
                                             <div
                                                 key={repo.id}
                                                 className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-yellow-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-yellow-700"

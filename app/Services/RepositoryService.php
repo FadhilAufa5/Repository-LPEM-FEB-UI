@@ -11,6 +11,7 @@ class RepositoryService
     {
         $query = Asset::query();
 
+        $this->applyJenisLaporanFilter($query, $filters['jenis_laporan'] ?? null);
         $this->applyTitleFilter($query, $filters['title'] ?? null);
         $this->applyAuthorFilter($query, $filters['author'] ?? null);
         $this->applyAbstractFilter($query, $filters['abstract'] ?? null);
@@ -59,6 +60,13 @@ class RepositoryService
             'file_size' => $asset->file_size,
             'created_at' => $asset->created_at->format('d M Y'),
         ];
+    }
+
+    private function applyJenisLaporanFilter(Builder $query, ?string $jenisLaporan): void
+    {
+        if ($jenisLaporan) {
+            $query->where('jenis_laporan', $jenisLaporan);
+        }
     }
 
     private function applyTitleFilter(Builder $query, ?string $title): void
@@ -149,5 +157,16 @@ class RepositoryService
             ->toArray();
 
         return $counts;
+    }
+
+    public function getAvailableYears(): array
+    {
+        return Asset::query()
+            ->select('tahun')
+            ->distinct()
+            ->whereNotNull('tahun')
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun')
+            ->toArray();
     }
 }
