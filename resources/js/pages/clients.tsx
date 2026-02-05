@@ -55,6 +55,7 @@ interface Client {
     id: number;
     kode_klien: string;
     nama_klien: string;
+    type_of_client?: string;
     alamat: string;
     kode_kabupaten: string;
     kontak_person: string;
@@ -93,6 +94,7 @@ interface ClientsPageProps {
         search?: string;
         provinsi?: string;
     };
+    [key: string]: unknown;
 }
 
 export default function Clients() {
@@ -227,6 +229,7 @@ export default function Clients() {
                                 <TableRow>
                                     <TableHead>Client Code</TableHead>
                                     <TableHead>Client Name</TableHead>
+                                    <TableHead>Type</TableHead>
                                     <TableHead>Region</TableHead>
                                     <TableHead>Contact Person</TableHead>
                                     <TableHead>Phone</TableHead>
@@ -240,7 +243,7 @@ export default function Clients() {
                                 {clients.data.length === 0 ? (
                                     <TableRow>
                                         <TableCell
-                                            colSpan={7}
+                                            colSpan={8}
                                             className="h-24 text-center"
                                         >
                                             <div className="flex flex-col items-center gap-2 text-neutral-500">
@@ -268,6 +271,17 @@ export default function Clients() {
                                                         </p>
                                                     )}
                                                 </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {client.type_of_client ? (
+                                                    <Badge variant="outline" className="whitespace-nowrap">
+                                                        {client.type_of_client}
+                                                    </Badge>
+                                                ) : (
+                                                    <span className="text-xs text-neutral-400">
+                                                        -
+                                                    </span>
+                                                )}
                                             </TableCell>
                                             <TableCell>
                                                 {client.wilayah ? (
