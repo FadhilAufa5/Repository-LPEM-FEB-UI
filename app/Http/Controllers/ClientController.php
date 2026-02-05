@@ -43,6 +43,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'kode_klien' => 'required|string|max:255|unique:clients,kode_klien',
             'nama_klien' => 'required|string|max:255',
+            'type_of_client' => 'required|string|in:Kementerian/Lembaga Pemerintah,Pemerintah Daerah,BUMN/D,Swasta Nasional,Lembaga Asing',
             'alamat' => 'required|string',
             'kode_kabupaten' => 'required|string|exists:wilayah,kode_kabupaten',
             'kontak_person' => 'required|string|max:255',
@@ -63,6 +64,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'kode_klien' => 'required|string|max:255|unique:clients,kode_klien,' . $client->id,
             'nama_klien' => 'required|string|max:255',
+            'type_of_client' => 'required|string|in:Kementerian/Lembaga Pemerintah,Pemerintah Daerah,BUMN/D,Swasta Nasional,Lembaga Asing',
             'alamat' => 'required|string',
             'kode_kabupaten' => 'required|string|exists:wilayah,kode_kabupaten',
             'kontak_person' => 'required|string|max:255',

@@ -24,6 +24,7 @@ interface Client {
     id: number;
     kode_klien: string;
     nama_klien: string;
+    type_of_client?: string;
     alamat: string;
     kode_kabupaten: string;
     kontak_person: string;
@@ -62,6 +63,7 @@ export function ClientDialog({
     const { data, setData, errors, reset } = useForm({
         kode_klien: '',
         nama_klien: '',
+        type_of_client: '',
         alamat: '',
         kode_kabupaten: '',
         kontak_person: '',
@@ -74,6 +76,7 @@ export function ClientDialog({
                 setData({
                     kode_klien: client.kode_klien,
                     nama_klien: client.nama_klien,
+                    type_of_client: client.type_of_client || '',
                     alamat: client.alamat,
                     kode_kabupaten: client.kode_kabupaten,
                     kontak_person: client.kontak_person,
@@ -90,7 +93,7 @@ export function ClientDialog({
         e.preventDefault();
         
         // Validasi client-side
-        if (!data.kode_klien || !data.nama_klien || !data.alamat || 
+        if (!data.kode_klien || !data.nama_klien || !data.type_of_client || !data.alamat || 
             !data.kode_kabupaten || !data.kontak_person || !data.telp) {
             return;
         }
@@ -152,7 +155,7 @@ export function ClientDialog({
                                 onChange={(e) =>
                                     setData('kode_klien', e.target.value)
                                 }
-                                placeholder="Example: KLN-001"
+                                placeholder="Example: 2026/0001/PN"
                                 autoFocus
                                 required
                                 disabled={isSubmitting}
@@ -185,6 +188,48 @@ export function ClientDialog({
                                     {errors.nama_klien}
                                 </p>
                             )}  
+                        </div>
+
+                        {/* Type of Client */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="type_of_client">
+                                Type of Client{' '}
+                                <span className="text-red-500">*</span>
+                            </Label>
+                            <Select
+                                value={data.type_of_client}
+                                onValueChange={(value) =>
+                                    setData('type_of_client', value)
+                                }
+                                required
+                                disabled={isSubmitting}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select client type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Kementerian/Lembaga Pemerintah">
+                                        Kementerian/Lembaga Pemerintah
+                                    </SelectItem>
+                                    <SelectItem value="Pemerintah Daerah">
+                                        Pemerintah Daerah
+                                    </SelectItem>
+                                    <SelectItem value="BUMN/D">
+                                        BUMN/D
+                                    </SelectItem>
+                                    <SelectItem value="Swasta Nasional">
+                                        Swasta Nasional
+                                    </SelectItem>
+                                    <SelectItem value="Lembaga Asing">
+                                        Lembaga Asing
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.type_of_client && (
+                                <p className="text-sm text-red-500">
+                                    {errors.type_of_client}
+                                </p>
+                            )}
                         </div>
 
                         {/* Alamat */}
