@@ -54,8 +54,21 @@ class AssetController extends Controller
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
             'jenis_laporan' => 'required|string|in:penelitian_survey,penelitian,diklat,jurnal,buku,lainnya',
-            // Make grup_kajian optional — validate only when provided
-            'grup_kajian' => 'nullable|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
+            // Conditional validation: only validate grup_kajian if jenis_laporan is penelitian/penelitian_survey
+            'grup_kajian' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    $jenisLaporan = $request->input('jenis_laporan');
+                    // Only validate if jenis is penelitian or penelitian_survey
+                    if (in_array($jenisLaporan, ['penelitian', 'penelitian_survey']) && $value) {
+                        $validGroups = ['bc_glove', 'nres', 'gec_rg', 'dtbs', 'mfpe', 'spl', 'sece', 'devpfin', 'mpower', 'trust'];
+                        if (!in_array($value, $validGroups)) {
+                            $fail('The selected grup kajian is invalid.');
+                        }
+                    }
+                },
+            ],
             'kepala_proyek' => 'required|string|max:255',
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',
@@ -81,8 +94,21 @@ class AssetController extends Controller
             'judul_laporan' => 'required|string|max:500',
             'abstrak' => 'required|string',
             'jenis_laporan' => 'required|string|in:penelitian_survey,penelitian,diklat,jurnal,buku,lainnya',
-            // Make grup_kajian optional on update as well
-            'grup_kajian' => 'nullable|string|in:bc_glove,nres,gec_rg,dtbs,mfpe,spl,sece,devpfin,mpower,trust',
+            // Conditional validation: only validate grup_kajian if jenis_laporan is penelitian/penelitian_survey
+            'grup_kajian' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    $jenisLaporan = $request->input('jenis_laporan');
+                    // Only validate if jenis is penelitian or penelitian_survey
+                    if (in_array($jenisLaporan, ['penelitian', 'penelitian_survey']) && $value) {
+                        $validGroups = ['bc_glove', 'nres', 'gec_rg', 'dtbs', 'mfpe', 'spl', 'sece', 'devpfin', 'mpower', 'trust'];
+                        if (!in_array($value, $validGroups)) {
+                            $fail('The selected grup kajian is invalid.');
+                        }
+                    }
+                },
+            ],
             'kepala_proyek' => 'required|string|max:255',
             'staf' => 'required|array|min:1',
             'staf.*' => 'required|string|max:255',

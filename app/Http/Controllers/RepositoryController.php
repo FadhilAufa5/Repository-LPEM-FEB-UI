@@ -23,6 +23,7 @@ class RepositoryController extends Controller
             'abstract' => $request->input('abstract'),
             'year' => $request->input('year'),
             'grup_kajian' => $request->input('grup_kajian'),
+            'jenis_laporan' => $request->input('jenis_laporan'), // Added for report type filter
         ];
 
         $perPage = $request->input('per_page', 12);
@@ -32,11 +33,15 @@ class RepositoryController extends Controller
 
         // Get counts for each research group
         $grupKajianCounts = $this->repositoryService->getGrupKajianCounts();
+        
+        // Get counts for each report type
+        $reportTypeCounts = $this->repositoryService->getReportTypeCounts();
 
         return Inertia::render('repository', [
             'repositories' => $repositories,
             'filters' => $filters,
             'grupKajianCounts' => $grupKajianCounts,
+            'reportTypeCounts' => $reportTypeCounts, // Added for report type filter
         ]);
     }
 

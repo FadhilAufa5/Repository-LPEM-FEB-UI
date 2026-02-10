@@ -25,6 +25,11 @@ class AssetService
     {
         $data['user_id'] = $userId;
 
+        // Set grup_kajian to null if not penelitian or penelitian_survey
+        if (!in_array($data['jenis_laporan'] ?? '', ['penelitian', 'penelitian_survey'])) {
+            $data['grup_kajian'] = null;
+        }
+
         $file = null;
         $proposalFile = null;
         
@@ -55,6 +60,11 @@ class AssetService
 
     public function updateAsset(Asset $asset, array $data)
     {
+        // Set grup_kajian to null if not penelitian or penelitian_survey
+        if (!in_array($data['jenis_laporan'] ?? $asset->jenis_laporan, ['penelitian', 'penelitian_survey'])) {
+            $data['grup_kajian'] = null;
+        }
+
         $file = null;
         $proposalFile = null;
         
