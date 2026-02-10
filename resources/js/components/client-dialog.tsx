@@ -155,7 +155,7 @@ export function ClientDialog({
                                 onChange={(e) =>
                                     setData('kode_klien', e.target.value)
                                 }
-                                placeholder="Example: 2026/0001/PN"
+                                placeholder="Client code"
                                 autoFocus
                                 required
                                 disabled={isSubmitting}

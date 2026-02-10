@@ -158,6 +158,12 @@ class RepositoryService
 
         return $counts;
     }
+    
+    // Alias for better naming consistency with frontend
+    public function getReportTypeCounts(): array
+    {
+        return $this->getJenisLaporanCounts();
+    }
 
     public function getAvailableYears(): array
     {

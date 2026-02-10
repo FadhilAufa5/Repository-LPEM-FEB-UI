@@ -101,7 +101,12 @@ export const assetService = {
         formData.append('judul_laporan', data.judul_laporan);
         formData.append('abstrak', data.abstrak);
         formData.append('jenis_laporan', data.jenis_laporan);
-        formData.append('grup_kajian', data.grup_kajian);
+        
+        // Only append grup_kajian if jenis_laporan is penelitian or penelitian_survey
+        if (this.shouldShowResearchGroup(data.jenis_laporan) && data.grup_kajian) {
+            formData.append('grup_kajian', data.grup_kajian);
+        }
+        
         formData.append('kepala_proyek', data.kepala_proyek);
         formData.append('tahun', data.tahun.toString());
 

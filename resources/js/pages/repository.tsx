@@ -4,21 +4,16 @@ import { dashboard, login } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
-    BookOpen,
-    Briefcase,
-    Calendar,
-    ChevronDown,
     ChevronLeft,
     ChevronRight,
     ChevronRight as ChevronRightIcon,
-    ChevronUp,
     FileText,
     Filter,
     Home,
     Search,
-    Users,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { RepositoryFilterSidebar, grupKajianOptions, reportTypeOptions } from '@/components/repository';
 
 interface RepositoryItem {
     id: number;
@@ -47,33 +42,26 @@ interface RepositoryPageProps {
         abstract?: string;
         year?: string;
         grup_kajian?: string;
+        jenis_laporan?: string;
     };
     grupKajianCounts?: Record<string, number>;
+    reportTypeCounts?: Record<string, number>;
 }
-
-const grupKajianOptions = [
-    { value: 'bc_glove', label: 'BC-GLOVE', description: 'Business, Commerce & Global Learning and Opportunities for Value Enhancement' },
-    { value: 'nres', label: 'NRES', description: 'Natural Resources and Environmental Studies' },
-    { value: 'gec_rg', label: 'GEC-RG', description: 'Green Economy & Climate Research Group' },
-    { value: 'dtbs', label: 'DTBS', description: 'Development, Trade & Business Strategy' },
-    { value: 'mfpe', label: 'MFPE', description: 'Monetary & Financial Policy Economics' },
-    { value: 'spl', label: 'SPL', description: 'Social Policy & Labor' },
-    { value: 'sece', label: 'SECE', description: 'Socio-Economic and Cultural Economics' },
-    { value: 'devpfin', label: 'DEVPFIN', description: 'Development & Public Finance Innovation' },
-    { value: 'mpower', label: 'MPOWER', description: 'Micro-finance, Poverty & Well-being Research' },
-    { value: 'trust', label: 'TRUST', description: 'Trade, Resource Use, Sustainability & Technology' },
-];
 
 export default function Repository({
     canRegister = true,
     repositories,
     filters,
     grupKajianCounts = {},
+    reportTypeCounts = {},
 }: RepositoryPageProps) {
     const { auth } = usePage<SharedData>().props;
     const [showFilters, setShowFilters] = useState(false);
     const [selectedGrupKajian, setSelectedGrupKajian] = useState(
         filters.grup_kajian || '',
+    );
+    const [selectedReportType, setSelectedReportType] = useState(
+        filters.jenis_laporan || '',
     );
     const [searchInputs, setSearchInputs] = useState({
         title: filters.title || '',
@@ -82,21 +70,13 @@ export default function Repository({
         year: filters.year || '',
     });
     const [isSearching, setIsSearching] = useState(false);
-    const [isGrupKajianExpanded, setIsGrupKajianExpanded] = useState(true);
-    const [isAdditionalFiltersExpanded, setIsAdditionalFiltersExpanded] =
-        useState(true);
-    const currentYear = new Date().getFullYear();
 
     const hasActiveFilters = Object.values(filters).some((v) => v);
     const activeFilterCount = Object.values(filters).filter((v) => v).length;
 
-    // Function to get count for a specific research group
-    const getGroupCount = (groupValue: string) => {
-        return grupKajianCounts[groupValue] || 0;
-    };
-
     const clearFilters = () => {
         setSelectedGrupKajian('');
+        setSelectedReportType('');
         setSearchInputs({
             title: '',
             author: '',
@@ -117,6 +97,7 @@ export default function Repository({
         if (searchInputs.abstract) params.abstract = searchInputs.abstract;
         if (searchInputs.year) params.year = searchInputs.year;
         if (selectedGrupKajian) params.grup_kajian = selectedGrupKajian;
+        if (selectedReportType) params.jenis_laporan = selectedReportType;
 
         router.get('/repository', params, { 
             preserveState: true,
@@ -130,6 +111,32 @@ export default function Repository({
 
     const handleGrupKajianChange = (value: string) => {
         setSelectedGrupKajian(value);
+        
+        // Immediately apply the filter
+        const params: Record<string, string> = {};
+        if (searchInputs.title) params.title = searchInputs.title;
+        if (searchInputs.author) params.author = searchInputs.author;
+        if (searchInputs.abstract) params.abstract = searchInputs.abstract;
+        if (searchInputs.year) params.year = searchInputs.year;
+        if (value) params.grup_kajian = value; // Use new value
+        if (selectedReportType) params.jenis_laporan = selectedReportType;
+        
+        router.get('/repository', params, { preserveState: true });
+    };
+
+    const handleReportTypeChange = (value: string) => {
+        setSelectedReportType(value);
+        
+        // Immediately apply the filter
+        const params: Record<string, string> = {};
+        if (searchInputs.title) params.title = searchInputs.title;
+        if (searchInputs.author) params.author = searchInputs.author;
+        if (searchInputs.abstract) params.abstract = searchInputs.abstract;
+        if (searchInputs.year) params.year = searchInputs.year;
+        if (selectedGrupKajian) params.grup_kajian = selectedGrupKajian;
+        if (value) params.jenis_laporan = value; // Use new value
+        
+        router.get('/repository', params, { preserveState: true });
     };
 
     return (
@@ -192,306 +199,21 @@ export default function Repository({
                         <aside
                             className={`${showFilters ? 'block' : 'hidden'} lg:block`}
                         >
-                            <div className="sticky top-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                                <div className="mb-4 flex items-center justify-between">
-                                    <h2 className="flex items-center gap-2 text-base font-bold text-gray-900 dark:text-white">
-                                        <Filter className="h-4 w-4" />
-                                        Filter Search
-                                    </h2>
-                                    {hasActiveFilters && (
-                                        <button
-                                            onClick={clearFilters}
-                                            className="text-xs font-medium text-yellow-600 hover:text-yellow-700"
-                                        >
-                                            Reset
-                                        </button>
-                                    )}
-                                </div>
-
-                                <form
-                                    onSubmit={handleSearch}
-                                    className="space-y-5"
-                                >
-                                    {/* Grup Kajian Radio Buttons */}
-                                    <div className="space-y-3">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                setIsGrupKajianExpanded(
-                                                    !isGrupKajianExpanded,
-                                                )
-                                            }
-                                            className="flex w-full items-center justify-between text-sm font-semibold text-gray-900 hover:text-yellow-600 transition-colors dark:text-white dark:hover:text-yellow-400"
-                                        >
-                                            <span className="flex items-center gap-2">
-                                                <Briefcase className="h-4 w-4 text-yellow-600" />
-                                                Research Group
-                                                {filters.grup_kajian && (
-                                                    <span className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-xs font-bold text-white">
-                                                        1
-                                                    </span>
-                                                )}
-                                            </span>
-                                            {isGrupKajianExpanded ? (
-                                                <ChevronUp className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
-                                            ) : (
-                                                <ChevronDown className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
-                                            )}
-                                        </button>
-                                        <div
-                                            className={`grid grid-cols-1 gap-2 transition-all duration-300 ease-in-out overflow-hidden ${
-                                                isGrupKajianExpanded
-                                                    ? 'max-h-[500px] opacity-100'
-                                                    : 'max-h-0 opacity-0'
-                                            }`}
-                                        >
-                                            <label className="flex items-center gap-2.5 cursor-pointer rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm transition-all hover:border-yellow-400 hover:bg-yellow-50 has-[:checked]:border-yellow-500 has-[:checked]:bg-yellow-50 has-[:checked]:ring-2 has-[:checked]:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800/50 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20 dark:has-[:checked]:border-yellow-500 dark:has-[:checked]:bg-yellow-900/30">
-                                                <input
-                                                    type="radio"
-                                                    name="grup_kajian"
-                                                    value=""
-                                                    checked={
-                                                        selectedGrupKajian === ''
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleGrupKajianChange(
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className="h-4 w-4 text-yellow-600 focus:ring-2 focus:ring-yellow-500 border-gray-300 dark:border-neutral-600"
-                                                />
-                                                <span className="flex-1 font-medium text-gray-700 dark:text-neutral-200">
-                                                    All Groups
-                                                </span>
-                                                <span 
-                                                    className="inline-flex items-center justify-center rounded-full bg-gray-200 px-2 py-0.5 text-xs font-semibold text-gray-700 transition-all duration-200 dark:bg-neutral-700 dark:text-neutral-300"
-                                                    title={`${repositories.total} total repositor${repositories.total > 1 ? 'ies' : 'y'}`}
-                                                >
-                                                    {repositories.total}
-                                                </span>
-                                            </label>
-                                            <div className="grid grid-cols-1 gap-1.5 max-h-64 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-neutral-600 dark:scrollbar-track-neutral-800">
-                                                {grupKajianOptions.map(
-                                                    (option: any) => {
-                                                        const count = getGroupCount(option.value);
-                                                        return (
-                                                            <div key={option.value} className="group relative">
-                                                                <label
-                                                                    className="flex items-center gap-2.5 cursor-pointer rounded-md border border-gray-200 bg-white px-3 py-2 text-sm transition-all hover:border-yellow-400 hover:bg-yellow-50 has-[:checked]:border-yellow-500 has-[:checked]:bg-yellow-50 has-[:checked]:ring-2 has-[:checked]:ring-yellow-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-yellow-600 dark:hover:bg-yellow-900/20 dark:has-[:checked]:border-yellow-500 dark:has-[:checked]:bg-yellow-900/30"
-                                                                >
-                                                                    <input
-                                                                        type="radio"
-                                                                        name="grup_kajian"
-                                                                        value={
-                                                                            option.value
-                                                                        }
-                                                                        checked={
-                                                                            selectedGrupKajian ===
-                                                                            option.value
-                                                                        }
-                                                                        onChange={(e) =>
-                                                                            handleGrupKajianChange(
-                                                                                e.target
-                                                                                    .value,
-                                                                            )
-                                                                        }
-                                                                        className="h-4 w-4 text-yellow-600 focus:ring-2 focus:ring-yellow-500 border-gray-300 dark:border-neutral-600"
-                                                                    />
-                                                                    <span className="flex-1 font-medium text-gray-700 dark:text-neutral-200">
-                                                                        {option.label}
-                                                                    </span>
-                                                                    {count > 0 && (
-                                                                        <span 
-                                                                            className="inline-flex items-center justify-center rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-800 transition-all duration-200 dark:bg-yellow-900/30 dark:text-yellow-400"
-                                                                            title={`${count} repositor${count > 1 ? 'ies' : 'y'} available`}
-                                                                        >
-                                                                            {count}
-                                                                        </span>
-                                                                    )}
-                                                                </label>
-                                                                
-                                                                {/* Tooltip */}
-                                                                <div className="absolute left-0 bottom-full mb-2 w-48 rounded-lg bg-gray-900 px-3 py-2 text-xs text-white opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 dark:bg-neutral-800 dark:border dark:border-neutral-700 z-50 shadow-lg">
-                                                                    <p className="font-semibold mb-1">{option.label}</p>
-                                                                    <p className="text-gray-300">{option.description}</p>
-                                                                    <div className="absolute left-1/3 top-full h-2 w-2 -translate-x-1/2 rotate-45 bg-gray-900 dark:bg-neutral-800"></div>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    }
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Additional Filters Section */}
-                                    <div className="space-y-3">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                setIsAdditionalFiltersExpanded(
-                                                    !isAdditionalFiltersExpanded,
-                                                )
-                                            }
-                                            className="flex w-full items-center justify-between text-sm font-semibold text-gray-900 hover:text-yellow-600 transition-colors dark:text-white dark:hover:text-yellow-400"
-                                        >
-                                            <span className="flex items-center gap-2">
-                                                <Filter className="h-4 w-4 text-yellow-600" />
-                                                Additional Filters
-                                                {(filters.title ||
-                                                    filters.author ||
-                                                    filters.abstract ||
-                                                    filters.year) && (
-                                                    <span className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-xs font-bold text-white">
-                                                        {[
-                                                            filters.title,
-                                                            filters.author,
-                                                            filters.abstract,
-                                                            filters.year,
-                                                        ].filter(Boolean).length}
-                                                    </span>
-                                                )}
-                                            </span>
-                                            {isAdditionalFiltersExpanded ? (
-                                                <ChevronUp className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
-                                            ) : (
-                                                <ChevronDown className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
-                                            )}
-                                        </button>
-
-                                        <div
-                                            className={`space-y-4 transition-all duration-300 ease-in-out overflow-hidden ${
-                                                isAdditionalFiltersExpanded
-                                                    ? 'max-h-[800px] opacity-100'
-                                                    : 'max-h-0 opacity-0'
-                                            }`}
-                                        >
-                                            <div className="space-y-2">
-                                        <label
-                                            htmlFor="title"
-                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
-                                        >
-                                            <BookOpen className="h-4 w-4 text-yellow-600" />
-                                            Title
-                                        </label>
-                                        <input
-                                            id="title"
-                                            name="title"
-                                            type="text"
-                                            value={searchInputs.title}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    'title',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="e.g. Economic Development..."
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
-                                        />
-                                        <p className="text-xs text-gray-500 dark:text-neutral-500">
-                                            Search for words in document titles
-                                        </p>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label
-                                            htmlFor="author"
-                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
-                                        >
-                                            <Users className="h-4 w-4 text-yellow-600" />
-                                            Author / Staff
-                                        </label>
-                                        <input
-                                            id="author"
-                                            name="author"
-                                            type="text"
-                                            value={searchInputs.author}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    'author',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="e.g. John Doe..."
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
-                                        />
-                                        <p className="text-xs text-gray-500 dark:text-neutral-500">
-                                            Search by lead researcher or staff
-                                            members
-                                        </p>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label
-                                            htmlFor="abstract"
-                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
-                                        >
-                                            <FileText className="h-4 w-4 text-yellow-600" />
-                                            Keywords
-                                        </label>
-                                        <input
-                                            id="abstract"
-                                            name="abstract"
-                                            type="text"
-                                            value={searchInputs.abstract}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    'abstract',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="e.g. poverty analysis..."
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
-                                        />
-                                        <p className="text-xs text-gray-500 dark:text-neutral-500">
-                                            Search in abstract, title, and
-                                            document code
-                                        </p>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label
-                                            htmlFor="year"
-                                            className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-neutral-300"
-                                        >
-                                            <Calendar className="h-4 w-4 text-yellow-600" />
-                                            Year
-                                        </label>
-                                        <input
-                                            id="year"
-                                            name="year"
-                                            type="number"
-                                            value={searchInputs.year}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    'year',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="2024"
-                                            min="1900"
-                                            max={currentYear + 10}
-                                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
-                                        />
-                                        <p className="text-xs text-gray-500 dark:text-neutral-500">
-                                            Filter by publication year
-                                        </p>
-                                    </div>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        disabled={isSearching}
-                                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-yellow-700 focus:ring-2 focus:ring-yellow-500/50 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        <Search
-                                            className={`h-4 w-4 ${isSearching ? 'animate-pulse' : ''}`}
-                                        />
-                                        {isSearching ? 'Searching...' : 'Apply Filters'}
-                                    </button>
-                                </form>
-                            </div>
+                            <RepositoryFilterSidebar
+                                filters={filters}
+                                selectedGrupKajian={selectedGrupKajian}
+                                selectedReportType={selectedReportType}
+                                searchInputs={searchInputs}
+                                onGrupKajianChange={handleGrupKajianChange}
+                                onReportTypeChange={handleReportTypeChange}
+                                onInputChange={handleInputChange}
+                                onSearch={handleSearch}
+                                onClearFilters={clearFilters}
+                                isSearching={isSearching}
+                                grupKajianCounts={grupKajianCounts}
+                                reportTypeCounts={reportTypeCounts}
+                                totalCount={repositories.total}
+                            />
                         </aside>
 
                         {/* Main Content */}
@@ -512,35 +234,129 @@ export default function Repository({
                                         Active Filters:
                                     </span>
                                     {filters.title && (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
-                                            Title: {filters.title}
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            <span>Title: {filters.title}</span>
+                                            <button
+                                                onClick={() => {
+                                                    setSearchInputs(prev => ({ ...prev, title: '' }));
+                                                    const params = { ...filters, title: undefined };
+                                                    delete params.title;
+                                                    router.get('/repository', params, { preserveState: true });
+                                                }}
+                                                className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
+                                            >
+                                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
                                         </span>
                                     )}
                                     {filters.author && (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
-                                            Author: {filters.author}
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            <span>Author: {filters.author}</span>
+                                            <button
+                                                onClick={() => {
+                                                    setSearchInputs(prev => ({ ...prev, author: '' }));
+                                                    const params = { ...filters, author: undefined };
+                                                    delete params.author;
+                                                    router.get('/repository', params, { preserveState: true });
+                                                }}
+                                                className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
+                                            >
+                                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
                                         </span>
                                     )}
                                     {filters.abstract && (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
-                                            Keywords: {filters.abstract}
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            <span>Keywords: {filters.abstract}</span>
+                                            <button
+                                                onClick={() => {
+                                                    setSearchInputs(prev => ({ ...prev, abstract: '' }));
+                                                    const params = { ...filters, abstract: undefined };
+                                                    delete params.abstract;
+                                                    router.get('/repository', params, { preserveState: true });
+                                                }}
+                                                className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
+                                            >
+                                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
                                         </span>
                                     )}
                                     {filters.year && (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
-                                            Year: {filters.year}
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            <span>Year: {filters.year}</span>
+                                            <button
+                                                onClick={() => {
+                                                    setSearchInputs(prev => ({ ...prev, year: '' }));
+                                                    const params = { ...filters, year: undefined };
+                                                    delete params.year;
+                                                    router.get('/repository', params, { preserveState: true });
+                                                }}
+                                                className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
+                                            >
+                                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
                                         </span>
                                     )}
                                     {filters.grup_kajian && (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
-                                            Grup:{' '}
-                                            {
-                                                grupKajianOptions.find(
-                                                    (o) =>
-                                                        o.value ===
-                                                        filters.grup_kajian,
-                                                )?.label
-                                            }
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            <span>
+                                                Grup:{' '}
+                                                {
+                                                    grupKajianOptions.find(
+                                                        (o) =>
+                                                            o.value ===
+                                                            filters.grup_kajian,
+                                                    )?.label
+                                                }
+                                            </span>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedGrupKajian('');
+                                                    const params = { ...filters, grup_kajian: undefined };
+                                                    delete params.grup_kajian;
+                                                    router.get('/repository', params, { preserveState: true });
+                                                }}
+                                                className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
+                                            >
+                                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    )}
+                                    {filters.jenis_laporan && (
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
+                                            <span>
+                                                Report Type:{' '}
+                                                {
+                                                    reportTypeOptions.find(
+                                                        (o) =>
+                                                            o.value ===
+                                                            filters.jenis_laporan,
+                                                    )?.label
+                                                }
+                                            </span>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedReportType('');
+                                                    const params = { ...filters, jenis_laporan: undefined };
+                                                    delete params.jenis_laporan;
+                                                    router.get('/repository', params, { preserveState: true });
+                                                }}
+                                                className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
+                                            >
+                                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
                                         </span>
                                     )}
                                 </div>

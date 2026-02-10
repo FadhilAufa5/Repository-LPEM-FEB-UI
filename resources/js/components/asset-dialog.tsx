@@ -150,7 +150,7 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 id="kode"
                                 value={data.kode}
                                 onChange={(e) => setData('kode', e.target.value)}
-                                placeholder="LP-2025-001"
+                                placeholder="2026/0001/PN"
                                 className={errors.kode ? 'border-red-500' : ''}
                             />
                             {errors.kode && (

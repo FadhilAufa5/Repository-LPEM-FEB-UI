@@ -30,7 +30,7 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'LPEM FEB UI') }}</title>
 
         <link rel="icon" href="/logo ui.png" sizes="any">
         <link rel="icon" href="/logo ui.png" type="image/png">
