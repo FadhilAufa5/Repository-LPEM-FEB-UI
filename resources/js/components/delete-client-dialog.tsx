@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Client {
     id: number;
@@ -40,11 +41,21 @@ export function DeleteClientDialog({
 
         router.delete(`/clients/${client.id}`, {
             onSuccess: () => {
+                toast.success('Client deleted successfully!');
                 onOpenChange(false);
                 setIsDeleting(false);
             },
-            onError: () => {
+            onError: (errors: any) => {
                 setIsDeleting(false);
+                
+                // Handle specific error messages
+                if (errors.message) {
+                    toast.error(errors.message);
+                } else if (typeof errors === 'string') {
+                    toast.error(errors);
+                } else {
+                    toast.error('Failed to delete client. Please check your permissions.');
+                }
             },
         });
     };
