@@ -66,9 +66,8 @@ class ClientService
 
     private function applyUserFilter(Builder $query, $user): void
     {
-        if (!$user->hasRole('admin')) {
-            $query->where('user_id', $user->id);
-        }
+        // Allow all users to view all clients
+        // No filtering based on user_id
     }
 
     private function applySearchFilter(Builder $query, ?string $search): void

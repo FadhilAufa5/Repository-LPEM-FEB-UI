@@ -19,6 +19,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { router, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface Client {
     id: number;
@@ -95,6 +96,7 @@ export function ClientDialog({
         // Validasi client-side
         if (!data.kode_klien || !data.nama_klien || !data.type_of_client || !data.alamat || 
             !data.kode_kabupaten || !data.kontak_person || !data.telp) {
+            toast.error('Please fill in all required fields');
             return;
         }
 
@@ -102,13 +104,31 @@ export function ClientDialog({
 
         const options = {
             onSuccess: () => {
+                toast.success(
+                    isEditing
+                        ? 'Client updated successfully!'
+                        : 'Client created successfully!'
+                );
                 onOpenChange(false);
                 reset();
                 setSearchWilayah('');
                 setIsSubmitting(false);
             },
-            onError: () => {
+            onError: (errors: any) => {
                 setIsSubmitting(false);
+                
+                // Handle specific error messages
+                if (errors.message) {
+                    toast.error(errors.message);
+                } else if (typeof errors === 'string') {
+                    toast.error(errors);
+                } else {
+                    toast.error(
+                        isEditing
+                            ? 'Failed to update client. Please check your permissions.'
+                            : 'Failed to create client. Please try again.'
+                    );
+                }
             },
         };
 
