@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\LoginOtp;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 
 class OtpLoginController extends Controller
 {
-    public function requestOtp(Request $request)
+    public function requestOtp(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required|email',
@@ -52,24 +53,22 @@ class OtpLoginController extends Controller
 
             return back()->with('status', 'OTP code has been sent to your email.');
         } catch (\Exception $e) {
-            \Log::error('Failed to send OTP: ' . $e->getMessage());
+            Log::error('Failed to send OTP', ['email' => $email, 'error' => $e->getMessage()]);
             throw ValidationException::withMessages([
                 'email' => ['Failed to send OTP. Please try again later.'],
             ]);
         }
     }
 
-    public function verifyOtp(Request $request)
+    public function verifyOtp(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required|email',
-            'otp' => 'required|string|size:6',
+            'otp'   => 'required|string|size:6',
         ]);
 
         $email = $request->email;
-        $otp = $request->otp;
-
-        \Log::info('OTP Verify attempt', ['email' => $email, 'otp' => $otp]);
+        $otp   = $request->otp;
 
         // Rate limiting: 5 attempts per minute
         $key = 'otp-verify:' . $email;
@@ -106,7 +105,7 @@ class OtpLoginController extends Controller
         // Regenerate session
         $request->session()->regenerate();
 
-        \Log::info('OTP Login successful', ['user_id' => $user->id, 'email' => $user->email]);
+        Log::info('OTP Login successful', ['user_id' => $user->id, 'email' => $user->email]);
 
         return redirect()->intended(config('fortify.home'));
     }

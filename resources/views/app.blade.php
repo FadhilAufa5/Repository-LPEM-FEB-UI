@@ -32,9 +32,8 @@
 
         <title inertia>{{ config('app.name', 'LPEM FEB UI') }}</title>
 
-        <link rel="icon" href="/logo ui.png" sizes="any">
-        <link rel="icon" href="/logo ui.png" type="image/png">
-        <link rel="apple-touch-icon" href="/logo ui.png">
+        <link rel="icon" href="/logo_lpem.png" type="image/png">
+        <link rel="apple-touch-icon" href="/logo_lpem.png">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />

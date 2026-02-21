@@ -139,27 +139,22 @@ class RepositoryService
 
     public function getGrupKajianCounts(): array
     {
-        $counts = Asset::query()
+        return Asset::query()
             ->selectRaw('grup_kajian, COUNT(*) as count')
             ->groupBy('grup_kajian')
             ->pluck('count', 'grup_kajian')
             ->toArray();
-
-        return $counts;
     }
 
     public function getJenisLaporanCounts(): array
     {
-        $counts = Asset::query()
+        return Asset::query()
             ->selectRaw('jenis_laporan, COUNT(*) as count')
             ->groupBy('jenis_laporan')
             ->pluck('count', 'jenis_laporan')
             ->toArray();
-
-        return $counts;
     }
-    
-    // Alias for better naming consistency with frontend
+
     public function getReportTypeCounts(): array
     {
         return $this->getJenisLaporanCounts();
