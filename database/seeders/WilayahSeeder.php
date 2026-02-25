@@ -17,28 +17,40 @@ class WilayahSeeder extends Seeder
             return;
         }
 
-        $file = fopen($csvFile, 'r');
         
-        // Skip header row
+        Wilayah::truncate();
+
+        $file = fopen($csvFile, 'r');
+
+        
         fgetcsv($file);
 
         $wilayahData = [];
+        $seen = [];
         $count = 0;
 
         while (($row = fgetcsv($file)) !== false) {
             if (count($row) >= 4) {
+                $kodeKabupaten = trim($row[1]);
+
+                
+                if (isset($seen[$kodeKabupaten])) {
+                    continue;
+                }
+                $seen[$kodeKabupaten] = true;
+
                 $wilayahData[] = [
-                    'kode_provinsi' => $row[0],
-                    'kode_kabupaten' => $row[1],
-                    'provinsi' => $row[2],
-                    'kabupaten' => $row[3],
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'kode_provinsi'  => trim($row[0]),
+                    'kode_kabupaten' => $kodeKabupaten,
+                    'provinsi'       => trim($row[2]),
+                    'kabupaten'      => trim($row[3]),
+                    'created_at'     => now(),
+                    'updated_at'     => now(),
                 ];
 
                 $count++;
 
-                // Insert in batches of 100 for better performance
+               
                 if ($count % 100 === 0) {
                     Wilayah::insert($wilayahData);
                     $wilayahData = [];
@@ -46,7 +58,7 @@ class WilayahSeeder extends Seeder
             }
         }
 
-        // Insert remaining records
+      
         if (!empty($wilayahData)) {
             Wilayah::insert($wilayahData);
         }

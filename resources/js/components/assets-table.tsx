@@ -9,6 +9,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Download, Edit2, FileText, Trash2 } from 'lucide-react';
+import { type Asset } from '@/services/assetService';
 
 const jenisLaporanOptions = {
     penelitian_survey: 'Penelitian + Survey',
@@ -31,36 +32,6 @@ const grupKajianOptions = {
     mpower: 'MPOWER',
     trust: 'TRUST',
 };
-
-interface Asset {
-    id: number;
-    kode: string;
-    judul_laporan: string;
-    abstrak: string;
-    jenis_laporan: string;
-    grup_kajian: string;
-    kepala_proyek: string;
-    staf: string[] | string;
-    tahun: number;
-    file_name?: string;
-    file_size?: number;
-    file_mime?: string;
-    proposal_name?: string;
-    proposal_size?: number;
-    proposal_mime?: string;
-    created_at: string;
-    client_id?: number;
-    client?: {
-        id: number;
-        kode_klien: string;
-        nama_klien: string;
-    };
-    user?: {
-        id: number;
-        name: string;
-        email: string;
-    };
-}
 
 interface AssetsTableProps {
     assets: Asset[];
@@ -118,7 +89,7 @@ export function AssetsTable({
                                             {asset.judul_laporan}
                                         </p>
                                         <p className="truncate text-xs text-neutral-500">
-                                            {asset.abstrak.substring(0, 80)}...
+                                            {asset.abstrak?.substring(0, 80) ?? ''}...
                                         </p>
                                     </div>
                                 </TableCell>
@@ -148,13 +119,17 @@ export function AssetsTable({
                                     )}
                                 </TableCell>
                                 <TableCell>
-                                    <Badge variant="secondary">
-                                        {
-                                            grupKajianOptions[
-                                                asset.grup_kajian as keyof typeof grupKajianOptions
-                                            ]
-                                        }
-                                    </Badge>
+                                    {asset.grup_kajian ? (
+                                        <Badge variant="secondary">
+                                            {
+                                                grupKajianOptions[
+                                                    asset.grup_kajian as keyof typeof grupKajianOptions
+                                                ] ?? asset.grup_kajian
+                                            }
+                                        </Badge>
+                                    ) : (
+                                        <span className="text-xs text-neutral-400">-</span>
+                                    )}
                                 </TableCell>
                                 <TableCell>{asset.tahun}</TableCell>
                                 <TableCell>

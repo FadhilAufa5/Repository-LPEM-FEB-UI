@@ -17,6 +17,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { type Asset as AssetBase } from '@/services/assetService';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,32 +30,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface Asset {
-    id: number;
-    kode: string;
-    judul_laporan: string;
-    abstrak: string;
-    jenis_laporan: string;
-    grup_kajian: string;
-    kepala_proyek: string;
-    staf: string[] | string;
-    tahun: number;
-    file_name?: string;
-    file_size?: number;
-    file_mime?: string;
-    created_at: string;
-    client_id?: number;
-    client?: {
-        id: number;
-        kode_klien: string;
-        nama_klien: string;
-    };
-    user?: {
-        id: number;
-        name: string;
-        email: string;
-    };
-}
+// Use Asset type from assetService directly for full compatibility
+type Asset = AssetBase;
 
 interface ClientOption {
     value: number;
@@ -76,6 +53,7 @@ interface AssetsPageProps {
         tahun?: string;
         grup_kajian?: string;
     };
+    [key: string]: unknown;
 }
 
 const jenisLaporanOptions = {
@@ -267,7 +245,7 @@ export default function Assets() {
                 />
 
                 {/* Pagination */}
-                {assets.total > 10 && assets.data.length > 0 && (
+                {assets.last_page > 1 && assets.data.length > 0 && (
                     <div className="flex flex-col gap-4 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
                         <div className="text-sm text-neutral-600 dark:text-neutral-400">
                             Showing{' '}
