@@ -30,6 +30,8 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import {
     Building2,
+    ChevronLeft,
+    ChevronRight,
     Edit2,
     MapPin,
     Phone,
@@ -110,7 +112,7 @@ export default function Clients() {
 
     const handleSearch = (value: string) => {
         setSearch(value);
-        const params: Record<string, any> = { search: value };
+        const params: Record<string, any> = { search: value, page: 1 };
         if (provinsiFilter !== 'all') {
             params.provinsi = provinsiFilter;
         }
@@ -122,7 +124,7 @@ export default function Clients() {
 
     const handleProvinsiFilter = (value: string) => {
         setProvinsiFilter(value);
-        const params: Record<string, any> = { search };
+        const params: Record<string, any> = { search, page: 1 };
         if (value !== 'all') {
             params.provinsi = value;
         }
@@ -346,22 +348,105 @@ export default function Clients() {
                         </Table>
                 </div>
 
-                {/* Pagination Info */}
-                {clients.data.length > 0 && (
-                    <div className="flex items-center justify-between text-sm text-neutral-500">
-                        <p>
+                {/* Pagination */}
+                {clients.total > 0 && clients.data.length > 0 && (
+                    <div className="flex flex-col gap-4 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
+                        <div className="text-sm text-neutral-600 dark:text-neutral-400">
                             Showing{' '}
-                            {(clients.current_page - 1) * clients.per_page + 1}{' '}
-                            -{' '}
+                            {(clients.current_page - 1) * clients.per_page + 1} to{' '}
                             {Math.min(
                                 clients.current_page * clients.per_page,
                                 clients.total,
                             )}{' '}
-                            of {clients.total} entries
-                        </p>
-                        <p>
-                            Page {clients.current_page} of {clients.last_page}
-                        </p>
+                            of {clients.total} clients
+                        </div>
+
+                        {clients.last_page > 1 && (
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        handlePageChange(clients.current_page - 1)
+                                    }
+                                    disabled={clients.current_page === 1}
+                                    className="gap-2"
+                                >
+                                    <ChevronLeft className="size-4" />
+                                    Previous
+                                </Button>
+
+                                <div className="flex items-center gap-1">
+                                    {Array.from(
+                                        { length: clients.last_page },
+                                        (_, i) => i + 1,
+                                    ).map((page) => {
+                                        const showPage =
+                                            page === 1 ||
+                                            page === clients.last_page ||
+                                            (page >= clients.current_page - 1 &&
+                                                page <= clients.current_page + 1);
+
+                                        const showEllipsisBefore =
+                                            page === clients.current_page - 2 &&
+                                            clients.current_page > 3;
+                                        const showEllipsisAfter =
+                                            page === clients.current_page + 2 &&
+                                            clients.current_page <
+                                                clients.last_page - 2;
+
+                                        if (
+                                            showEllipsisBefore ||
+                                            showEllipsisAfter
+                                        ) {
+                                            return (
+                                                <span
+                                                    key={page}
+                                                    className="px-2 text-neutral-500 dark:text-neutral-500"
+                                                >
+                                                    ...
+                                                </span>
+                                            );
+                                        }
+
+                                        if (!showPage) return null;
+
+                                        return (
+                                            <Button
+                                                key={page}
+                                                variant={
+                                                    page === clients.current_page
+                                                        ? 'default'
+                                                        : 'outline'
+                                                }
+                                                size="sm"
+                                                onClick={() =>
+                                                    handlePageChange(page)
+                                                }
+                                                className="hidden size-9 sm:inline-flex"
+                                            >
+                                                {page}
+                                            </Button>
+                                        );
+                                    })}
+                                </div>
+
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        handlePageChange(clients.current_page + 1)
+                                    }
+                                    disabled={
+                                        clients.current_page === clients.last_page
+                                    }
+                                    className="gap-2"
+                                >
+                                    Next
+                                    <ChevronRight className="size-4" />
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

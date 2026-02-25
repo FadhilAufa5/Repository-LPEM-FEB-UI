@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Asset;
 use App\Jobs\ProcessAssetFileUpload;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 
 class AssetService
@@ -157,11 +156,10 @@ class AssetService
 
     private function dispatchFileUpload(Asset $asset, $file, string $fileType = 'report'): void
     {
-        // Store file temporarily
+        // Store file temporarily for queue processing
         $tempFilename = 'temp_' . time() . '_' . $file->getClientOriginalName();
-        $tempPath = $file->storeAs('temp', $tempFilename, 'public');
+        $tempPath     = $file->storeAs('temp', $tempFilename, 'public');
 
-        // Dispatch queue job with file type
         ProcessAssetFileUpload::dispatch(
             $asset->id,
             $tempPath,
@@ -170,18 +168,5 @@ class AssetService
             $file->getSize(),
             $fileType
         );
-    }
-
-    private function handleFileUpload($file): string
-    {
-        $filename = time() . '_' . $file->getClientOriginalName();
-        return $file->storeAs('assets', $filename, 'public');
-    }
-
-    private function deleteFile(?string $filePath): void
-    {
-        if ($filePath && Storage::disk('public')->exists($filePath)) {
-            Storage::disk('public')->delete($filePath);
-        }
     }
 }

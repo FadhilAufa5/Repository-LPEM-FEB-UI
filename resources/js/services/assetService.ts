@@ -9,7 +9,7 @@ export interface AssetFormData {
     jenis_laporan: string;
     grup_kajian: string;
     kepala_proyek: string;
-    staf: string[];
+    staf: string[] | string; // Server may return JSON string; use parseStafArray() to normalize
     tahun: number;
     file_laporan: File | null;
     file_proposal: File | null;
@@ -17,6 +17,24 @@ export interface AssetFormData {
 
 export interface Asset extends AssetFormData {
     id: number;
+    staf: string[] | string; // Server may return as JSON string or parsed array
+    file_name?: string;
+    file_size?: number;
+    file_mime?: string;
+    proposal_name?: string;
+    proposal_size?: number;
+    proposal_mime?: string;
+    created_at?: string;
+    client?: {
+        id: number;
+        kode_klien: string;
+        nama_klien: string;
+    };
+    user?: {
+        id: number;
+        name: string;
+        email: string;
+    };
 }
 
 export const assetService = {
@@ -92,7 +110,7 @@ export const assetService = {
      */
     buildFormData(data: AssetFormData, isEditing: boolean, assetId?: number): FormData {
         const formData = new FormData();
-        const filteredStaf = data.staf.filter((s) => s.trim() !== '');
+        const filteredStaf = this.parseStafArray(data.staf).filter((s: string) => s.trim() !== '');
 
         if (data.client_id) {
             formData.append('client_id', data.client_id.toString());
@@ -110,7 +128,7 @@ export const assetService = {
         formData.append('kepala_proyek', data.kepala_proyek);
         formData.append('tahun', data.tahun.toString());
 
-        filteredStaf.forEach((s, index) => {
+        filteredStaf.forEach((s: string, index: number) => {
             formData.append(`staf[${index}]`, s);
         });
 

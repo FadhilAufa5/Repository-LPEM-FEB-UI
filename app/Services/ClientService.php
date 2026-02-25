@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ClientService
 {
-    public function getFilteredClients(array $filters, $user, int $perPage = 10)
+    public function getFilteredClients(array $filters, $user = null, int $perPage = 10)
     {
         $query = Client::query()->with(['wilayah', 'user:id,name,email']);
 
-        $this->applyUserFilter($query, $user);
         $this->applySearchFilter($query, $filters['search'] ?? null);
         $this->applyProvinsiFilter($query, $filters['provinsi'] ?? null);
         $this->applySorting($query, $filters['sort_by'] ?? 'created_at', $filters['sort_order'] ?? 'desc');
@@ -62,12 +61,6 @@ class ClientService
     public function checkClientOwnership(Client $client, $user): bool
     {
         return $user->hasRole('admin') || $client->user_id === $user->id;
-    }
-
-    private function applyUserFilter(Builder $query, $user): void
-    {
-        // Allow all users to view all clients
-        // No filtering based on user_id
     }
 
     private function applySearchFilter(Builder $query, ?string $search): void
