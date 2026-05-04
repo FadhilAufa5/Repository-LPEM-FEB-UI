@@ -21,6 +21,8 @@ class Asset extends Model
         'staf',
         'tahun',
         'is_nda',
+        'kesimpulan',
+        'rekomendasi',
         'file_content',
         'file_name',
         'file_mime',

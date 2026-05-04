@@ -12,6 +12,7 @@ import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 import otp from '@/routes/otp';
 import { Form, Head } from '@inertiajs/react';
+import { KeyRound, Mail } from 'lucide-react';
 
 interface LoginProps {
     status?: string;
@@ -41,45 +42,54 @@ export default function Login({
         >
             <Head title="Masuk" />
 
+            {/* Status Message */}
+            {status && (
+                <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-medium text-green-700 dark:border-green-800 dark:bg-green-950/30 dark:text-green-400">
+                    {status}
+                </div>
+            )}
+
             {/* Login Method Toggle */}
-            <div className="mb-6 flex gap-2 rounded-lg bg-muted p-1">
-                    <button
+            <div className="mb-6 flex gap-1 rounded-xl border border-gray-200 bg-gray-100 p-1 dark:border-neutral-800 dark:bg-neutral-900">
+                <button
                     type="button"
                     onClick={() => {
                         setLoginMethod('otp');
                         setOtpSent(false);
                     }}
-                    className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                         loginMethod === 'otp'
-                            ? 'bg-background text-foreground shadow-sm'
-                            : 'text-muted-foreground hover:text-foreground'
+                            ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200 dark:bg-neutral-800 dark:text-white dark:ring-neutral-700'
+                            : 'text-gray-500 hover:text-gray-700 dark:text-neutral-500 dark:hover:text-neutral-300'
                     }`}
                 >
+                    <Mail className="h-4 w-4" />
                     OTP Login
                 </button>
                 <button
                     type="button"
                     onClick={() => setLoginMethod('password')}
-                    className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                         loginMethod === 'password'
-                            ? 'bg-background text-foreground shadow-sm'
-                            : 'text-muted-foreground hover:text-foreground'
+                            ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200 dark:bg-neutral-800 dark:text-white dark:ring-neutral-700'
+                            : 'text-gray-500 hover:text-gray-700 dark:text-neutral-500 dark:hover:text-neutral-300'
                     }`}
                 >
+                    <KeyRound className="h-4 w-4" />
                     Password Login
                 </button>
             </div>
 
-            {/* OTP Login Flow */}
+            {/* OTP Login Flow — Step 1: Email */}
             {loginMethod === 'otp' && !otpSent && (
                 <Form
                     {...otp.request.form()}
                     onSuccess={() => setOtpSent(true)}
-                    className="flex flex-col gap-6"
+                    className="flex flex-col gap-5"
                 >
                     {({ processing, errors }) => (
                         <>
-                            <div className="grid gap-6">
+                            <div className="grid gap-5">
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Alamat email</Label>
                                     <Input
@@ -87,16 +97,15 @@ export default function Login({
                                         type="email"
                                         name="email"
                                         value={email}
-                                        onChange={(e) =>
-                                            setEmail(e.target.value)
-                                        }
+                                        onChange={(e) => setEmail(e.target.value)}
                                         required
                                         autoFocus
                                         autoComplete="email"
                                         placeholder="nama@gmail.com"
+                                        className="h-11"
                                     />
                                     <InputError message={errors.email} />
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-xs text-gray-500 dark:text-neutral-400">
                                         Hanya akun terdaftar yang dapat menggunakan
                                         OTP. Hubungi admin jika membutuhkan akses.
                                     </p>
@@ -104,7 +113,7 @@ export default function Login({
 
                                 <Button
                                     type="submit"
-                                    className="w-full"
+                                    className="h-11 w-full bg-yellow-600 text-white hover:bg-yellow-700"
                                     disabled={processing}
                                 >
                                     {processing && <Spinner />}
@@ -116,16 +125,16 @@ export default function Login({
                 </Form>
             )}
 
-            {/* OTP Verification */}
+            {/* OTP Login Flow — Step 2: Verify */}
             {loginMethod === 'otp' && otpSent && (
                 <Form
                     {...otp.verify.form()}
-                    className="flex flex-col gap-6"
+                    className="flex flex-col gap-5"
                 >
                     {({ processing, errors }) => (
                         <>
                             <input type="hidden" name="email" value={email} />
-                            <div className="grid gap-6">
+                            <div className="grid gap-5">
                                 <div className="grid gap-2">
                                     <Label htmlFor="otp">Kode OTP</Label>
                                     <Input
@@ -136,35 +145,37 @@ export default function Login({
                                         autoFocus
                                         maxLength={6}
                                         placeholder="000000"
-                                        className="text-center text-2xl tracking-widest"
+                                        className="h-14 text-center text-2xl font-bold tracking-[0.5em]"
                                     />
                                     <InputError message={errors.otp} />
                                     <InputError message={errors.email} />
-                                    <p className="text-xs text-muted-foreground">
-                                        Periksa email Anda untuk kode 6-digit
+                                    <p className="text-center text-xs text-gray-500 dark:text-neutral-400">
+                                        Periksa email{' '}
+                                        <span className="font-semibold text-gray-700 dark:text-neutral-200">
+                                            {email}
+                                        </span>{' '}
+                                        untuk kode 6-digit
                                     </p>
                                 </div>
 
                                 <div className="flex items-center space-x-3">
                                     <Checkbox id="remember" name="remember" />
-                                    <Label htmlFor="remember">
-                                        Ingat saya
-                                    </Label>
+                                    <Label htmlFor="remember">Ingat saya</Label>
                                 </div>
 
                                 <Button
                                     type="submit"
-                                    className="w-full"
+                                    className="h-11 w-full bg-yellow-600 text-white hover:bg-yellow-700"
                                     disabled={processing}
                                 >
                                     {processing && <Spinner />}
-                                    Verifikasi & Masuk
+                                    Verifikasi &amp; Masuk
                                 </Button>
 
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    className="w-full"
+                                    className="h-11 w-full"
                                     onClick={() => setOtpSent(false)}
                                 >
                                     Kembali ke Email
@@ -180,11 +191,11 @@ export default function Login({
                 <Form
                     {...store.form()}
                     resetOnSuccess={['password']}
-                    className="flex flex-col gap-6"
+                    className="flex flex-col gap-5"
                 >
                     {({ processing, errors }) => (
                         <>
-                            <div className="grid gap-6">
+                            <div className="grid gap-5">
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Alamat email</Label>
                                     <Input
@@ -196,19 +207,18 @@ export default function Login({
                                         tabIndex={1}
                                         autoComplete="email"
                                         placeholder="nama@gmail.com"
+                                        className="h-11"
                                     />
                                     <InputError message={errors.email} />
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <div className="flex items-center">
-                                        <Label htmlFor="password">
-                                            Kata sandi
-                                        </Label>
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="password">Kata sandi</Label>
                                         {canResetPassword && (
                                             <TextLink
                                                 href={request()}
-                                                className="ml-auto text-sm"
+                                                className="text-xs text-yellow-600 hover:text-yellow-700 dark:text-yellow-400"
                                                 tabIndex={5}
                                             >
                                                 Lupa kata sandi?
@@ -223,6 +233,7 @@ export default function Login({
                                         tabIndex={2}
                                         autoComplete="current-password"
                                         placeholder="Kata sandi"
+                                        className="h-11"
                                     />
                                     <InputError message={errors.password} />
                                 </div>
@@ -233,14 +244,12 @@ export default function Login({
                                         name="remember"
                                         tabIndex={3}
                                     />
-                                    <Label htmlFor="remember">
-                                        Ingat saya
-                                    </Label>
+                                    <Label htmlFor="remember">Ingat saya</Label>
                                 </div>
 
                                 <Button
                                     type="submit"
-                                    className="mt-4 w-full"
+                                    className="h-11 w-full bg-yellow-600 text-white hover:bg-yellow-700"
                                     tabIndex={4}
                                     disabled={processing}
                                     data-test="login-button"
@@ -262,14 +271,6 @@ export default function Login({
                     </TextLink>
                 </div>
             )} */}
-
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
-            
         </AuthLayout>
-        
     );
 }

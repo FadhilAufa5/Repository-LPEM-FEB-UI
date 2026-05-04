@@ -13,6 +13,8 @@ import {
     FolderOpen,
     Tag,
     Users,
+    Lightbulb,
+    Target,
 } from 'lucide-react';
 
 interface Repository {
@@ -28,6 +30,8 @@ interface Repository {
     file_url?: string;
     file_name?: string;
     file_size?: number;
+    kesimpulan?: string;
+    rekomendasi?: string;
     created_at: string;
 }
 
@@ -149,15 +153,39 @@ export default function RepositoryDetail({
                                         )}
                                     </div>
                                 </div>
-                                <div className="mt-6">
+                                <div className="mt-8">
                                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                                         <FileText className="h-5 w-5 text-yellow-600" />
                                         Abstract
                                     </h2>
-                                    <p className="mt-3 leading-relaxed text-gray-700 dark:text-neutral-300">
+                                    <p className="mt-3 whitespace-pre-wrap leading-relaxed text-gray-700 dark:text-neutral-300">
                                         {repository.abstract}
                                     </p>
                                 </div>
+
+                                {repository.kesimpulan && (
+                                    <div className="mt-8">
+                                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                                            <Target className="h-5 w-5 text-yellow-600" />
+                                            Kesimpulan
+                                        </h2>
+                                        <p className="mt-3 whitespace-pre-wrap leading-relaxed text-gray-700 dark:text-neutral-300">
+                                            {repository.kesimpulan}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {repository.rekomendasi && (
+                                    <div className="mt-8">
+                                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                                            <Lightbulb className="h-5 w-5 text-yellow-600" />
+                                            Rekomendasi
+                                        </h2>
+                                        <p className="mt-3 whitespace-pre-wrap leading-relaxed text-gray-700 dark:text-neutral-300">
+                                            {repository.rekomendasi}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

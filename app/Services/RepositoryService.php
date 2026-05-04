@@ -58,6 +58,8 @@ class RepositoryService
             'file_url' => $asset->file_name ? route('repository.download', $asset->id) : null,
             'file_name' => $asset->file_name,
             'file_size' => $asset->file_size,
+            'kesimpulan' => $asset->kesimpulan,
+            'rekomendasi' => $asset->rekomendasi,
             'created_at' => $asset->created_at->format('d M Y'),
         ];
     }

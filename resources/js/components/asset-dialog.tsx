@@ -335,6 +335,34 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         </div>
 
                         <div className="grid gap-2">
+                            <Label htmlFor="kesimpulan">Kesimpulan (Conclusion)</Label>
+                            <Textarea
+                                id="kesimpulan"
+                                value={data.kesimpulan}
+                                onChange={(e) => setData('kesimpulan', e.target.value)}
+                                placeholder="Enter conclusion..."
+                                className={errors.kesimpulan ? 'border-red-500 min-h-[100px]' : 'min-h-[100px]'}
+                            />
+                            {errors.kesimpulan && (
+                                <p className="text-sm text-red-500">{errors.kesimpulan}</p>
+                            )}
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="rekomendasi">Rekomendasi (Recommendation)</Label>
+                            <Textarea
+                                id="rekomendasi"
+                                value={data.rekomendasi}
+                                onChange={(e) => setData('rekomendasi', e.target.value)}
+                                placeholder="Enter recommendations..."
+                                className={errors.rekomendasi ? 'border-red-500 min-h-[100px]' : 'min-h-[100px]'}
+                            />
+                            {errors.rekomendasi && (
+                                <p className="text-sm text-red-500">{errors.rekomendasi}</p>
+                            )}
+                        </div>
+
+                        <div className="grid gap-2">
                             <Label htmlFor="file_laporan">Report File</Label>
                             <Input
                                 id="file_laporan"

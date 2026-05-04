@@ -129,7 +129,9 @@ class AssetService
                 $q->where('kode', 'like', "%{$search}%")
                     ->orWhere('judul_laporan', 'like', "%{$search}%")
                     ->orWhere('abstrak', 'like', "%{$search}%")
-                    ->orWhere('kepala_proyek', 'like', "%{$search}%");
+                    ->orWhere('kepala_proyek', 'like', "%{$search}%")
+                    ->orWhere('kesimpulan', 'like', "%{$search}%")
+                    ->orWhere('rekomendasi', 'like', "%{$search}%");
             });
         }
     }
