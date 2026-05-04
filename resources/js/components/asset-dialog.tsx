@@ -20,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ClientCombobox } from '@/components/client-combobox';
 import { useForm } from '@inertiajs/react';
 import { Plus, X } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useEffect, useState } from 'react';
 import { assetService, AssetFormData, Asset } from '@/services/assetService';
 
@@ -367,6 +368,32 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 {isEditing && 'Leave empty if you do not want to change the proposal.'}
                             </p>
                         </div>
+
+                        {/* NDA Field */}
+                        <div className="grid gap-2">
+                            <Label>NDA</Label>
+                            <p className="text-xs text-neutral-500">
+                                If marked <span className="font-semibold">Yes</span>, this asset will be hidden from the public Repository page.
+                            </p>
+                            <div className="flex items-center gap-6 rounded-md border border-neutral-200 p-3 dark:border-neutral-700">
+                                <label className="flex cursor-pointer items-center gap-2">
+                                    <Checkbox
+                                        id="nda_yes"
+                                        checked={data.is_nda === true}
+                                        onCheckedChange={() => setData('is_nda', true)}
+                                    />
+                                    <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Yes — NDA applies</span>
+                                </label>
+                                <label className="flex cursor-pointer items-center gap-2">
+                                    <Checkbox
+                                        id="nda_no"
+                                        checked={data.is_nda === false}
+                                        onCheckedChange={() => setData('is_nda', false)}
+                                    />
+                                    <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">No — Publicly visible</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <DialogFooter>
                         <Button
@@ -410,6 +437,18 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 <span className="font-semibold">Proposal:</span> {data.file_proposal.name}
                             </p>
                         )}
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            <span className="font-semibold">NDA:</span>{' '}
+                            {data.is_nda ? (
+                                <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                    Yes — Hidden from Repository
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                    No — Publicly visible
+                                </span>
+                            )}
+                        </p>
                     </div>
                     <DialogFooter>
                         <Button

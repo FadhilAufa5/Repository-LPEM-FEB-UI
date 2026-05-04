@@ -13,6 +13,8 @@ export interface AssetFormData {
     tahun: number;
     file_laporan: File | null;
     file_proposal: File | null;
+    /** If true, this asset is under NDA and will be hidden from the public Repository page */
+    is_nda: boolean;
 }
 
 export interface Asset extends AssetFormData {
@@ -76,6 +78,7 @@ export const assetService = {
             tahun: asset.tahun,
             file_laporan: null,
             file_proposal: null,
+            is_nda: asset.is_nda ?? false,
         };
     },
 
@@ -95,6 +98,7 @@ export const assetService = {
             tahun: new Date().getFullYear(),
             file_laporan: null,
             file_proposal: null,
+            is_nda: false,
         };
     },
 
@@ -138,6 +142,8 @@ export const assetService = {
         if (data.file_proposal) {
             formData.append('file_proposal', data.file_proposal);
         }
+
+        formData.append('is_nda', data.is_nda ? '1' : '0');
 
         if (isEditing && assetId) {
             formData.append('_method', 'PUT');

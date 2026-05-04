@@ -9,7 +9,7 @@ class RepositoryService
 {
     public function getPublicRepositories(array $filters, int $perPage = 12)
     {
-        $query = Asset::query();
+        $query = Asset::query()->where('is_nda', false);
 
         $this->applyJenisLaporanFilter($query, $filters['jenis_laporan'] ?? null);
         $this->applyTitleFilter($query, $filters['title'] ?? null);
@@ -140,6 +140,7 @@ class RepositoryService
     public function getGrupKajianCounts(): array
     {
         return Asset::query()
+            ->where('is_nda', false)
             ->selectRaw('grup_kajian, COUNT(*) as count')
             ->groupBy('grup_kajian')
             ->pluck('count', 'grup_kajian')
@@ -149,6 +150,7 @@ class RepositoryService
     public function getJenisLaporanCounts(): array
     {
         return Asset::query()
+            ->where('is_nda', false)
             ->selectRaw('jenis_laporan, COUNT(*) as count')
             ->groupBy('jenis_laporan')
             ->pluck('count', 'jenis_laporan')

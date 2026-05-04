@@ -143,6 +143,7 @@ class AssetController extends Controller
             'tahun'         => 'required|integer|min:1900|max:' . (date('Y') + 10),
             'file_laporan'  => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
             'file_proposal' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
+            'is_nda'        => 'boolean',
         ];
     }
 }
