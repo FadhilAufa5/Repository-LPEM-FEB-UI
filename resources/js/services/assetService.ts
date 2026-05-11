@@ -13,6 +13,10 @@ export interface AssetFormData {
     tahun: number;
     file_laporan: File | null;
     file_proposal: File | null;
+    /** If true, this asset is under NDA and will be hidden from the public Repository page */
+    is_nda: boolean;
+    kesimpulan: string;
+    rekomendasi: string;
 }
 
 export interface Asset extends AssetFormData {
@@ -74,8 +78,11 @@ export const assetService = {
             kepala_proyek: asset.kepala_proyek,
             staf: this.parseStafArray(asset.staf),
             tahun: asset.tahun,
+            kesimpulan: asset.kesimpulan || '',
+            rekomendasi: asset.rekomendasi || '',
             file_laporan: null,
             file_proposal: null,
+            is_nda: asset.is_nda ?? false,
         };
     },
 
@@ -93,8 +100,11 @@ export const assetService = {
             kepala_proyek: '',
             staf: [''],
             tahun: new Date().getFullYear(),
+            kesimpulan: '',
+            rekomendasi: '',
             file_laporan: null,
             file_proposal: null,
+            is_nda: false,
         };
     },
 
@@ -138,6 +148,11 @@ export const assetService = {
         if (data.file_proposal) {
             formData.append('file_proposal', data.file_proposal);
         }
+
+        formData.append('kesimpulan', data.kesimpulan || '');
+        formData.append('rekomendasi', data.rekomendasi || '');
+
+        formData.append('is_nda', data.is_nda ? '1' : '0');
 
         if (isEditing && assetId) {
             formData.append('_method', 'PUT');

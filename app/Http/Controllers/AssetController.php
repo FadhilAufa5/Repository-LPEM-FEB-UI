@@ -141,8 +141,11 @@ class AssetController extends Controller
             'staf'          => 'required|array|min:1',
             'staf.*'        => 'required|string|max:255',
             'tahun'         => 'required|integer|min:1900|max:' . (date('Y') + 10),
+            'kesimpulan'    => 'nullable|string',
+            'rekomendasi'   => 'nullable|string',
             'file_laporan'  => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
             'file_proposal' => 'nullable|file|mimes:pdf,doc,docx,zip,rar|max:202400',
+            'is_nda'        => 'boolean',
         ];
     }
 }

@@ -20,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ClientCombobox } from '@/components/client-combobox';
 import { useForm } from '@inertiajs/react';
 import { Plus, X } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useEffect, useState } from 'react';
 import { assetService, AssetFormData, Asset } from '@/services/assetService';
 
@@ -334,6 +335,34 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                         </div>
 
                         <div className="grid gap-2">
+                            <Label htmlFor="kesimpulan">Kesimpulan (Conclusion)</Label>
+                            <Textarea
+                                id="kesimpulan"
+                                value={data.kesimpulan}
+                                onChange={(e) => setData('kesimpulan', e.target.value)}
+                                placeholder="Enter conclusion..."
+                                className={errors.kesimpulan ? 'border-red-500 min-h-[100px]' : 'min-h-[100px]'}
+                            />
+                            {errors.kesimpulan && (
+                                <p className="text-sm text-red-500">{errors.kesimpulan}</p>
+                            )}
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="rekomendasi">Rekomendasi (Recommendation)</Label>
+                            <Textarea
+                                id="rekomendasi"
+                                value={data.rekomendasi}
+                                onChange={(e) => setData('rekomendasi', e.target.value)}
+                                placeholder="Enter recommendations..."
+                                className={errors.rekomendasi ? 'border-red-500 min-h-[100px]' : 'min-h-[100px]'}
+                            />
+                            {errors.rekomendasi && (
+                                <p className="text-sm text-red-500">{errors.rekomendasi}</p>
+                            )}
+                        </div>
+
+                        <div className="grid gap-2">
                             <Label htmlFor="file_laporan">Report File</Label>
                             <Input
                                 id="file_laporan"
@@ -366,6 +395,32 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 Format: PDF, DOC, DOCX. Maximum 50MB.{' '}
                                 {isEditing && 'Leave empty if you do not want to change the proposal.'}
                             </p>
+                        </div>
+
+                        {/* NDA Field */}
+                        <div className="grid gap-2">
+                            <Label>NDA</Label>
+                            <p className="text-xs text-neutral-500">
+                                If marked <span className="font-semibold">Yes</span>, this asset will be hidden from the public Repository page.
+                            </p>
+                            <div className="flex items-center gap-6 rounded-md border border-neutral-200 p-3 dark:border-neutral-700">
+                                <label className="flex cursor-pointer items-center gap-2">
+                                    <Checkbox
+                                        id="nda_yes"
+                                        checked={data.is_nda === true}
+                                        onCheckedChange={() => setData('is_nda', true)}
+                                    />
+                                    <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Yes — NDA applies</span>
+                                </label>
+                                <label className="flex cursor-pointer items-center gap-2">
+                                    <Checkbox
+                                        id="nda_no"
+                                        checked={data.is_nda === false}
+                                        onCheckedChange={() => setData('is_nda', false)}
+                                    />
+                                    <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">No — Publicly visible</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>
@@ -410,6 +465,18 @@ export function AssetDialog({ open, onOpenChange, asset, clients }: AssetDialogP
                                 <span className="font-semibold">Proposal:</span> {data.file_proposal.name}
                             </p>
                         )}
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            <span className="font-semibold">NDA:</span>{' '}
+                            {data.is_nda ? (
+                                <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                    Yes — Hidden from Repository
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                    No — Publicly visible
+                                </span>
+                            )}
+                        </p>
                     </div>
                     <DialogFooter>
                         <Button

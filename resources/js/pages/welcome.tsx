@@ -56,6 +56,13 @@ export default function Welcome({
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Redirect guests to login before allowing search
+        if (!auth.user) {
+            router.visit(login().url);
+            return;
+        }
+
         const params: Record<string, string> = {};
 
         if (title) {
@@ -254,14 +261,14 @@ export default function Welcome({
                                 </h3>
                                 <nav className="space-y-2">
                                     <Link
-                                        href="/repository"
+                                        href={auth.user ? '/repository' : login().url}
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
                                     >
                                         <Library className="h-4 w-4" />
                                         <span>All Repository</span>
                                     </Link>
                                     <Link
-                                        href="/report-search"
+                                        href={auth.user ? '/report-search' : login().url}
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-yellow-950/30 dark:hover:text-yellow-400"
                                     >
                                         <FolderOpen className="h-4 w-4" />

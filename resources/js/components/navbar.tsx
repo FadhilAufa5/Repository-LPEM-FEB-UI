@@ -14,6 +14,7 @@ export function Navbar({
     dashboardUrl,
 }: NavbarProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const repositoryUrl = isAuthenticated ? '/repository' : (loginUrl ?? '/login');
 
     return (
         <nav className="border-b border-gray-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
@@ -39,7 +40,7 @@ export function Navbar({
                             Home
                         </Link>
                         <Link
-                            href="/repository"
+                            href={repositoryUrl}
                             className="text-sm font-medium text-gray-700 transition-colors hover:text-yellow-600 dark:text-neutral-300 dark:hover:text-yellow-400"
                         >
                             Repository
@@ -121,7 +122,7 @@ export function Navbar({
                                 Home
                             </Link>
                             <Link
-                                href="/repository"
+                                href={repositoryUrl}
                                 className="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-yellow-600 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-yellow-400"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >

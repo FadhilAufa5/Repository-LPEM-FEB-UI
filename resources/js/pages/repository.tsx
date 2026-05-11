@@ -112,14 +112,16 @@ export default function Repository({
     const handleGrupKajianChange = (value: string) => {
         setSelectedGrupKajian(value);
         
-        // Immediately apply the filter
         const params: Record<string, string> = {};
-        if (searchInputs.title) params.title = searchInputs.title;
-        if (searchInputs.author) params.author = searchInputs.author;
-        if (searchInputs.abstract) params.abstract = searchInputs.abstract;
-        if (searchInputs.year) params.year = searchInputs.year;
-        if (value) params.grup_kajian = value; // Use new value
-        if (selectedReportType) params.jenis_laporan = selectedReportType;
+        Object.entries(filters).forEach(([k, v]) => {
+            if (v) params[k] = v;
+        });
+        
+        if (value) {
+            params.grup_kajian = value;
+        } else {
+            delete params.grup_kajian;
+        }
         
         router.get('/repository', params, { preserveState: true });
     };
@@ -127,15 +129,32 @@ export default function Repository({
     const handleReportTypeChange = (value: string) => {
         setSelectedReportType(value);
         
-        // Immediately apply the filter
         const params: Record<string, string> = {};
-        if (searchInputs.title) params.title = searchInputs.title;
-        if (searchInputs.author) params.author = searchInputs.author;
-        if (searchInputs.abstract) params.abstract = searchInputs.abstract;
-        if (searchInputs.year) params.year = searchInputs.year;
-        if (selectedGrupKajian) params.grup_kajian = selectedGrupKajian;
-        if (value) params.jenis_laporan = value; // Use new value
+        Object.entries(filters).forEach(([k, v]) => {
+            if (v) params[k] = v;
+        });
         
+        if (value) {
+            params.jenis_laporan = value;
+        } else {
+            delete params.jenis_laporan;
+        }
+        
+        router.get('/repository', params, { preserveState: true });
+    };
+
+    const removeFilter = (key: keyof typeof filters) => {
+        if (key === 'grup_kajian') setSelectedGrupKajian('');
+        else if (key === 'jenis_laporan') setSelectedReportType('');
+        else setSearchInputs((prev) => ({ ...prev, [key]: '' }));
+
+        const params: Record<string, string> = {};
+        Object.entries(filters).forEach(([k, v]) => {
+            if (k !== key && v) {
+                params[k] = v;
+            }
+        });
+
         router.get('/repository', params, { preserveState: true });
     };
 
@@ -237,12 +256,7 @@ export default function Repository({
                                         <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
                                             <span>Title: {filters.title}</span>
                                             <button
-                                                onClick={() => {
-                                                    setSearchInputs(prev => ({ ...prev, title: '' }));
-                                                    const params = { ...filters, title: undefined };
-                                                    delete params.title;
-                                                    router.get('/repository', params, { preserveState: true });
-                                                }}
+                                                onClick={() => removeFilter('title')}
                                                 className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
                                             >
                                                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -255,12 +269,7 @@ export default function Repository({
                                         <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
                                             <span>Author: {filters.author}</span>
                                             <button
-                                                onClick={() => {
-                                                    setSearchInputs(prev => ({ ...prev, author: '' }));
-                                                    const params = { ...filters, author: undefined };
-                                                    delete params.author;
-                                                    router.get('/repository', params, { preserveState: true });
-                                                }}
+                                                onClick={() => removeFilter('author')}
                                                 className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
                                             >
                                                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -273,12 +282,7 @@ export default function Repository({
                                         <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
                                             <span>Keywords: {filters.abstract}</span>
                                             <button
-                                                onClick={() => {
-                                                    setSearchInputs(prev => ({ ...prev, abstract: '' }));
-                                                    const params = { ...filters, abstract: undefined };
-                                                    delete params.abstract;
-                                                    router.get('/repository', params, { preserveState: true });
-                                                }}
+                                                onClick={() => removeFilter('abstract')}
                                                 className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
                                             >
                                                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -291,12 +295,7 @@ export default function Repository({
                                         <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300">
                                             <span>Year: {filters.year}</span>
                                             <button
-                                                onClick={() => {
-                                                    setSearchInputs(prev => ({ ...prev, year: '' }));
-                                                    const params = { ...filters, year: undefined };
-                                                    delete params.year;
-                                                    router.get('/repository', params, { preserveState: true });
-                                                }}
+                                                onClick={() => removeFilter('year')}
                                                 className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
                                             >
                                                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -314,16 +313,11 @@ export default function Repository({
                                                         (o) =>
                                                             o.value ===
                                                             filters.grup_kajian,
-                                                    )?.label
+                                                    )?.label || filters.grup_kajian
                                                 }
                                             </span>
                                             <button
-                                                onClick={() => {
-                                                    setSelectedGrupKajian('');
-                                                    const params = { ...filters, grup_kajian: undefined };
-                                                    delete params.grup_kajian;
-                                                    router.get('/repository', params, { preserveState: true });
-                                                }}
+                                                onClick={() => removeFilter('grup_kajian')}
                                                 className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
                                             >
                                                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -341,16 +335,11 @@ export default function Repository({
                                                         (o) =>
                                                             o.value ===
                                                             filters.jenis_laporan,
-                                                    )?.label
+                                                    )?.label || filters.jenis_laporan
                                                 }
                                             </span>
                                             <button
-                                                onClick={() => {
-                                                    setSelectedReportType('');
-                                                    const params = { ...filters, jenis_laporan: undefined };
-                                                    delete params.jenis_laporan;
-                                                    router.get('/repository', params, { preserveState: true });
-                                                }}
+                                                onClick={() => removeFilter('jenis_laporan')}
                                                 className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 p-0.5 transition-colors"
                                             >
                                                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">

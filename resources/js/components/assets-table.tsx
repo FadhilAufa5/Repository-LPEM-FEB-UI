@@ -62,13 +62,14 @@ export function AssetsTable({
                         <TableHead>Uploaded By</TableHead>
                         <TableHead>Report</TableHead>
                         <TableHead>Proposal</TableHead>
+                        <TableHead>NDA</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {assets.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={10} className="h-24 text-center">
+                            <TableCell colSpan={11} className="h-24 text-center">
                                 <div className="flex flex-col items-center gap-2 text-neutral-500">
                                     <FileText className="size-8" />
                                     <p className="text-sm">
@@ -174,6 +175,17 @@ export function AssetsTable({
                                         <span className="text-xs text-neutral-400">
                                             -
                                         </span>
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {asset.is_nda ? (
+                                        <Badge className="bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 border-0">
+                                            Yes
+                                        </Badge>
+                                    ) : (
+                                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400 border-0">
+                                            No
+                                        </Badge>
                                     )}
                                 </TableCell>
                                 <TableCell className="text-right">

@@ -20,6 +20,9 @@ class Asset extends Model
         'kepala_proyek',
         'staf',
         'tahun',
+        'is_nda',
+        'kesimpulan',
+        'rekomendasi',
         'file_content',
         'file_name',
         'file_mime',
@@ -31,8 +34,9 @@ class Asset extends Model
     ];
 
     protected $casts = [
-        'tahun' => 'integer',
-        'file_size' => 'integer',
+        'tahun'         => 'integer',
+        'is_nda'        => 'boolean',
+        'file_size'     => 'integer',
         'proposal_size' => 'integer',
     ];
 

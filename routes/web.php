@@ -17,12 +17,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/auth/otp/verify', [OtpLoginController::class, 'verifyOtp'])->name('otp.verify');
 });
 
-Route::get('/repository', [\App\Http\Controllers\RepositoryController::class, 'index'])->name('repository');
-Route::get('/repository/{id}', [\App\Http\Controllers\RepositoryController::class, 'show'])->name('repository.show');
-Route::get('/repository/{id}/download', [\App\Http\Controllers\RepositoryController::class, 'download'])->name('repository.download');
-Route::get('/report-search', [\App\Http\Controllers\ReportSearchController::class, 'index'])->name('report-search');
-
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Repository Routes (protected - login required)
+    Route::get('/repository', [\App\Http\Controllers\RepositoryController::class, 'index'])->name('repository');
+    Route::get('/repository/{id}', [\App\Http\Controllers\RepositoryController::class, 'show'])->name('repository.show');
+    Route::get('/repository/{id}/download', [\App\Http\Controllers\RepositoryController::class, 'download'])->name('repository.download');
+    Route::get('/report-search', [\App\Http\Controllers\ReportSearchController::class, 'index'])->name('report-search');
+
+    // Dashboard
     Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     // Asset Management Routes - accessible by all authenticated users
