@@ -29,7 +29,7 @@ Sistem Repository LPEM FEB UI adalah aplikasi web modern untuk mengelola dan men
 - 🔍 **Advanced Search** - Pencarian dokumen dengan multiple filters
 - 📊 **Dashboard & Analytics** - Visualisasi statistik dan data
 - 💾 **Database File Storage** - File disimpan dalam database (BLOB) hingga 200MB
-- 🌐 **Public Repository** - Akses publik untuk browsing dan download dokumen
+- 🌐 **Public Repository** - Akses publik untuk browsing dan download dokumen,
 
 ### 🛠️ Tech Stack
 
